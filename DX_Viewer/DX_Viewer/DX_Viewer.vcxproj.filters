@@ -16,24 +16,48 @@
     <Filter Include="소스 파일\99. Headers">
       <UniqueIdentifier>{a48e7da6-fd5c-4af9-a3a3-85e9d4ab183e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\01. Main">
+      <UniqueIdentifier>{1c402b65-a7ec-4aa5-b01e-1a8efb5cc07a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99. Headers\Default">
+      <UniqueIdentifier>{e9b9aaa1-996f-4d55-82c8-46b9c69af495}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DX_Viewer.h">
+    <ClInclude Include="pch.h">
       <Filter>소스 파일\99. Headers</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
-      <Filter>소스 파일\99. Headers</Filter>
+      <Filter>소스 파일\99. Headers\Default</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>소스 파일\99. Headers</Filter>
+      <Filter>소스 파일\99. Headers\Default</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
+      <Filter>소스 파일\99. Headers\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Values.h">
       <Filter>소스 파일\99. Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>소스 파일\99. Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>소스 파일\99. Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>소스 파일\01. Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DX_Viewer.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일\99. Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일\01. Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>소스 파일\01. Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
