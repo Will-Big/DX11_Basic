@@ -4,5 +4,6 @@
 struct Vertex
 {
 	Vec3 poistion;
-	Color color;
+	//Color color;
+	Vec2 uv;
 };
