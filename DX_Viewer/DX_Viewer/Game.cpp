@@ -105,3 +105,21 @@ void Game::SetViewPort()
 	_viewPort.MinDepth = 0.f;
 	_viewPort.MaxDepth = 1.f;
 }
+
+void Game::CreateGeometry()
+{
+	// Vertex Data
+	{
+		_vertices.resize(3);
+
+		_vertices[0].poistion = Vec3(0, 0, 0);
+		_vertices[0].color = Color(1.f, 0.f, 0.f, 1.f);
+
+		_vertices[1].poistion = Vec3(0, 0, 0);
+		_vertices[1].color = Color(1.f, 0.f, 0.f, 1.f);
+
+		_vertices[2].poistion = Vec3(0, 0, 0);
+		_vertices[2].color = Color(1.f, 0.f, 0.f, 1.f);
+	}
+
+}

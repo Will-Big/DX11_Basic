@@ -21,6 +21,9 @@ private:
 	void SetViewPort();
 
 private:
+	void CreateGeometry();
+
+private:
 	HWND _hWnd;
 	uint32 _width = 0;
 	uint32 _height = 0;
@@ -37,4 +40,7 @@ private:
 	// Misc
 	D3D11_VIEWPORT _viewPort = {};
 	float _clearColor[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
+
+private:
+	vector<Vertex> _vertices;
 };
