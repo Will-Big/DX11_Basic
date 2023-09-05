@@ -22,6 +22,9 @@
     <Filter Include="소스 파일\99. Headers\Default">
       <UniqueIdentifier>{e9b9aaa1-996f-4d55-82c8-46b9c69af495}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\98.Shaders">
+      <UniqueIdentifier>{7fc953d9-1534-48e8-8b78-6899a8de461a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -72,5 +75,10 @@
     <Image Include="DX_Viewer.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Default.hlsl">
+      <Filter>소스 파일\98.Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
