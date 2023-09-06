@@ -39,7 +39,10 @@ void Game::Render()
 		uint32 stride = sizeof(Vertex);
 		uint32 offset = 0;
 
-		// IA (세팅 단계)
+		// Input Assembler
+		// 객체의 위치, 정점 데이터 정보를 다루는 단계
+		// 위의 정보들이 변경되더라도 IA 단계를 다시 실행하기 보단 다른 단계에서 처리
+		// 일반적으로 한번만 실행됨
 		_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetAddressOf(), &stride, &offset);
 		_deviceContext->IASetIndexBuffer(_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		_deviceContext->IASetInputLayout(_inputLayout.Get());
@@ -241,6 +244,7 @@ void Game::LoadShaderFromFile(const wstring& path, const string& name, const str
 {
 	const uint32 compileFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 
+	// 셰이더 컴파일
 	HRESULT hr = ::D3DCompileFromFile(
 		path.c_str(),
 		nullptr,
