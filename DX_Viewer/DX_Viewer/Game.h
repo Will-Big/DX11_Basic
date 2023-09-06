@@ -60,7 +60,7 @@ private:
 
 	// VS
 	ComPtr<ID3D11VertexShader> _vertexShader;
-	ComPtr<ID3DBlob> _vsBlob;
+	ComPtr<ID3DBlob> _vsBlob;	// 셰이더 코드, 바이너리 데이터 저장
 
 	// PS
 	ComPtr<ID3D11PixelShader> _pixelShader;
