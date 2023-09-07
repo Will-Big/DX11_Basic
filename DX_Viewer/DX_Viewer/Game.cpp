@@ -24,10 +24,21 @@ void Game::Init(HWND hWnd)
 	CreateInputLayout();
 	CreatePS();
 	CreateSRV();
+
+	CreateConstantBuffer();
 }
 
 void Game::Update()
 {
+	_transformData.offset.x += 0.001f;
+	//_transformData.offset.y += 0.f;
+
+	D3D11_MAPPED_SUBRESOURCE subResource;
+	ZeroMemory(&subResource, sizeof(subResource));
+
+	_deviceContext->Map(_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource);
+	::memcpy(subResource.pData, &_transformData, sizeof(_transformData));
+	_deviceContext->Unmap(_constantBuffer.Get(), 0);
 }
 
 void Game::Render()
@@ -50,6 +61,7 @@ void Game::Render()
 
 		// VS
 		_deviceContext->VSSetShader(_vertexShader.Get(), nullptr, 0);
+		_deviceContext->VSSetConstantBuffers(0, 1, _constantBuffer.GetAddressOf());
 
 		// RS
 		  
@@ -147,23 +159,24 @@ void Game::CreateGeometry()
 	{
 		_vertices.resize(4);
 
-		_vertices[0].poistion = Vec3(-0.5f, -0.5f, 0);
+		_vertices[0].position = Vec3(-0.5f, -0.5f, 0);
 		_vertices[0].uv = Vec2(0.f, 2.f);
 		//_vertices[0].color = Color(1.f, 0.f, 0.f, 1.f);
 
-		_vertices[1].poistion = Vec3(-0.5f, 0.5f, 0);
+		_vertices[1].position = Vec3(-0.5f, 0.5f, 0);
 		_vertices[1].uv = Vec2(0.f, 0.f);
 		//_vertices[1].color = Color(1.f, 0.f, 0.f, 1.f);
 
-		_vertices[2].poistion = Vec3(0.5f, -0.5f, 0);
+		_vertices[2].position = Vec3(0.5f, -0.5f, 0);
 		_vertices[2].uv = Vec2(2.f, 2.f);
 		//_vertices[2].color = Color(1.f, 0.f, 0.f, 1.f);
 
-		_vertices[3].poistion = Vec3(0.5f, 0.5f, 0);
+		_vertices[3].position = Vec3(0.5f, 0.5f, 0);
 		_vertices[3].uv = Vec2(2.f, 0.f);
 		//_vertices[3].color = Color(1.f, 0.f, 0.f, 1.f);
 	}
 
+	// Vertex Buffer
 	{
 		D3D11_BUFFER_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
@@ -237,6 +250,19 @@ void Game::CreateSRV()
 	CHECK(hr);
 
 	hr = ::CreateShaderResourceView(_device.Get(), img.GetImages(), img.GetImageCount(), md, _shaderResourceView.GetAddressOf());
+	CHECK(hr);
+}
+
+void Game::CreateConstantBuffer()
+{
+	D3D11_BUFFER_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	desc.Usage = D3D11_USAGE_DYNAMIC; // CPU_Write + GPU_Read
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.ByteWidth = sizeof(TransformData);
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	HRESULT hr = _device->CreateBuffer(&desc, nullptr, _constantBuffer.GetAddressOf());
 	CHECK(hr);
 }
 
