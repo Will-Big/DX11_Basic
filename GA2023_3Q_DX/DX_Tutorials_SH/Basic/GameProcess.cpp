@@ -109,7 +109,7 @@ void GameProcess::InitializeD3D()
 
 	UINT creationFlags = 0;
 #ifdef _DEBUG
-	creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	//creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 	// 1. 장치 생성.   2.스왑체인 생성. 3.장치 컨텍스트 생성.
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL,
@@ -189,7 +189,7 @@ void GameProcess::Render()
 
 	// Draw
 	m_context->DrawIndexed(m_indices.size(), 0, 0);
-	m_context->Draw(m_vertices.size(), 0);
+	//m_context->Draw(m_vertices.size(), 0);
 
 	// 스왑체인 교체
 	m_swapChain->Present(0, 0);
@@ -232,6 +232,9 @@ void GameProcess::CreateVertex()
 		Vertex(Vector3(-0.5f,  0.5f, 0.5f), Vector4(1.0f, 0.0f, 0.0f, 1.0f)),
 		Vertex(Vector3(0.5f,  0.5f, 0.5f), Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
 		Vertex(Vector3(-0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
+
+		//Vertex(Vector3(-0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
+		//Vertex(Vector3(0.5f,  0.5f, 0.5f), Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
 		Vertex(Vector3(0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f))
 	};
 

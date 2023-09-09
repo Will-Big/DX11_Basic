@@ -3,6 +3,7 @@
 #include <wchar.h>
 #include <exception>
 #include <cstdio>
+#include <string>
 
 #pragma comment(lib, "d3dcompiler.lib")
 

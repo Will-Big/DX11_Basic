@@ -41,7 +41,7 @@ private:
 
 	// IA
 	vector<Vertex> m_vertices;
-	vector<size_t> m_indices;
+	vector<WORD> m_indices;
 
 	ID3D11Buffer* m_vertexBuffer = nullptr;
 	ID3D11Buffer* m_indexBuffer = nullptr;
