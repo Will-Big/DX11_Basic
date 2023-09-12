@@ -25,26 +25,20 @@
     <Filter Include="헤더 파일\1. Global">
       <UniqueIdentifier>{1cc51ed9-da53-410d-9fbc-0267c2d10a9c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\0. Main">
+    <Filter Include="소스 파일\2. System">
+      <UniqueIdentifier>{daa6160b-9f1c-4928-9de6-fa78be517aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\2. System">
+      <UniqueIdentifier>{acc919e5-22f9-4143-bc0b-98bd457d49bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\0. Defaults">
       <UniqueIdentifier>{9ce38d45-3886-43bf-8a46-2ea3b541f51d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\0. Defaults\Projects Defaults">
+      <UniqueIdentifier>{496bdeb3-0e1f-4f5e-a4eb-b7ba9cc37854}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameProcess.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="framework.h">
-      <Filter>헤더 파일\0. Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>헤더 파일\0. Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일\0. Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="Basic.h">
-      <Filter>헤더 파일\0. Defaults</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>헤더 파일\1. Global</Filter>
     </ClInclude>
@@ -54,19 +48,40 @@
     <ClInclude Include="Helper.h">
       <Filter>헤더 파일\1. Global</Filter>
     </ClInclude>
+    <ClInclude Include="TimeSystem.h">
+      <Filter>헤더 파일\2. System</Filter>
+    </ClInclude>
+    <ClInclude Include="GameProcess.h">
+      <Filter>헤더 파일\0. Defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일\0. Defaults\Projects Defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일\0. Defaults\Projects Defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일\0. Defaults\Projects Defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="Basic.h">
+      <Filter>헤더 파일\0. Defaults\Projects Defaults</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameProcess.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="pch.h.cpp">
       <Filter>소스 파일\1. Global</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>소스 파일\0. Main</Filter>
+      <Filter>소스 파일\0. Defaults</Filter>
     </ClCompile>
     <ClCompile Include="Helper.cpp">
       <Filter>소스 파일\1. Global</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeSystem.cpp">
+      <Filter>소스 파일\2. System</Filter>
+    </ClCompile>
+    <ClCompile Include="GameProcess.cpp">
+      <Filter>소스 파일\0. Defaults</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <directxtk/SimpleMath.h>
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 // 정점 선언.
@@ -14,4 +15,11 @@ struct Vertex
 
 	Vertex(Vector3 position, Vector4 color)
 		: position(position), color(color) { }
+};
+
+struct ConstantBuffer
+{
+	Matrix mWorld;
+	Matrix mView;
+	Matrix mProjection;
 };

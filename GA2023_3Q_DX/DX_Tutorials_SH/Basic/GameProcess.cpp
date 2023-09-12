@@ -1,6 +1,9 @@
 ﻿#include "pch.h"
 #include "GameProcess.h"
 
+// System
+#include "TimeSystem.h"
+
 // WIN
 #include "framework.h"
 #include "resource.h"
@@ -37,6 +40,8 @@ GameProcess::GameProcess(HINSTANCE hInstance)
 
 GameProcess::~GameProcess()
 {
+	FinalizeScene();
+	FinalizeD3D();
 }
 
 void GameProcess::Initialize(unsigned int width, unsigned int height)
@@ -57,6 +62,9 @@ void GameProcess::Initialize(unsigned int width, unsigned int height)
 
 	// Create Pipe Line
 	InitializeScene();
+
+	// System
+	TimeSystem();
 }
 
 void GameProcess::Run()
@@ -85,7 +93,7 @@ void GameProcess::InitializeD3D()
 {
 	// 스왑체인 속성 설정 구조체 생성.
 	DXGI_SWAP_CHAIN_DESC swapDesc = {};
-#if USE_FLIPMODE==1
+#if USE_FLIPMODE == 1
 	swapDesc.BufferCount = 2;
 	swapDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 #else
@@ -158,14 +166,11 @@ void GameProcess::FinalizeD3D()
 	SAFE_RELEASE(m_device);
 }
 
-void GameProcess::Finalize()
-{
-	FinalizeScene();
-	FinalizeD3D();
-}
-
 void GameProcess::Update()
 {
+	// System Update
+	TimeSystem::m_Instance->Tick();
+	m_world = XMMatrixRotationY(TimeSystem::m_Instance->TotalTime());
 }
 
 void GameProcess::Render()
@@ -215,7 +220,7 @@ void GameProcess::FinalizeScene()
 
 void GameProcess::CreateVertex()
 {
-	//1. Render() 에서 파이프라인에 바인딩할 버텍스 버퍼및 버퍼 정보 준비
+	//1. Render() 에서 파이프라인에 바인딩할 버텍스 버퍼 및 버퍼 정보 준비
 	// 아직은 VertexShader의 World, View, Projection 변환을 사용하지 않으므로 
 	// 직접 Normalized Device Coordinate(좌표계)의 위치로 설정한다.
 	//      /---------------------(1,1,1)   z값은 깊이값
@@ -229,13 +234,22 @@ void GameProcess::CreateVertex()
 	// (-1,-1,0)-------------(1,-1,0)
 
 	m_vertices = {
-		Vertex(Vector3(-0.5f,  0.5f, 0.5f), Vector4(1.0f, 0.0f, 0.0f, 1.0f)),
-		Vertex(Vector3(0.5f,  0.5f, 0.5f), Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
-		Vertex(Vector3(-0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
-
-		//Vertex(Vector3(-0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
+		//Vertex(Vector3(-0.5f,  0.5f, 0.5f), Vector4(1.0f, 0.0f, 0.0f, 1.0f)),
 		//Vertex(Vector3(0.5f,  0.5f, 0.5f), Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
-		Vertex(Vector3(0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f))
+		//Vertex(Vector3(-0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
+
+		////Vertex(Vector3(-0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
+		////Vertex(Vector3(0.5f,  0.5f, 0.5f), Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
+		//Vertex(Vector3(0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
+
+		{ Vector3(-1.0f, 1.0f, -1.0f),	Vector4(0.0f, 0.0f, 1.0f, 1.0f) },
+		{ Vector3(1.0f, 1.0f, -1.0f),	Vector4(0.0f, 1.0f, 0.0f, 1.0f) },
+		{ Vector3(1.0f, 1.0f, 1.0f),	Vector4(0.0f, 1.0f, 1.0f, 1.0f) },
+		{ Vector3(-1.0f, 1.0f, 1.0f),	Vector4(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ Vector3(-1.0f, -1.0f, -1.0f), Vector4(1.0f, 0.0f, 1.0f, 1.0f) },
+		{ Vector3(1.0f, -1.0f, -1.0f),	Vector4(1.0f, 1.0f, 0.0f, 1.0f) },
+		{ Vector3(1.0f, -1.0f, 1.0f),	Vector4(1.0f, 1.0f, 1.0f, 1.0f) },
+		{ Vector3(-1.0f, -1.0f, 1.0f),	Vector4(0.0f, 0.0f, 0.0f, 1.0f) },
 	};
 
 
@@ -260,9 +274,18 @@ void GameProcess::CreateVertex()
 	m_vertexBufferOffset = 0;
 
 	// 인덱스
+	//m_indices = {
+	//	0, 1, 2,
+	//	2, 1, 3
+	//};
+
 	m_indices = {
-		0, 1, 2,
-		2, 1, 3
+		3,1,0, 2,1,3,
+		0,5,4, 1,5,0,
+		3,4,7, 0,4,3,
+		1,6,5, 2,6,1,
+		2,7,6, 3,7,2,
+		6,4,5, 7,4,6,
 	};
 
 	// 인덱스 정보
@@ -283,7 +306,7 @@ void GameProcess::CreateVertexShader()
 {
 	// 2. Render() 에서 파이프라인에 바인딩할 InputLayout 생성 
 	D3D11_INPUT_ELEMENT_DESC ieDesc[] = // 입력 레이아웃.
-	{   // SemanticName , SemanticIndex , Format , InputSlot , AlignedByteOffset , InputSlotClass , InstanceDataStepRate	
+	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },// 4byte * 3 = 12byte
 		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 } // 12 대신 D3D11_APPEND_ALIGNED_ELEMENT 사용 가능.
 	};

@@ -147,12 +147,14 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TimeSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameProcess.cpp" />
     <ClCompile Include="pch.h.cpp" />
+    <ClCompile Include="TimeSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Basic.rc" />

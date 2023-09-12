@@ -17,8 +17,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         process.Initialize(800, 600);
 
         process.Run();
-
-        process.Finalize();
 	}
     catch (const com_exception& e)
     {
