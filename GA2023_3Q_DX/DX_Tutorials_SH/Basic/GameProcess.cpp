@@ -40,6 +40,7 @@ GameProcess::GameProcess(HINSTANCE hInstance)
 
 GameProcess::~GameProcess()
 {
+	FinalizeImGui();
 	FinalizeScene();
 	FinalizeD3D();
 }
@@ -49,8 +50,14 @@ void GameProcess::Initialize(unsigned int width, unsigned int height)
 	m_width = width;
 	m_height = height;
 
+	RECT rect = { 0, 0, m_width, m_height };
+	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+
+	const int adjustedWidth = rect.right - rect.left;
+	const int adjustedHeight = rect.bottom - rect.top;
+
 	m_hWnd = CreateWindowW(g_szClass, g_szTitle, WS_OVERLAPPEDWINDOW,
-		0, 0, m_width, m_height, nullptr, nullptr, m_hInst, nullptr);
+		0, 0, adjustedWidth, adjustedHeight, nullptr, nullptr, m_hInst, nullptr);
 
 	assert(m_hWnd);
 
@@ -60,8 +67,12 @@ void GameProcess::Initialize(unsigned int width, unsigned int height)
 	// DX initialize
 	InitializeD3D();
 
+	// ImGui Initialize
+	InitializeImGui();
+
 	// Create Pipe Line
 	InitializeScene();
+
 
 	// System
 	TimeSystem();
@@ -166,11 +177,49 @@ void GameProcess::FinalizeD3D()
 	SAFE_RELEASE(m_device);
 }
 
+void GameProcess::InitializeImGui()
+{
+	//ImGui 초기화. 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsLight();
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplWin32_Init(m_hWnd);
+	ImGui_ImplDX11_Init(this->m_device, this->m_context);
+}
+
+void GameProcess::FinalizeImGui()
+{
+	// Cleanup
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
+
 void GameProcess::Update()
 {
 	// System Update
 	TimeSystem::m_Instance->Tick();
-	m_world = XMMatrixRotationY(TimeSystem::m_Instance->TotalTime());
+
+	auto t = TimeSystem::m_Instance->TotalTime();
+	m_worlds[0] = XMMatrixRotationY(t);
+
+	// 자식 큐브들의 월드 행렬 업데이트
+	for (int i = 1; i < m_worlds.size(); ++i)
+	{
+		XMMATRIX mSpin = XMMatrixRotationZ(-t);
+		XMMATRIX mOrbit = XMMatrixRotationY(-t * 2.0f);
+		XMMATRIX mTranslate = XMMatrixTranslation(-4.0f, 0.0f, 0.0f);
+		XMMATRIX mScale = XMMatrixScaling(0.3f, 0.3f, 0.3f);
+		m_worlds[i] = mScale * mSpin * mTranslate * mOrbit;
+	}
 }
 
 void GameProcess::Render()
@@ -179,10 +228,11 @@ void GameProcess::Render()
 	// Flip모드에서는 매프레임 설정 필요
 	deviceContext->OMSetRenderTargets(1, &renderTargetView, NULL);
 #endif
-	Color color(0.5f, 0.7f, 0.5f, 1.0f);
+
 
 	// 화면 칠하기
-	m_context->ClearRenderTargetView(m_renderTargetView, color);
+	m_context->ClearRenderTargetView(m_renderTargetView, m_clearColor);
+	//m_context->ClearDepthStencilView()
 
 	// Draw 계열 함수를 호출하기전에 렌더링 파이프라인에 필수 스테이지 설정을 해야한다.	
 	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 정점을 이어서 그릴 방식 설정.
@@ -191,13 +241,53 @@ void GameProcess::Render()
 	m_context->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, 0);
 	m_context->VSSetShader(m_vertexShader, nullptr, 0);
 	m_context->PSSetShader(m_pixelShader, nullptr, 0);
+	m_context->VSSetConstantBuffers(0, 1, &m_constantBuffer);
 
 	// Draw
-	m_context->DrawIndexed(m_indices.size(), 0, 0);
-	//m_context->Draw(m_vertices.size(), 0);
+	ConstantBuffer cb;
+	cb.view = XMMatrixTranspose(m_view);
+	cb.projection = XMMatrixTranspose(m_projection);
+
+	for (auto& cubeWorld : m_worlds)
+	{
+		cb.world = XMMatrixTranspose(cubeWorld);
+		m_context->UpdateSubresource(m_constantBuffer, 0, nullptr, &cb, 0, 0);
+		m_context->DrawIndexed(m_indices.size(), 0, 0);
+	}
+
+	// ImGui Render
+	BeginRenderImGui();
+
+	RenderImGui();
+
+	EndRenderImGui();
 
 	// 스왑체인 교체
 	m_swapChain->Present(0, 0);
+}
+
+void GameProcess::RenderImGui()
+{
+	{
+		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)	
+		ImGui::ColorEdit3("clear color", (float*)&m_clearColor); // Edit 3 floats representing a color			
+		ImGui::End();
+	}
+}
+
+void GameProcess::BeginRenderImGui()
+{
+	// Start the Dear ImGui frame
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+}
+
+void GameProcess::EndRenderImGui()
+{
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
 void GameProcess::InitializeScene()
@@ -207,6 +297,8 @@ void GameProcess::InitializeScene()
 	CreateVertexShader();
 
 	CreatePixelShader();
+
+	CreateConstantBuffer();
 }
 
 void GameProcess::FinalizeScene()
@@ -234,14 +326,6 @@ void GameProcess::CreateVertex()
 	// (-1,-1,0)-------------(1,-1,0)
 
 	m_vertices = {
-		//Vertex(Vector3(-0.5f,  0.5f, 0.5f), Vector4(1.0f, 0.0f, 0.0f, 1.0f)),
-		//Vertex(Vector3(0.5f,  0.5f, 0.5f), Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
-		//Vertex(Vector3(-0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
-
-		////Vertex(Vector3(-0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
-		////Vertex(Vector3(0.5f,  0.5f, 0.5f), Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
-		//Vertex(Vector3(0.5f, -0.5f, 0.5f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
-
 		{ Vector3(-1.0f, 1.0f, -1.0f),	Vector4(0.0f, 0.0f, 1.0f, 1.0f) },
 		{ Vector3(1.0f, 1.0f, -1.0f),	Vector4(0.0f, 1.0f, 0.0f, 1.0f) },
 		{ Vector3(1.0f, 1.0f, 1.0f),	Vector4(0.0f, 1.0f, 1.0f, 1.0f) },
@@ -274,11 +358,6 @@ void GameProcess::CreateVertex()
 	m_vertexBufferOffset = 0;
 
 	// 인덱스
-	//m_indices = {
-	//	0, 1, 2,
-	//	2, 1, 3
-	//};
-
 	m_indices = {
 		3,1,0, 2,1,3,
 		0,5,4, 1,5,0,
@@ -339,9 +418,46 @@ void GameProcess::CreatePixelShader()
 	SAFE_RELEASE(pixelShaderBuffer);
 }
 
+void GameProcess::CreateConstantBuffer()
+{
+	// 6. Render() 에서 파이프라인에 바인딩할 상수 버퍼 생성
+	// Create the constant buffer
+	D3D11_BUFFER_DESC bd = {};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(ConstantBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd.CPUAccessFlags = 0;
+	HR_T(m_device->CreateBuffer(&bd, nullptr, &m_constantBuffer));
+
+	// 쉐이더에 전달할 데이터 설정
+	// Initialize the world matrix
+
+	// 부모
+	m_worlds.push_back(XMMatrixIdentity());
+
+	// 자식
+	Matrix child1 = XMMatrixIdentity();
+	child1.Translation({10.f, 0.f, 0.f});
+	m_worlds.push_back(child1);
+
+	// Initialize the view matrix
+	XMVECTOR Eye = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
+	XMVECTOR At = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	m_view = XMMatrixLookAtLH(Eye, At, Up);
+
+	// Initialize the projection matrix
+	m_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, m_width / (FLOAT)m_height, 0.01f, 100.0f);
+}
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		return true;
+
 	switch (message)
 	{
 	case WM_PAINT:

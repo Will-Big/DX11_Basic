@@ -11,6 +11,7 @@
 *.o
 *.obj
 *.cso
+*.ini
 
 # Precompiled Headers
 *.gch
