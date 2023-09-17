@@ -1,4 +1,5 @@
 #pragma once
+
 class VertexBuffer
 {
 public:
@@ -20,7 +21,7 @@ public:
 		ZeroMemory(&desc, sizeof(desc));
 		desc.Usage = D3D11_USAGE_IMMUTABLE;
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.ByteWidth = (uint32)(_stride * vertices.size());
+		desc.ByteWidth = (uint32)(_stride * _count);
 
 		D3D11_SUBRESOURCE_DATA data;
 		ZeroMemory(&data, sizeof(data));
@@ -30,7 +31,7 @@ public:
 		CHECK(hr);
 	}
 
-public:
+private:
 	ComPtr<ID3D11Device> _device;
 	ComPtr<ID3D11Buffer> _vertexBuffer;
 
@@ -38,4 +39,3 @@ public:
 	uint32 _offset = 0;
 	uint32 _count = 0;
 };
-

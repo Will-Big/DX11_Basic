@@ -25,28 +25,28 @@
       <UniqueIdentifier>{d4cf98f4-0911-4631-a446-dfa97d270686}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine">
-      <UniqueIdentifier>{3990f9f2-63b7-436e-96c3-3ceb9001379d}</UniqueIdentifier>
+      <UniqueIdentifier>{ddc71f40-a0a2-46e3-8cb4-d52d665740d1}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine\Pipeline">
-      <UniqueIdentifier>{31968106-11b9-4d50-8210-7e297e9e3224}</UniqueIdentifier>
+      <UniqueIdentifier>{f73d4060-5018-4528-a0a8-d352d298bcab}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine\Pipeline\00. Geometry">
-      <UniqueIdentifier>{89198bbe-a600-42e6-8a7f-2047da7e1d99}</UniqueIdentifier>
+      <UniqueIdentifier>{a706708f-893c-4cc3-8a95-8a9e7cc68702}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine\Pipeline\01. InputAssembler">
-      <UniqueIdentifier>{7657e3cb-8f46-4d87-b34e-3a687760bbe1}</UniqueIdentifier>
+      <UniqueIdentifier>{26c7fcb5-09d4-4da1-af7c-9c01c663f1a0}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine\Pipeline\02. VertexShader">
-      <UniqueIdentifier>{170eb534-2993-4d85-b30f-45ae855b46d8}</UniqueIdentifier>
+      <UniqueIdentifier>{13be1071-e92b-4ee2-8012-39288129aa3b}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine\Pipeline\03. Rasterizer">
-      <UniqueIdentifier>{125dd6f6-807b-4481-9c81-3592153e88be}</UniqueIdentifier>
+      <UniqueIdentifier>{3d364547-33dd-4ed4-bae1-123844520e5f}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine\Pipeline\04. PixelShader">
-      <UniqueIdentifier>{d76b8a57-1161-4e15-8b45-6634167947d0}</UniqueIdentifier>
+      <UniqueIdentifier>{28bdb155-042b-4acf-b7d0-5b011060676b}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine\Pipeline\05. OutputMerger">
-      <UniqueIdentifier>{05e90c78-aeee-437a-828a-8e043a14c190}</UniqueIdentifier>
+      <UniqueIdentifier>{51ca6ae4-82ed-4800-b5a0-c3a72b8f5331}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -83,14 +83,23 @@
     <ClInclude Include="Graphics.h">
       <Filter>소스 파일\00. Engine\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>소스 파일\00. Engine\Pipeline\01. InputAssembler</Filter>
-    </ClInclude>
     <ClInclude Include="IndexBuffer.h">
       <Filter>소스 파일\00. Engine\Pipeline\01. InputAssembler</Filter>
     </ClInclude>
     <ClInclude Include="InputLayout.h">
       <Filter>소스 파일\00. Engine\Pipeline\01. InputAssembler</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>소스 파일\00. Engine\Pipeline\01. InputAssembler</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>소스 파일\00. Engine\Pipeline\00. Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryHelper.h">
+      <Filter>소스 파일\00. Engine\Pipeline\00. Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexData.h">
+      <Filter>소스 파일\00. Engine\Pipeline\00. Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -122,14 +131,23 @@
     <ClCompile Include="Graphics.cpp">
       <Filter>소스 파일\00. Engine\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>소스 파일\00. Engine\Pipeline\01. InputAssembler</Filter>
-    </ClCompile>
     <ClCompile Include="IndexBuffer.cpp">
       <Filter>소스 파일\00. Engine\Pipeline\01. InputAssembler</Filter>
     </ClCompile>
     <ClCompile Include="InputLayout.cpp">
       <Filter>소스 파일\00. Engine\Pipeline\01. InputAssembler</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>소스 파일\00. Engine\Pipeline\01. InputAssembler</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>소스 파일\00. Engine\Pipeline\00. Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryHelper.cpp">
+      <Filter>소스 파일\00. Engine\Pipeline\00. Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexData.cpp">
+      <Filter>소스 파일\00. Engine\Pipeline\00. Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

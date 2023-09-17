@@ -1,4 +1,5 @@
 #pragma once
+
 class Graphics
 {
 public:
@@ -19,17 +20,16 @@ private:
 private:
 	HWND _hwnd = {};
 
-private:
 	// Device & SwapChain
 	ComPtr<ID3D11Device> _device = nullptr;
 	ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
 	ComPtr<IDXGISwapChain> _swapChain = nullptr;
 
-	/// RTV
+	// RTV
 	ComPtr<ID3D11RenderTargetView> _renderTargetView;
 
 	// Misc
 	D3D11_VIEWPORT _viewport = { 0 };
-	float _clearColor[4] = { 0.f, 0.f, 0.f, 0.f };
+	float _clearColor[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
 };
 

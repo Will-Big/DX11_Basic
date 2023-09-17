@@ -7,17 +7,18 @@
 #include "Struct.h"
 
 // STL
+#include <memory>
+#include <iostream>
 #include <vector>
 #include <list>
 #include <map>
 #include <unordered_map>
-#include <string>
-#include <memory>
 using namespace std;
 
 // WIN
 #include <windows.h>
 #include <assert.h>
+
 
 // DX
 #include <d3d11.h>
@@ -45,3 +46,6 @@ using namespace Microsoft::WRL;
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "InputLayout.h"
+#include "Geometry.h"
+#include "GeometryHelper.h"
+#include "VertexData.h"

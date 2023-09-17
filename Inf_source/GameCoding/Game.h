@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Graphics.h"
+
 class Game
 {
 public:
@@ -10,6 +12,8 @@ public:
 	void Init(HWND hwnd);
 	void Update();
 	void Render();
+
+private:
 
 private:
 	void CreateGeometry();
@@ -26,23 +30,17 @@ private:
 
 	void LoadShaderFromFile(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob);
 
-
-
 private:
 	HWND _hwnd;
+
 	shared_ptr<Graphics> _graphics;
 
+private:
 	// Geometry
-	vector<Vertex> _vertices;
-	VertexBuffer* _vertexBuffer = nullptr;
-	//ComPtr<ID3D11Buffer> _vertexBuffer = nullptr;
-
-	vector<uint32> _indices;
-	IndexBuffer* _indexBuffer = nullptr;
-	//ComPtr<ID3D11Buffer> _indexBuffer = nullptr;
-
-	InputLayout* _inputLayout = nullptr;
-	//ComPtr<ID3D11InputLayout> _inputLayout = nullptr;
+	shared_ptr<Geometry<VertexTextureData>> _geometry;
+	shared_ptr<VertexBuffer> _vertexBuffer;
+	shared_ptr<IndexBuffer> _indexBuffer;
+	shared_ptr<InputLayout> _inputLayout;
 
 	// VS
 	ComPtr<ID3D11VertexShader> _vertexShader = nullptr;
