@@ -5,6 +5,7 @@ enum ShaderScope
 	SS_None = 0,
 	SS_VertexShader = (1 << 0),
 	SS_PixelShader = (1 << 1),
+	SS_Both = (1 << 2),
 };
 
 class Shader
