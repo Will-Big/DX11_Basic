@@ -20,18 +20,28 @@ void Game::Init(HWND hwnd)
 	_indexBuffer = make_shared<IndexBuffer>(_graphics->GetDevice());
 	_inputLayout = make_shared<InputLayout>(_graphics->GetDevice());
 	_geometry = make_shared<Geometry<VertexTextureData>>();
+	_vertexShader = make_shared<VertexShader>(_graphics->GetDevice());
+	_pixelShader = make_shared<PixelShader>(_graphics->GetDevice());
+	_constantBuffer = make_shared<ConstantBuffer<TransformData>>(_graphics->GetDevice(), _graphics->GetDeviceContext());
+	_texture1 = make_shared<Texture>(_graphics->GetDevice());
 
-	CreateGeometry();
-	CreateVS();
-	CreateInputLayout();
-	CreatePS();
+	GeometryHelper::CreateRectangle(_geometry);
+	_vertexBuffer->Create(_geometry->GetVertices());
+	_indexBuffer->Create(_geometry->GetIndices());
+
+	_vertexShader->Create(L"Default.hlsl", "VS", "vs_5_0");
+
+	_inputLayout->Create(VertexTextureData::descs, _vertexShader->GetBlob());
+
+	_pixelShader->Create(L"Default.hlsl", "PS", "ps_5_0");
 
 	CreateRasterizerState();
 	CreateSamplerState();
 	CreateBlendState();
 
-	CreateSRV();
-	CreateConstantBuffer();
+	_texture1->Create(L"Skeleton.png");
+
+	_constantBuffer->Create();
 }
 
 void Game::Update()
@@ -49,12 +59,7 @@ void Game::Update()
 	Matrix matWorld = matScale * matRotation * matTranslation; // SRT
 	_transformData.matWorld = matWorld;
 
-	D3D11_MAPPED_SUBRESOURCE subResource;
-	ZeroMemory(&subResource, sizeof(subResource));
-	
-	_graphics->GetDeviceContext()->Map(_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource);
-	::memcpy(subResource.pData, &_transformData, sizeof(_transformData));
-	_graphics->GetDeviceContext()->Unmap(_constantBuffer.Get(), 0);
+	_constantBuffer->CopyData(_transformData);
 }
 
 void Game::Render()
@@ -66,24 +71,23 @@ void Game::Render()
 		uint32 offset = 0;
 
 		auto _deviceContext = _graphics->GetDeviceContext();
-		
+
 		// IA
-		_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer->GetComPtr().GetAddressOf(), &stride, &offset); 
+		_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer->GetComPtr().GetAddressOf(), &stride, &offset);
 		_deviceContext->IASetIndexBuffer(_indexBuffer->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
 		_deviceContext->IASetInputLayout(_inputLayout->GetComPtr().Get());
 		_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		// VS
-		_deviceContext->VSSetShader(_vertexShader.Get(), nullptr, 0);
-		_deviceContext->VSSetConstantBuffers(0, 1, _constantBuffer.GetAddressOf());
+		_deviceContext->VSSetShader(_vertexShader->GetComPtr().Get(), nullptr, 0);
+		_deviceContext->VSSetConstantBuffers(0, 1, _constantBuffer->GetComPtr().GetAddressOf());
 
 		// RS
 		_deviceContext->RSSetState(_rasterizerState.Get());
 
 		// PS
-		_deviceContext->PSSetShader(_pixelShader.Get(), nullptr, 0);
-		_deviceContext->PSSetShaderResources(0, 1, _shaderResourveView.GetAddressOf());
-		_deviceContext->PSSetShaderResources(1, 1, _shaderResourveView2.GetAddressOf());
+		_deviceContext->PSSetShader(_pixelShader->GetComPtr().Get(), nullptr, 0);
+		_deviceContext->PSSetShaderResources(0, 1, _texture1->GetComPtr().GetAddressOf());
 		_deviceContext->PSSetSamplers(0, 1, _samplerState.GetAddressOf());
 
 		// OM
@@ -94,37 +98,6 @@ void Game::Render()
 	}
 
 	_graphics->RenderEnd();
-}
-
-void Game::CreateGeometry()
-{
-	// VertexData
-	GeometryHelper::CreateRectangle(_geometry);
-	
-	// VertexBuffer
-	_vertexBuffer->Create(_geometry->GetVertices());
-
-	// IndexBuffer
-	_indexBuffer->Create(_geometry->GetIndices());
-}
-
-void Game::CreateInputLayout()
-{
-	_inputLayout->Create(VertexTextureData::descs, _vsBlob);
-}
-
-void Game::CreateVS()
-{
-	LoadShaderFromFile(L"Default.hlsl", "VS", "vs_5_0", _vsBlob);
- 	HRESULT hr = _graphics->GetDevice()->CreateVertexShader(_vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), nullptr, _vertexShader.GetAddressOf());
-	CHECK(hr);
-}
-
-void Game::CreatePS()
-{
-	LoadShaderFromFile(L"Default.hlsl", "PS", "ps_5_0", _psBlob);
-	HRESULT hr = _graphics->GetDevice()->CreatePixelShader(_psBlob->GetBufferPointer(), _psBlob->GetBufferSize(), nullptr, _pixelShader.GetAddressOf());
-	CHECK(hr);
 }
 
 void Game::CreateRasterizerState()
@@ -177,53 +150,5 @@ void Game::CreateBlendState()
 	desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	HRESULT hr = _graphics->GetDevice()->CreateBlendState(&desc, _blendState.GetAddressOf());
-	CHECK(hr);
-}
-
-void Game::CreateSRV()
-{
-	DirectX::TexMetadata md;
-	DirectX::ScratchImage img;
-	HRESULT hr = ::LoadFromWICFile(L"Skeleton.png", WIC_FLAGS_NONE, &md, img);
-	CHECK(hr);
-
-	hr = ::CreateShaderResourceView(_graphics->GetDevice().Get(), img.GetImages(), img.GetImageCount(), md, _shaderResourveView.GetAddressOf());
-	CHECK(hr);
-
-	hr = ::LoadFromWICFile(L"Golem.png", WIC_FLAGS_NONE, &md, img);
-	CHECK(hr);
-
-	hr = ::CreateShaderResourceView(_graphics->GetDevice().Get(), img.GetImages(), img.GetImageCount(), md, _shaderResourveView2.GetAddressOf());
-	CHECK(hr);
-}
-
-void Game::CreateConstantBuffer()
-{
-	D3D11_BUFFER_DESC desc;
-	ZeroMemory(&desc, sizeof(desc));
-	desc.Usage = D3D11_USAGE_DYNAMIC; // CPU_Write + GPU_Read
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.ByteWidth = sizeof(TransformData);
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-	HRESULT hr = _graphics->GetDevice()->CreateBuffer(&desc, nullptr, _constantBuffer.GetAddressOf());
-	CHECK(hr);
-}
-
-void Game::LoadShaderFromFile(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob)
-{
-	const uint32 compileFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-
-	HRESULT hr = ::D3DCompileFromFile(
-		path.c_str(),
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		name.c_str(),
-		version.c_str(),
-		compileFlag,
-		0,
-		blob.GetAddressOf(),
-		nullptr);
-
 	CHECK(hr);
 }
