@@ -49,10 +49,10 @@
       <UniqueIdentifier>{51ca6ae4-82ed-4800-b5a0-c3a72b8f5331}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine\GameObject">
-      <UniqueIdentifier>{b3f99c55-30c8-40c8-988e-b9810c25ba23}</UniqueIdentifier>
+      <UniqueIdentifier>{13d92d81-739e-43b7-8a74-74ab7983b3ba}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\00. Engine\Component">
-      <UniqueIdentifier>{6cfa62f8-f30f-426c-adcf-46866ee8c1ba}</UniqueIdentifier>
+      <UniqueIdentifier>{87ae80a9-2e68-4e17-9e84-9713816835a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -119,11 +119,11 @@
     <ClInclude Include="RasterizerState.h">
       <Filter>소스 파일\00. Engine\Pipeline\03. Rasterizer</Filter>
     </ClInclude>
-    <ClInclude Include="BlendState.h">
-      <Filter>소스 파일\00. Engine\Pipeline\05. OutputMerger</Filter>
-    </ClInclude>
     <ClInclude Include="SamplerState.h">
       <Filter>소스 파일\00. Engine\Pipeline\04. PixelShader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>소스 파일\00. Engine\Pipeline\05. OutputMerger</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline.h">
       <Filter>소스 파일\00. Engine\Pipeline</Filter>
@@ -197,11 +197,11 @@
     <ClCompile Include="RasterizerState.cpp">
       <Filter>소스 파일\00. Engine\Pipeline\03. Rasterizer</Filter>
     </ClCompile>
-    <ClCompile Include="BlendState.cpp">
-      <Filter>소스 파일\00. Engine\Pipeline\05. OutputMerger</Filter>
-    </ClCompile>
     <ClCompile Include="SamplerState.cpp">
       <Filter>소스 파일\00. Engine\Pipeline\04. PixelShader</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>소스 파일\00. Engine\Pipeline\05. OutputMerger</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline.cpp">
       <Filter>소스 파일\00. Engine\Pipeline</Filter>
@@ -218,6 +218,9 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Default.hlsl">
+      <Filter>소스 파일\98. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Color.hlsl">
       <Filter>소스 파일\98. Shaders</Filter>
     </FxCompile>
   </ItemGroup>

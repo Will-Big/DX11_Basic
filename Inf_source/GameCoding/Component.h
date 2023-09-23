@@ -1,15 +1,19 @@
 #pragma once
 
+class GameObject;
+
 class Component
 {
 public:
 	Component();
 	virtual ~Component();
 
-	virtual void Init() = 0;
-	virtual void Update() = 0;
+	virtual void Init() abstract;
+	virtual void Update() abstract;
+
+	shared_ptr<GameObject> GetGameObject() { return _owner.lock(); }
 
 protected:
-	shared_ptr<GameObject> GetGameObject() { return _owner.lock(); }
+	weak_ptr<GameObject> _owner;
 };
 

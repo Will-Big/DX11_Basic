@@ -1,4 +1,5 @@
-﻿#pragma once
+#pragma once
+
 
 class RasterizerState
 {
@@ -6,7 +7,7 @@ public:
 	RasterizerState(ComPtr<ID3D11Device> device);
 	~RasterizerState();
 
-	ComPtr<ID3D11RasterizerState> GetComPtr() { return _rasterizerState; }
+	ComPtr< ID3D11RasterizerState> GetComPtr() { return _rasterizerState; }
 
 	void Create();
 

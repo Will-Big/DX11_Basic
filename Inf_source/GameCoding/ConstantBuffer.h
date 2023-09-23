@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 template<typename T>
 class ConstantBuffer
@@ -7,12 +7,10 @@ public:
 	ConstantBuffer(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
 		: _device(device), _deviceContext(deviceContext)
 	{
-		
+
 	}
-	~ConstantBuffer()
-	{
-		
-	}
+
+	~ConstantBuffer() { }
 
 	ComPtr<ID3D11Buffer> GetComPtr() { return _constantBuffer; }
 

@@ -1,18 +1,15 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Shader.h"
 
-Shader::Shader(ComPtr<ID3D11Device> device)
+Shader::Shader(ComPtr<ID3D11Device> device) 
 	: _device(device)
 {
+
 }
 
 Shader::~Shader()
 {
-}
 
-void Shader::Create(const wstring& path, const string& name, const string& version)
-{
-	LoadShaderFromFile(path, name, version);
 }
 
 void Shader::LoadShaderFromFile(const wstring& path, const string& name, const string& version)
@@ -36,22 +33,14 @@ void Shader::LoadShaderFromFile(const wstring& path, const string& name, const s
 	CHECK(hr);
 }
 
-VertexShader::VertexShader(ComPtr<ID3D11Device> device)
-	: Super(device)
+VertexShader::VertexShader(ComPtr<ID3D11Device> device) : Super(device)
 {
+
 }
 
 VertexShader::~VertexShader()
 {
-}
 
-PixelShader::PixelShader(ComPtr<ID3D11Device> device)
-	: Super(device)
-{
-}
-
-PixelShader::~PixelShader()
-{
 }
 
 void VertexShader::Create(const wstring& path, const string& name, const string& version)
@@ -59,6 +48,16 @@ void VertexShader::Create(const wstring& path, const string& name, const string&
 	LoadShaderFromFile(path, name, version);
 	HRESULT hr = _device->CreateVertexShader(_blob->GetBufferPointer(), _blob->GetBufferSize(), nullptr, _vertexShader.GetAddressOf());
 	CHECK(hr);
+}
+
+PixelShader::PixelShader(ComPtr<ID3D11Device> device) : Super(device)
+{
+
+}
+
+PixelShader::~PixelShader()
+{
+
 }
 
 void PixelShader::Create(const wstring& path, const string& name, const string& version)

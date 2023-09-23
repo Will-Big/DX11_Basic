@@ -1,13 +1,14 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "SamplerState.h"
 
-SamplerState::SamplerState(ComPtr<ID3D11Device> device)
-	: _device(device)
+SamplerState::SamplerState(ComPtr<ID3D11Device> device) : _device(device)
 {
+
 }
 
 SamplerState::~SamplerState()
 {
+
 }
 
 void SamplerState::Create()
