@@ -54,6 +54,15 @@
     <Filter Include="소스 파일\00. Engine\Component">
       <UniqueIdentifier>{87ae80a9-2e68-4e17-9e84-9713816835a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\00. Engine\Component\Animation">
+      <UniqueIdentifier>{c1323040-dd79-42be-acc7-5f8bb8ee817c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\00. Engine\Component\Camera">
+      <UniqueIdentifier>{3bc43acd-359f-4192-9b04-896f75001ae2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\00. Engine\Component\Rendering">
+      <UniqueIdentifier>{46f0d4ab-978b-4d11-bd17-e6b290e82c2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -137,6 +146,12 @@
     <ClInclude Include="Transform.h">
       <Filter>소스 파일\00. Engine\Component</Filter>
     </ClInclude>
+    <ClInclude Include="MonoBehaviour.h">
+      <Filter>소스 파일\00. Engine\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>소스 파일\00. Engine\Component\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameCoding.rc">
@@ -214,6 +229,12 @@
     </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>소스 파일\00. Engine\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="MonoBehavior.cpp">
+      <Filter>소스 파일\00. Engine\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\00. Engine\Component\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
