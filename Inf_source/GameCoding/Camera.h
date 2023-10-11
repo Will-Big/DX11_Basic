@@ -21,7 +21,7 @@ public:
 	void UpdateMatrix();
 
 private:
-	ProjectionType _type = ProjectionType::Perspective;
+	ProjectionType _type = ProjectionType::Orthographic;
 
 public:
 	static Matrix S_MatView;
