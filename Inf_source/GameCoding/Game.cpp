@@ -2,7 +2,10 @@
 #include "Game.h"
 
 #include "Camera.h"
+#include "SceneManager.h"
 #include "MeshRenderer.h"
+
+unique_ptr<Game> GGame = make_unique<Game>();
 
 Game::Game()
 {
@@ -20,36 +23,25 @@ void Game::Init(HWND hwnd)
 
 	_graphics = make_shared<Graphics>(hwnd);
 	_pipeline = make_shared<Pipeline>(_graphics->GetDeviceContext());
+	_scene = make_shared<SceneManager>(_graphics);
 
-	_monster = make_shared<GameObject>(_graphics->GetDevice(), _graphics->GetDeviceContext());
-	{
-		_monster->GetOrAddTransform();
-		_monster->AddComponent(make_shared<MeshRenderer>(_graphics->GetDevice(), _graphics->GetDeviceContext()));
-		// ..
-	}
-
-	_camera = make_shared<GameObject>(_graphics->GetDevice(), _graphics->GetDeviceContext());
-	{
-		_camera->GetOrAddTransform();
-		_camera->AddComponent(make_shared<Camera>());
-	}
+	GGame->GetSceneManager()->LoadScene(L"Test");
 }
 
 void Game::Update()
 {
-	_monster->Update();
+	_graphics->RenderBegin();
 
-	_camera->Update();
+	GGame->GetSceneManager()->Update();
+
+	_graphics->RenderEnd();
 }
 
 void Game::Render()
 {
-	_graphics->RenderBegin();
+	
 
-	{
-		// TEMP
-		_monster->GetMeshRenderer()->Render(_pipeline);
-	}
+	//SCENE->Render();
 
-	_graphics->RenderEnd();
+	
 }

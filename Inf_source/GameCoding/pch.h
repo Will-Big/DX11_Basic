@@ -58,3 +58,7 @@ using namespace Microsoft::WRL;
 #include "BlendState.h"
 #include "Pipeline.h"
 #include "Transform.h"
+
+#include "Game.h"
+#define GAME	GGame
+#define SCENE	GGame->GetSceneManager();
