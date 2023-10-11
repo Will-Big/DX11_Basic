@@ -25,14 +25,14 @@ void Game::Init(HWND hwnd)
 	_pipeline = make_shared<Pipeline>(_graphics->GetDeviceContext());
 	_scene = make_shared<SceneManager>(_graphics);
 
-	GGame->GetSceneManager()->LoadScene(L"Test");
+	SCENE->LoadScene(L"Test");
 }
 
 void Game::Update()
 {
 	_graphics->RenderBegin();
 
-	GGame->GetSceneManager()->Update();
+	SCENE->Update();
 
 	_graphics->RenderEnd();
 }
