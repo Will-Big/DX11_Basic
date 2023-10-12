@@ -2,6 +2,8 @@
 #include "MeshRenderer.h"
 
 #include "Camera.h"
+#include "Game.h"
+
 
 MeshRenderer::MeshRenderer(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
 	: Super(ComponentType::MeshRenderer), _device(device), _deviceContext(deviceContext)
@@ -55,6 +57,9 @@ void MeshRenderer::Update()
 
 	_transformData.matWorld = GetTransform()->GetWorldMatrix();
 	_transformBuffer->CopyData(_transformData);
+
+	//Render
+	Render(GGame->GetPipeline());
 }
 
 void MeshRenderer::Render(shared_ptr<Pipeline> pipeline)
