@@ -4,7 +4,7 @@
 
 class AnimatorController;
 class AnimationClip;
-struct KeyFrame;
+struct KeyFrames;
 
 /**
  * \brief	: Unity Animator 를 지향, 구현상 편의를 위해 일단은 Animation 으로 구현
@@ -29,7 +29,7 @@ public:
 
 private:
 	// Component
-	using mappedKeyFrames = std::vector<std::pair<std::shared_ptr<Transform>, KeyFrame*>>;
+	using mappedKeyFrames = std::vector<std::pair<std::shared_ptr<Transform>, KeyFrames*>>;
 	using ClipAndObjects = std::pair<AnimationClip*, mappedKeyFrames>;
 	std::vector<ClipAndObjects> m_AnimatedObjects;
 

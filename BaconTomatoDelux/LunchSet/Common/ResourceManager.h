@@ -63,7 +63,7 @@ void ResourceManager::Load(std::wstring_view fileName)
 	ModelData modelData;
 	
 	ModelLoader modelLoader{ m_Device, m_DeviceContext, modelData };
-	modelLoader.Load({fileName.cbegin(), fileName.cend()});
+	modelLoader.Load<V>({fileName.cbegin(), fileName.cend()});
 	
 	models.insert({ fileName.data(), modelData });
 }

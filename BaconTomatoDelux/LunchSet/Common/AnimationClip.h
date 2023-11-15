@@ -30,7 +30,7 @@ struct QuaternionKey
 /**
  * \brief	: key frame, assimp 의 aiNodeAnim 과 대응
  */
-struct KeyFrame
+struct KeyFrames
 {
 	std::wstring name;
 
@@ -69,7 +69,7 @@ public:
 	~AnimationClip() override;
 
 public:
-	std::vector<KeyFrame> keyFrames;	// cache hit 를 위해서 std::vector 사용
+	std::vector<KeyFrames> keyFrames;	// cache hit 를 위해서 std::vector 사용
 	double duration = 0.0;
 	double framePerSecond = 0.0;
 	bool isLoop = false;
