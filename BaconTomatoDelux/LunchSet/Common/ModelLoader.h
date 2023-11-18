@@ -165,7 +165,7 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 	}
 	btdMesh->vertexBuffer->Create(m_Device, vertices);
 
-	indices.reserve(mesh->mNumFaces);
+	indices.reserve(mesh->mNumFaces * 3);
 	for (uint32_t i = 0; i < mesh->mNumFaces; i++) {
 		aiFace face = mesh->mFaces[i];
 
