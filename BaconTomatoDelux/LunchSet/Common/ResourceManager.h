@@ -42,9 +42,13 @@ public:
 	std::unordered_map<std::wstring, std::shared_ptr<Material>> materials;
 	std::unordered_map<std::wstring, std::shared_ptr<AnimatorController>> animatorControllers;
 
+	const std::wstring modelPath = L"../Resource/FBX/";
+	const std::wstring texturePath = L"../Resource/Texture/";
+
 private:
 	ComPtr<ID3D11Device> m_Device;
 	ComPtr<ID3D11DeviceContext> m_DeviceContext;
+
 };
 
 template <typename T>
@@ -57,14 +61,19 @@ void ResourceManager::Load(std::wstring_view fileName)
 {
 	static_assert(std::is_same_v<ModelData, T>, "The ResourceManager::Load<T, V> of T must be a ModelData class");
 
+	// 중복 검사
 	if (models.find(fileName.data()) != models.end())
 		return;
 
+	// 파일 경로 설정
+	std::string fileStr{ fileName.cbegin(), fileName.cend() };
+	fileStr = std::string{ modelPath.begin(), modelPath.end() } + fileStr;
+
+	// 임시 객체 생성
 	ModelData modelData;
-	
 	ModelLoader modelLoader{ m_Device, m_DeviceContext, modelData };
-	modelLoader.Load<V>({fileName.cbegin(), fileName.cend()});
-	
+	modelLoader.Load<V>(fileStr);
+
 	models.insert({ fileName.data(), modelData });
 }
 

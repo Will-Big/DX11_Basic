@@ -13,6 +13,11 @@ cbuffer ObjectData : register(b1) // VS 1
     matrix gWorldMatrix;
 }
 
+cbuffer MatrixPallete : register(b2) // VS 2
+{
+    matrix gMatrixPalleteArray[128];
+}
+
 cbuffer LightData : register(b0) // PS 0
 {
     float4 gWorldLightDirection;
@@ -52,9 +57,9 @@ struct BVS_INPUT
     float4 position : POSITION;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
+    float2 uv : TEXCOORD0;
     int4 blendIndices : BLENDINDICES;
     float4 blendWeights : BLENDWEIGHTS;
-    float2 uv : TEXCOORD0;
 };
 
 struct PS_INPUT

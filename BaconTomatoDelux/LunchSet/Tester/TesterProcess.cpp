@@ -43,8 +43,8 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 
 	auto testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
-	RES_MAN.Load<ModelData, StaticVertex>(L"../Resource/FBX/SkinningTest.fbx");
-	RES_MAN.Get<ModelData>(L"../Resource/FBX/SkinningTest.fbx", testGO);
+	RES_MAN.Load<ModelData, StaticVertex>(L"SkinningTest.fbx");
+	RES_MAN.Get<ModelData>(L"SkinningTest.fbx", testGO);
 	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/Dummy_walker.fbx");
 
 

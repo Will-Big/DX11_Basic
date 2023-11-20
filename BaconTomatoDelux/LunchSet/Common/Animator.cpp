@@ -35,6 +35,7 @@ void Animator::Update(float deltaTime)
 			// 상태 변경
 			// 시간을 만족하지 않아도 상태 변경(모션 캔슬)이 있을 수 있음
 			// todo : 상태 변경 및 상태 변경시 보간
+			// info : AnimationController 에 위임 가능?
 			
 		}
 	}

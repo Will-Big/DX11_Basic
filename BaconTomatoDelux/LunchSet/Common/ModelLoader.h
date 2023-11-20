@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <filesystem>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -56,6 +57,7 @@ template <typename T>
 void ModelLoader::Load(const std::string& path)
 {
 	m_Path.assign(path.begin(), path.end());
+
 	Assimp::Importer importer;
 
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
@@ -76,7 +78,7 @@ void ModelLoader::Load(const std::string& path)
 		LOG_ERROR(wErrMsg.c_str());
 		return;
 	}
-
+	
 	ProcessNode<T>(scene->mRootNode, scene, m_RootData);
 	ProcessAnimation(scene);
 }
@@ -159,6 +161,14 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 			vertex.tangent.x = mesh->mTangents[i].x;
 			vertex.tangent.y = mesh->mTangents[i].y;
 			vertex.tangent.z = mesh->mTangents[i].z;
+		}
+
+		if constexpr (std::is_same_v<BoneVertex, T>)
+		{
+			if(mesh->HasBones())
+			{
+				
+			}
 		}
 
 		vertices.push_back(std::move(vertex));

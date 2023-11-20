@@ -24,7 +24,7 @@ void InputLayout::Create()
 	auto data = T::desc.data();
 	auto size = T::desc.size();
 
-	HRESULT hr = m_Device->CreateInputLayout(T::desc.data(), T::desc.size(),
+	HRESULT hr = m_Device->CreateInputLayout(T::desc.data(), static_cast<UINT>(T::desc.size()),
 		m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), m_InputLayout.GetAddressOf());
 
 	HR_T(hr);
