@@ -161,7 +161,7 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 			vertex.tangent.z = mesh->mTangents[i].z;
 		}
 
-		vertices.emplace_back(vertex);
+		vertices.push_back(std::move(vertex));
 	}
 	btdMesh->vertexBuffer->Create(m_Device, vertices);
 
@@ -170,7 +170,7 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 		aiFace face = mesh->mFaces[i];
 
 		for (uint32_t j = 0; j < face.mNumIndices; j++)
-			indices.emplace_back(face.mIndices[j]);
+			indices.push_back(std::move(face.mIndices[j]));
 	}
 	btdMesh->indexBuffer->Create(m_Device, indices);
 
