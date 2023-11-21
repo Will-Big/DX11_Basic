@@ -20,7 +20,7 @@ public:
 
 private:
 	// Component
-	std::weak_ptr<MeshFilter> m_MeshFilter;	// info : Unity 에서는 MeshFilter 를 사용하지 않음
+	std::weak_ptr<MeshFilter> m_MeshFilter;
 
 	// Object
 	std::shared_ptr<Material> m_Material;

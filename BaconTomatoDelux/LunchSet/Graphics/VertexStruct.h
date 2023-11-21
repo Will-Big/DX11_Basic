@@ -46,8 +46,8 @@ struct BoneVertex
 	Vector3 tangent;
 	Vector2 uv;
 
-	int BlendIndices[4] = {};
-	float BlendWeight[4] = {};
+	int BlendIndices[4] = {};			// 영향 받을 뼈의 인덱스 (최대 4)
+	float BlendWeight[4] = {};			// 영향 받을 뼈의 가중치 (합 : 1)
 
 	// for Input Layout
 	const static std::vector<D3D11_INPUT_ELEMENT_DESC> desc;

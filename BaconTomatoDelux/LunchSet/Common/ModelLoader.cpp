@@ -21,7 +21,7 @@ ModelLoader::~ModelLoader()
 {
 }
 
-void ModelLoader::ProcessAnimation(const aiScene* scene)
+void ModelLoader::ProcessTransformAnimation(const aiScene* scene)
 {
 	// Animator Controller 중복 검사
 	if (RES_MAN.animatorControllers.find(m_Path) != RES_MAN.animatorControllers.end())
@@ -33,7 +33,6 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 	// todo : m_Path 로 animationController 를 생성하면 재활용이 불가능하므로 변경
 	RES_MAN.animatorControllers[m_Path] = std::make_shared<AnimatorController>(m_Path);
 	auto& ctrl = RES_MAN.animatorControllers[m_Path];
-
 
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++)
 	{
@@ -67,6 +66,7 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 			frame.name = wsNodeName;
 			LOG_MESSAGE(wsNodeName.c_str());
 
+			// scale
 			frame.scaleKeys.reserve(nodeAnim->mNumScalingKeys);
 			for (uint32_t k = 0; k < nodeAnim->mNumScalingKeys; k++)
 			{
@@ -74,6 +74,7 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 				frame.scaleKeys.emplace_back(sk.mTime, sk.mValue.x, sk.mValue.y, sk.mValue.z);
 			}
 
+			// rotation
 			frame.rotationKeys.reserve(nodeAnim->mNumRotationKeys);
 			for (uint32_t k = 0; k < nodeAnim->mNumRotationKeys; k++)
 			{
@@ -81,6 +82,7 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 				frame.rotationKeys.emplace_back(rk.mTime, rk.mValue.x, rk.mValue.y, rk.mValue.z, rk.mValue.w);
 			}
 
+			// translation
 			frame.positionKeys.reserve(nodeAnim->mNumRotationKeys);
 			for (uint32_t k = 0; k < nodeAnim->mNumPositionKeys; k++)
 			{

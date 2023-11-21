@@ -41,7 +41,8 @@ private:
 	void ProcessNode(aiNode* node, const aiScene* scene, ModelData& model);
 	template <typename T>
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh);
-	void ProcessAnimation(const aiScene* scene);
+	void ProcessTransformAnimation(const aiScene* scene);
+	void ProcessSkinnedAnimation();
 
 	void LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::shared_ptr<Mesh>& mesh);
 	ID3D11ShaderResourceView* LoadEmbeddedTexture(const aiTexture* embeddedTexture);
@@ -78,9 +79,9 @@ void ModelLoader::Load(const std::string& path)
 		LOG_ERROR(wErrMsg.c_str());
 		return;
 	}
-	
+
 	ProcessNode<T>(scene->mRootNode, scene, m_RootData);
-	ProcessAnimation(scene);
+	ProcessTransformAnimation(scene);
 }
 
 template <typename T>
@@ -133,7 +134,7 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 
 	vertices.reserve(mesh->mNumVertices);
 	for (UINT i = 0; i < mesh->mNumVertices; i++) {
-		T vertex {};
+		T vertex{};
 
 		if (mesh->HasPositions())
 		{
@@ -163,10 +164,18 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 			vertex.tangent.z = mesh->mTangents[i].z;
 		}
 
-		if constexpr (std::is_same_v<BoneVertex, T>)
+		//if constexpr (std::is_same_v<BoneVertex, T>)
 		{
-			if(mesh->HasBones())
+			// 만약 Mesh 가 계층 구조를 이루고 있으면 mOffsetMatrix 는 어떻게 되는거지?
+			if (mesh->HasBones())
 			{
+				btdMesh->bindposes = std::make_shared<std::vector<Matrix>>();
+				btdMesh->bindposes->reserve(mesh->mNumBones);
+				for (UINT j = 0; j < mesh->mNumBones; j++)
+				{
+					btdMesh->bindposes->push_back(std::move(Matrix{ (&mesh->mBones[j]->mOffsetMatrix.a1) }.Transpose()));
+				}
+				
 				
 			}
 		}
