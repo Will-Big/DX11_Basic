@@ -21,7 +21,7 @@ ModelLoader::~ModelLoader()
 {
 }
 
-void ModelLoader::ProcessTransformAnimation(const aiScene* scene)
+void ModelLoader::ProcessAnimation(const aiScene* scene)
 {
 	// Animator Controller 중복 검사
 	if (RES_MAN.animatorControllers.find(m_Path) != RES_MAN.animatorControllers.end())

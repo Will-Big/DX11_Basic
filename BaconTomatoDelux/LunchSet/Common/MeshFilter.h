@@ -5,6 +5,7 @@ class Mesh;
 
 /**
  * \brief	: Mesh 를 참조하는 클래스
+ * \ref		: https://docs.unity3d.com/ScriptReference/MeshFilter.html
  */
 
 class MeshFilter : public Component
@@ -16,5 +17,3 @@ public:
 public:
 	std::shared_ptr<Mesh> mesh;
 };
-
-// https://docs.unity3d.com/kr/2021.3/Manual/m_MeshFilter.html

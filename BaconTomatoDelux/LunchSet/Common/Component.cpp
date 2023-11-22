@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Component.h"
+#include "GameObject.h"
 #include "Transform.h"
 
 Component::Component(std::weak_ptr<GameObject> owner)

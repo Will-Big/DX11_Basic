@@ -106,6 +106,14 @@ void Renderer::SetPerObject(const ObjectSettings& settings)
 	}
 }
 
+void Renderer::SetMatrixPallete(const MatrixPalleteSettings& settings)
+{
+	static ConstantBuffer<MatrixPallete> mp{ m_Device, m_DeviceContext };
+	
+	mp.Update(settings.pallete);
+	SetConstantBuffer(mp);
+}
+
 void Renderer::SetInputLayout(std::shared_ptr<InputLayout> layout)
 {
 	m_DeviceContext->IASetInputLayout(layout->GetInputLayout().Get());

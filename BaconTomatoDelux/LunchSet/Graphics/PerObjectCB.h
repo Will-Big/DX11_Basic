@@ -26,4 +26,6 @@ __declspec(align(16))
 struct MatrixPallete
 {
     Matrix Array[128];
+
+    const static std::vector<std::pair<btdShaderScope, uint32_t>> bindings;
 };

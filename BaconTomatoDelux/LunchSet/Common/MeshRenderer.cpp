@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "MeshRenderer.h"
+#include "GameObject.h"
 
-#include "Material.h"
 #include "Mesh.h"
 #include "MeshFilter.h"
 #include "Transform.h"

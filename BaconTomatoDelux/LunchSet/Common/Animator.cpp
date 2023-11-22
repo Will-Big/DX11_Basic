@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "Animator.h"
+#include "GameObject.h"
 #include "AnimatorController.h"
 #include "ResourceManager.h"
 #include "Transform.h"

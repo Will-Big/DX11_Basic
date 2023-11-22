@@ -6,6 +6,7 @@
 struct CameraData;
 struct LightData;
 struct TransformData;
+struct MatrixPallete;
 
 class VertexBuffer;
 class IndexBuffer;
@@ -31,6 +32,11 @@ struct ObjectSettings
 	const TransformData* transform = nullptr;
 };
 
+struct MatrixPalleteSettings
+{
+	const MatrixPallete* pallete;
+};
+
 class Renderer
 {
 public:
@@ -39,6 +45,7 @@ public:
 
 	void SetPerFrame(const FrameSettings& settings);
 	void SetPerObject(const ObjectSettings& settings);
+	void SetMatrixPallete(const MatrixPalleteSettings& settings);
 
 	// todo : SetPerObject ∑Œ ¿Ãµø
 	void SetInputLayout(std::shared_ptr<InputLayout> layout);

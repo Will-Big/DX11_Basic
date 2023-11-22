@@ -48,6 +48,7 @@ public:
 	Vector3 GetForward() { return m_Matrix.Backward(); }
 	Vector3 GetUp() { return m_Matrix.Up(); }
 
+	std::weak_ptr<Transform> GetRoot() { return m_Root; }
 	std::weak_ptr<Transform> GetParent() { return m_Parent; }
 	std::vector<std::weak_ptr<Transform>>& GetChildren() { return m_Children; }
 
@@ -70,6 +71,7 @@ private:
 	Matrix m_Matrix = Matrix::Identity;
 
 	// Hierarchy
+	std::weak_ptr<Transform> m_Root;
 	std::weak_ptr<Transform> m_Parent;
 	std::vector<std::weak_ptr<Transform>> m_Children;
 

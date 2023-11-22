@@ -15,10 +15,11 @@
 class VertexBuffer;
 class IndexBuffer;
 
-struct BoneWeight
+
+struct BoneReference
 {
-	uint8_t boneIndex = 0;
-	float weight = 0;
+	std::string name;
+	Matrix offset;
 };
 
 class Mesh
@@ -34,6 +35,5 @@ public:
 	std::array<std::shared_ptr<Texture>, btdTextureType_END> textures;	// Mesh 가 가리키는 texture
 
 	// Bone
-	std::shared_ptr<std::vector<Matrix>> bindposes;
-	std::array<BoneWeight, 4> boneWeights;
+	std::vector<BoneReference> boneReferences;
 };

@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "MeshFilter.h"
 #include "MeshRenderer.h"
+#include "SkinnedMeshRenderer.h"
 #include "Material.h"
 #include "AnimatorController.h"
 
@@ -51,9 +52,18 @@ void ResourceManager::SetMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<GameOb
 	LOG_MESSAGE(gameObject->GetName().c_str());
 
 	// 필수 컴포넌트 생성 및 연결
-	auto meshRenderer = gameObject->GetComponent<MeshRenderer>().lock();
-	if (meshRenderer == nullptr)
-		meshRenderer = gameObject->AddComponent<MeshRenderer>().lock();
+	if(mesh->boneReferences.empty()) // MeshRenderer (Static Mesh)
+	{
+		auto meshRenderer = gameObject->GetComponent<MeshRenderer>().lock();
+		if (meshRenderer == nullptr)
+			meshRenderer = gameObject->AddComponent<MeshRenderer>().lock();
+	}
+	else // SkinnedMeshRenderer (Skeletal Mesh)
+	{
+		auto skinnedMeshRenderer = gameObject->GetComponent<SkinnedMeshRenderer>().lock();
+		if (skinnedMeshRenderer == nullptr)
+			skinnedMeshRenderer = gameObject->AddComponent<SkinnedMeshRenderer>().lock();
+	}
 
 	auto meshFilter = gameObject->GetComponent<MeshFilter>().lock();
 	if (meshFilter == nullptr)
@@ -67,7 +77,9 @@ void ResourceManager::SetMaterial(std::shared_ptr<Material> material, std::weak_
 	// material 연결
 	if (auto meshRenderer = gameObject.lock()->GetComponent<MeshRenderer>().lock())
 		meshRenderer->m_Material = material;
+	else if (auto skinnedMeshRenderer = gameObject.lock()->GetComponent<SkinnedMeshRenderer>().lock())
+		skinnedMeshRenderer->m_Material = material;
 	else
-		LOG_ERROR(L"nullptr : MeshRenderer");
+		LOG_ERROR(L"nullptr : MeshRenderer OR SkinnedMeshRenderer");
 }
 

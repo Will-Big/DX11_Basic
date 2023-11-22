@@ -41,7 +41,7 @@ private:
 	void ProcessNode(aiNode* node, const aiScene* scene, ModelData& model);
 	template <typename T>
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh);
-	void ProcessTransformAnimation(const aiScene* scene);
+	void ProcessAnimation(const aiScene* scene);
 	void ProcessSkinnedAnimation();
 
 	void LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::shared_ptr<Mesh>& mesh);
@@ -81,7 +81,7 @@ void ModelLoader::Load(const std::string& path)
 	}
 
 	ProcessNode<T>(scene->mRootNode, scene, m_RootData);
-	ProcessTransformAnimation(scene);
+	ProcessAnimation(scene);
 }
 
 template <typename T>
@@ -133,7 +133,7 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 	std::vector<uint32_t> indices;
 
 	vertices.reserve(mesh->mNumVertices);
-	for (UINT i = 0; i < mesh->mNumVertices; i++) {
+	for (uint32_t i = 0; i < mesh->mNumVertices; i++) {
 		T vertex{};
 
 		if (mesh->HasPositions())
@@ -164,24 +164,49 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 			vertex.tangent.z = mesh->mTangents[i].z;
 		}
 
-		//if constexpr (std::is_same_v<BoneVertex, T>)
-		{
-			// 만약 Mesh 가 계층 구조를 이루고 있으면 mOffsetMatrix 는 어떻게 되는거지?
-			if (mesh->HasBones())
-			{
-				btdMesh->bindposes = std::make_shared<std::vector<Matrix>>();
-				btdMesh->bindposes->reserve(mesh->mNumBones);
-				for (UINT j = 0; j < mesh->mNumBones; j++)
-				{
-					btdMesh->bindposes->push_back(std::move(Matrix{ (&mesh->mBones[j]->mOffsetMatrix.a1) }.Transpose()));
-				}
-				
-				
-			}
-		}
-
 		vertices.push_back(std::move(vertex));
 	}
+
+	// Bone
+	if constexpr (std::is_same_v<BoneVertex, T>)
+	{
+		if (mesh->HasBones())
+		{
+			btdMesh->boneReferences.resize(mesh->mNumBones);
+			uint32_t boneIndexCounter = 0;
+			std::map<std::string, int> boneMapping;
+
+			for (uint32_t i = 0; i < mesh->mNumBones; ++i)
+			{
+				aiBone* bone = mesh->mBones[i];
+				std::string boneName = bone->mName.C_Str();
+				uint32_t boneIndex = 0;
+
+				if(boneMapping.find(boneName) == boneMapping.end())
+				{
+					boneIndex = boneIndexCounter;
+					boneIndexCounter++;
+					btdMesh->boneReferences[boneIndex].name = boneName;
+					btdMesh->boneReferences[boneIndex].offset = Matrix(&bone->mOffsetMatrix.a1).Transpose();
+					boneMapping[boneName] = boneIndex;
+				}
+				else
+				{
+					boneIndex = boneMapping[boneName];
+				}
+
+				// bone 과 vertex 연결
+				for(uint32_t j = 0; j < bone->mNumWeights; ++j)
+				{
+					uint32_t vertexID = bone->mWeights[j].mVertexId;
+					float weight = bone->mWeights[j].mWeight;
+
+					vertices[vertexID].AddBoneData(boneIndex, weight);
+				}
+			}
+		}
+	}
+
 	btdMesh->vertexBuffer->Create(m_Device, vertices);
 
 	indices.reserve(mesh->mNumFaces * 3);

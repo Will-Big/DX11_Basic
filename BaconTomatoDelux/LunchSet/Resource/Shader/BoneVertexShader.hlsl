@@ -8,14 +8,14 @@ PS_INPUT main(BVS_INPUT input)
 
     matrix matWorld;
 
-#ifdef VERTEX_SKINNING
-    matWorld  = mul(input.blendWeights.x, gMatrixPalleteArray[input.blendIndices.x]);
+//#ifdef VERTEX_SKINNING
+    matWorld = mul(input.blendWeights.x, gMatrixPalleteArray[input.blendIndices.x]);
     matWorld += mul(input.blendWeights.y, gMatrixPalleteArray[input.blendIndices.y]);
     matWorld += mul(input.blendWeights.z, gMatrixPalleteArray[input.blendIndices.z]);
     matWorld += mul(input.blendWeights.w, gMatrixPalleteArray[input.blendIndices.w]);
-#else
-    matWorld = gWorldMatrix;    // Static Mesh
-#endif
+//#else
+    //matWorld = gWorldMatrix; // Static Mesh
+//#endif
 
 	// Ä«¸Þ¶ó º¤ÅÍ
     output.position = mul(input.position, matWorld);

@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "Transform.h"
+#include "GameObject.h"
 
 Transform::Transform(std::weak_ptr<GameObject> owner)
 	: Component(owner)
@@ -74,7 +75,19 @@ void Transform::SetParent(std::weak_ptr<GameObject> parent)
 	const auto parentTransform = parent.lock()->GetComponent<Transform>();
 	m_Parent = parentTransform;
 
-	parentTransform.lock()->m_Children.push_back(m_Owner.lock()->GetComponent<Transform>());
+	std::weak_ptr<Transform> root;
+	root = m_Parent;
+
+	while(!root.expired())
+	{
+		if (!root.lock()->GetParent().expired())
+			root = root.lock()->GetParent();
+		else
+			break;
+	}
+
+	m_Root = root;
+	m_Parent.lock()->m_Children.push_back(m_Owner.lock()->GetComponent<Transform>());
 }
 
 void Transform::UpdateTransform()

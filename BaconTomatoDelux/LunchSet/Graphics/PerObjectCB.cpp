@@ -10,3 +10,8 @@ const std::vector<std::pair<btdShaderScope, uint32_t>> MaterialData::bindings
 {
 	{btdShaderScope_Pixel, 1},
 };
+
+const std::vector<std::pair<btdShaderScope, uint32_t>> MatrixPallete::bindings
+{
+	{btdShaderScope_Vertex, 2},
+};

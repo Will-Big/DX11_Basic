@@ -38,22 +38,33 @@ struct KeyFrames
 	std::vector<QuaternionKey> rotationKeys;
 	std::vector<Vector3Key> positionKeys;
 
+	// info.back().time > time 이 항상 보장됨
 	Vector3 FrameLerp(const std::vector<Vector3Key>& info, double time)
 	{
-		auto frameSet = [&time](auto& info) {return info.time <= time; };
+		auto frameSet = [&time](auto& info) {return info.time > time; };
 		// it = [max] ~ [1]
-		auto it = std::find_if(info.rbegin(), info.rend(), frameSet);
+		auto endFrame = std::find_if(info.begin(), info.end(), frameSet);
+		auto beginFrame = endFrame - 1;
 
-		return Vector3::Lerp((it - 1)->value, it->value, static_cast<float>(it->time - time));
+		double delta = time - beginFrame->time;
+		double total = endFrame->time - beginFrame->time;
+
+		return Vector3::Lerp(beginFrame->value, endFrame->value, static_cast<float>(delta / total));
 	}
 
 	Quaternion FrameSlerp(const std::vector<QuaternionKey>& info, double time)
 	{
-		auto frameSet = [&time](auto& info) {return info.time <= time; };
+		auto frameSet = [&time](auto& info) {return info.time > time; };
 		// it = [max] ~ [1]
-		auto it = std::find_if(info.rbegin(), info.rend(), frameSet);
+		auto it = std::find_if(info.begin(), info.end(), frameSet);
 
-		return Quaternion::Slerp((it - 1)->value, it->value, static_cast<float>(it->time - time));
+		auto endFrame = std::find_if(info.begin(), info.end(), frameSet);
+		auto beginFrame = endFrame - 1;
+
+		double delta = time-  beginFrame->time;
+		double total = endFrame->time - beginFrame->time;
+
+		return Quaternion::Slerp(beginFrame->value, endFrame->value, static_cast<float>(delta / total));
 	}
 };
 

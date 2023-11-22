@@ -1,6 +1,6 @@
 #pragma once
-#include "ILateUpdate.h"
 #include "Object.h"
+#include "Transform.h"
 
 #include <algorithm>
 
@@ -39,12 +39,18 @@ public:
 
 	template <typename T>
 	std::weak_ptr<T> GetComponent();
-
 	template <typename T>
 	std::vector<std::weak_ptr<T>> GetComponents();
 
 	template <typename T>
-	T* GetComponentInParent();
+	std::weak_ptr<T> GetComponentInChildren();
+	template <typename T>
+	std::weak_ptr<T> GetComponentInParent();
+
+	template <typename T>
+	std::vector<std::weak_ptr<T>> GetComponentsInParent();
+	template <typename T>
+	std::vector<std::weak_ptr<T>> GetComponentsInChildren();
 
 	// GameObject 생성 전역 함수(Add Transform Component)
 	static std::shared_ptr<GameObject> Create(std::wstring_view name);
@@ -125,6 +131,96 @@ std::vector<std::weak_ptr<T>> GameObject::GetComponents()
 }
 
 template <typename T>
-T* GameObject::GetComponentInParent()
+std::weak_ptr<T> GameObject::GetComponentInChildren()
 {
+	static_assert(std::is_base_of_v<Component, T>, "T must be a derived class of Component");
+
+	auto childrenTransform = GetComponent<Transform>().lock()->GetChildren();
+	std::vector<std::shared_ptr<GameObject>> childrenObject;
+	std::for_each(childrenTransform.begin(), childrenTransform.end(), [&childrenObject](auto& transform)
+		{
+			childrenObject.push_back(transform.lock()->GetOwner().lock());
+		});
+
+	// 자식 오브젝트들을 순회하면서 컴포넌트 검색
+	for (auto& child : childrenObject) 
+	{
+		auto component = child->GetComponent<T>();
+		if (!component.expired()) {
+			return component;
+		}
+
+		// 재귀적으로 자식의 자식 검색
+		auto childComponent = child->GetComponentInChildren<T>();
+		if (!childComponent.expired()) {
+			return childComponent;
+		}
+	}
+
+	return std::weak_ptr<T>(std::shared_ptr<T>(nullptr));
+}
+
+template <typename T>
+std::weak_ptr<T> GameObject::GetComponentInParent()
+{
+	static_assert(std::is_base_of_v<Component, T>, "T must be a derived class of Component");
+
+	auto parent = GetComponent<Transform>().lock()->GetParent().lock();
+	std::vector<std::shared_ptr<GameObject>> childrenObject;
+
+	while (parent) {
+		auto component = parent->GetOwner().lock()->GetComponent<T>();
+		if (!component.expired()) {
+			return component;
+		}
+
+		parent = parent->GetParent().lock();
+	}
+
+	return std::weak_ptr<T>(std::shared_ptr<T>(nullptr));
+}
+
+template <typename T>
+std::vector<std::weak_ptr<T>> GameObject::GetComponentsInParent()
+{
+	static_assert(std::is_base_of_v<Component, T>, "T must be a derived class of Component");
+
+	auto parent = GetComponent<Transform>().lock()->GetParent().lock();
+	std::vector<std::shared_ptr<GameObject>> childrenObject;
+
+	std::vector<std::weak_ptr<T>> components;
+
+	while (parent) {
+		auto parentComponents = parent->GetOwner().lock()->GetComponents<T>();
+		components.insert(components.end(), parentComponents.begin(), parentComponents.end());
+
+		parent = parent->GetParent().lock();
+	}
+
+	return components;
+}
+
+template <typename T>
+std::vector<std::weak_ptr<T>> GameObject::GetComponentsInChildren()
+{
+	static_assert(std::is_base_of_v<Component, T>, "T must be a derived class of Component");
+
+	std::vector<std::weak_ptr<T>> components;
+
+	auto childrenTransform = GetComponent<Transform>().lock()->GetChildren();
+	std::vector<std::shared_ptr<GameObject>> childrenObject;
+	std::for_each(childrenTransform.begin(), childrenTransform.end(), [&childrenObject](auto& transform)
+		{
+			childrenObject.push_back(transform.lock()->GetOwner().lock());
+		});
+
+	for (auto& child : childrenObject) {
+		auto childComponents = child->GetComponents<T>();
+		components.insert(components.end(), childComponents.begin(), childComponents.end());
+
+		auto childChildComponents = child->GetComponentsInChildren<T>();
+		components.insert(components.end(), childChildComponents.begin(), childChildComponents.end());
+	}
+
+	return components;
 }

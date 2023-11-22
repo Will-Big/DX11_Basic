@@ -8,6 +8,7 @@ class Animator;
 
 /**
  * \brief	: 애니메이션이 적용된 3d 모델을 렌더링하는 클래스
+ * \ref		: https://docs.unity3d.com/ScriptReference/SkinnedMeshRenderer.html
  */
 class SkinnedMeshRenderer : public Component, public IRender
 {
@@ -18,9 +19,10 @@ public:
 	void Initialize() override;
 	void Render(Renderer* renderer) override;
 
-private:
+public:
 	// Component
 	std::weak_ptr<MeshFilter> m_MeshFilter;
+	std::vector<std::shared_ptr<Transform>> m_Bones;
 
 	// Object
 	std::shared_ptr<Material> m_Material;
