@@ -16,12 +16,12 @@ void Transform::Update(float deltaTime)
 	UpdateTransform();
 }
 
-void Transform::LookAt(Vector3&& position)
+void Transform::LookAt(const Vector3& position)
 {
 	// todo
 }
 
-void Transform::LookAt(std::weak_ptr<GameObject> position)
+void Transform::LookAt(std::weak_ptr<GameObject> target)
 {
 	// todo
 }

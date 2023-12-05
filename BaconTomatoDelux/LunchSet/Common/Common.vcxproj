@@ -144,6 +144,9 @@
     <ClInclude Include="AnimationClip.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AnimatorController.h" />
+    <ClInclude Include="AnimatorControllerLayer.h" />
+    <ClInclude Include="AnimatorControllerParameter.h" />
+    <ClInclude Include="AnimatorStateMachine.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="GameObject.h" />
@@ -171,6 +174,9 @@
     <ClCompile Include="AnimationClip.cpp" />
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="AnimatorController.cpp" />
+    <ClCompile Include="AnimatorControllerLayer.cpp" />
+    <ClCompile Include="AnimatorControllerParameter.cpp" />
+    <ClCompile Include="AnimatorStateMachine.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="GameObject.cpp" />

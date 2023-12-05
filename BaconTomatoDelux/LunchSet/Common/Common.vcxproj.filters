@@ -81,6 +81,15 @@
     <Filter Include="소스 파일\Base\Resource\Animation\Clip &amp; KeyFrame">
       <UniqueIdentifier>{16df089c-2dfa-41d8-845a-bd7bbef4fba6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Base\Resource\Animation\Controller\Layer">
+      <UniqueIdentifier>{01939862-2a19-4a24-8ecb-eb901a3258c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine">
+      <UniqueIdentifier>{633abf4f-7a60-4e63-a452-13c7702e570c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Base\Resource\Animation\Controller\Parameter">
+      <UniqueIdentifier>{ef8fc09b-73c0-4684-b16c-81406b87bb05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -142,6 +151,15 @@
     </ClCompile>
     <ClCompile Include="SkinnedMeshRenderer.cpp">
       <Filter>소스 파일\Components\Rendering\SkinnedMeshRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorControllerLayer.cpp">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorStateMachine.cpp">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorControllerParameter.cpp">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\Parameter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +237,15 @@
     </ClInclude>
     <ClInclude Include="SkinnedMeshRenderer.h">
       <Filter>소스 파일\Components\Rendering\SkinnedMeshRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorControllerLayer.h">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorStateMachine.h">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorControllerParameter.h">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\Parameter</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,5 +18,4 @@ public:
 
 public:
 	std::unordered_map<std::wstring, std::shared_ptr<Texture>> textures;
-
 };

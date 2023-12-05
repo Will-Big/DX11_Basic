@@ -15,9 +15,37 @@ Animator::~Animator()
 {
 }
 
+void Animator::Initialize()
+{
+	Component::Initialize();
+
+	std::vector<std::shared_ptr<Transform>> children;
+	std::function<void(std::shared_ptr<Transform> obj)> getChildren = [&](std::shared_ptr<Transform> obj)
+		{
+			for(auto& child : obj->GetChildren())
+			{
+				children.emplace_back(child.lock());
+				getChildren(child.lock());
+			}
+		};
+	getChildren(m_Transform.lock());
+
+	if (m_Controller == nullptr)
+	{
+		LOG_ERROR(L"nullptr : Animator Controller");
+		return;
+	}
+
+	KeyFrameMapping(children);
+	LoadParameters();
+
+	// todo : 초기 상태로 변경 필요s
+	m_CurrentClip = &m_AnimatedObjects[0];
+}
+
 void Animator::Update(float deltaTime)
 {
-	if (controller == nullptr)
+	if (m_Controller == nullptr)
 		return;
 
 	m_ProgressTime += deltaTime * 15;
@@ -49,41 +77,47 @@ void Animator::Update(float deltaTime)
 	}
 }
 
-void Animator::Initialize()
-{
-	Component::Initialize();
-
-	std::vector<std::shared_ptr<Transform>> children;
-	std::function<void(std::shared_ptr<Transform> obj)> getChildren = [&](std::shared_ptr<Transform> obj)
-		{
-			for(auto& child : obj->GetChildren())
-			{
-				children.emplace_back(child.lock());
-				getChildren(child.lock());
-			}
-		};
-	getChildren(m_Transform.lock());
-
-	if (controller == nullptr)
-	{
-		LOG_ERROR(L"nullptr : Animator Controller");
-		return;
-	}
-
-	KeyFrameMapping(children);
-
-	// todo : 초기 상태로 변경 필요s
-	m_CurrentClip = &m_AnimatedObjects[0];
-}
-
 void Animator::SetController(std::wstring_view controllerName)
 {
-	controller = RES_MAN.animatorControllers[controllerName.data()];
+	m_Controller = RES_MAN.animatorControllers[controllerName.data()];
+}
+
+float Animator::GetFloat(std::wstring_view name)
+{
+	return 0.0f;
+}
+
+int Animator::GetInteger(std::wstring_view name)
+{
+}
+
+bool Animator::GetBool(std::wstring_view name)
+{
+}
+
+void Animator::SetFloat(std::wstring_view name, float value)
+{
+}
+
+void Animator::SetInteger(std::wstring_view name, int value)
+{
+}
+
+void Animator::SetBool(std::wstring_view name, bool value)
+{
+}
+
+void Animator::SetTrigger(std::wstring_view name)
+{
+}
+
+void Animator::ResetTrigger(std::wstring_view name)
+{
 }
 
 void Animator::KeyFrameMapping(const std::vector<std::shared_ptr<Transform>>& children)
 {
-	for(auto& clip : controller->animationClips)
+	for(auto& clip : m_Controller->animationClips)
 	{
 		mappedKeyFrames mapped;
 
@@ -101,4 +135,8 @@ void Animator::KeyFrameMapping(const std::vector<std::shared_ptr<Transform>>& ch
 
 		m_AnimatedObjects.emplace_back(&clip, mapped);
 	}
+}
+
+void Animator::LoadParameters()
+{
 }

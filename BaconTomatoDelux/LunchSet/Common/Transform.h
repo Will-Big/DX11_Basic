@@ -13,8 +13,8 @@ public:
 	// Cycle Interface
 	void Update(float deltaTime) override;
 
-	void LookAt(Vector3&& position);
-	void LookAt(std::weak_ptr<GameObject> position);
+	void LookAt(const Vector3& position);
+	void LookAt(std::weak_ptr<GameObject> target);
 
 	// Local
 	void SetLocalScale(const Vector3& localScale) { m_LocalScale = localScale; m_bDirty = true; }

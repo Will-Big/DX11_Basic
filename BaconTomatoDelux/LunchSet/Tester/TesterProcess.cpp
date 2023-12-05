@@ -21,6 +21,8 @@
 #include "../Common/Light.h"
 #include "../Common/Animator.h"
 
+#include <random>
+
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	: GameProcess(hInst, L"Tester Process", 800, 600, true)
 {
@@ -44,11 +46,25 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	m_Renderer->SetShader(vertexShader);
 	m_Renderer->SetShader(pixelShader);
 
-	auto testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
-	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
-	RES_MAN.Load<ModelData, BoneVertex>(L"SkinningTest.fbx");
-	RES_MAN.Get<ModelData>(L"SkinningTest.fbx", testGO);
-	testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> dis(0.0, 1000.0);
+
+	for(int i = 0; i < 1; i++)
+	{
+		auto testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
+		// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
+		RES_MAN.Load<ModelData, BoneVertex>(L"SkinningTest.fbx");
+		RES_MAN.Get<ModelData>(L"SkinningTest.fbx", testGO);
+		testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
+
+		Vector3 pos;
+		pos.x = dis(gen);
+		pos.y = dis(gen);
+		pos.z = dis(gen);
+
+		testGO->GetComponent<Transform>().lock()->SetPosition(pos);
+	}
 
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));

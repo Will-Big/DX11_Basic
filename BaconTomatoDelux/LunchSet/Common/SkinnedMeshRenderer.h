@@ -22,8 +22,11 @@ public:
 public:
 	// Component
 	std::weak_ptr<MeshFilter> m_MeshFilter;
-	std::vector<std::shared_ptr<Transform>> m_Bones;
 
 	// Object
 	std::shared_ptr<Material> m_Material;
+
+private:
+	// Component
+	std::vector<std::shared_ptr<Transform>> m_Bones;
 };
