@@ -7,7 +7,7 @@ public:
 	VertexShader(ComPtr<ID3D11Device> device);
 	~VertexShader() override;
 
-	void Create(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel) override;
+	void Create(const WCHAR* szFileName, LPCSTR szEntryPoint, D3D_SHADER_MACRO* defines) override;
 
 	ComPtr<ID3D11VertexShader> GetComPtr() { return m_VertexShader; }
 

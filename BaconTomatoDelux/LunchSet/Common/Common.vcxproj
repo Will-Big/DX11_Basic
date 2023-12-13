@@ -143,11 +143,16 @@
   <ItemGroup>
     <ClInclude Include="AnimationClip.h" />
     <ClInclude Include="Animator.h" />
+    <ClInclude Include="AnimatorContidion.h" />
     <ClInclude Include="AnimatorController.h" />
     <ClInclude Include="AnimatorControllerLayer.h" />
     <ClInclude Include="AnimatorControllerParameter.h" />
     <ClInclude Include="AnimatorStateMachine.h" />
+    <ClInclude Include="AnimatorStateTransition.h" />
+    <ClInclude Include="AnimatorTransition.h" />
+    <ClInclude Include="AnimatorTransitionBase.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="AnimatorState.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameProcess.h" />
@@ -175,9 +180,12 @@
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="AnimatorController.cpp" />
     <ClCompile Include="AnimatorControllerLayer.cpp" />
-    <ClCompile Include="AnimatorControllerParameter.cpp" />
     <ClCompile Include="AnimatorStateMachine.cpp" />
+    <ClCompile Include="AnimatorStateTransition.cpp" />
+    <ClCompile Include="AnimatorTransition.cpp" />
+    <ClCompile Include="AnimatorTransitionBase.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="AnimatorState.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameProcess.cpp" />

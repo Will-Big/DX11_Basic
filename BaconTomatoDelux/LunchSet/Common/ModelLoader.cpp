@@ -24,15 +24,15 @@ ModelLoader::~ModelLoader()
 void ModelLoader::ProcessAnimation(const aiScene* scene)
 {
 	// Animator Controller 중복 검사
-	if (RES_MAN.animatorControllers.find(m_Path) != RES_MAN.animatorControllers.end())
+	if (RES_MAN.animatorControllers.find(m_PathStr) != RES_MAN.animatorControllers.end())
 	{
 		LOG_ERROR(L"Animator Controller : Duplicated exist");
 		return;
 	}
 
-	// todo : m_Path 로 animationController 를 생성하면 재활용이 불가능하므로 변경
-	RES_MAN.animatorControllers[m_Path] = std::make_shared<AnimatorController>(m_Path);
-	auto& ctrl = RES_MAN.animatorControllers[m_Path];
+	// todo : m_PathStr 로 animationController 를 생성하면 재활용이 불가능하므로 변경
+	RES_MAN.animatorControllers[m_PathStr] = std::make_shared<AnimatorController>(m_PathStr);
+	auto& ctrl = RES_MAN.animatorControllers[m_PathStr];
 
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++)
 	{
@@ -106,11 +106,12 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 		std::wstring wsTextureName(sTextureName.begin(), sTextureName.end());
 		btdTextureType btdType = aiType2btdType(type);
 
-		// 전체 Material 중 key 확인
-		auto materialTextures = RES_MAN.materials.find(m_Path);
-		// Mesh 가 사용하는 Texture 참조 얻기
+		// 전체 material 중 key 확인
+		auto materialTextures = RES_MAN.materials.find(m_PathStr);
+		// Mesh 가 사용하는 texture 참조 얻기
 		auto& meshRefTexture = mesh->textures[btdType];
 
+		// 존재하는 texture 라면 참조 할당
 		if (materialTextures != RES_MAN.materials.end() && (*materialTextures->second)[wsTextureName])
 			meshRefTexture = (*materialTextures->second)[wsTextureName];
 		else
@@ -123,8 +124,10 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 			else
 				newTexture = std::make_shared<Texture>(m_Device, wsTextureName, btdType);
 
-			RES_MAN.materials[m_Path] = std::make_shared<Material>(m_Path);
-			(*RES_MAN.materials[m_Path])[wsTextureName] = newTexture;
+			RES_MAN.materials[m_PathStr] = std::make_shared<Material>(m_PathStr);
+			(*RES_MAN.materials[m_PathStr])[wsTextureName] = newTexture;
+
+			// 새로 생성한 texture 참조 할당
 			meshRefTexture = newTexture;
 		}
 

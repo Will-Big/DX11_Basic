@@ -90,6 +90,21 @@
     <Filter Include="소스 파일\Base\Resource\Animation\Controller\Parameter">
       <UniqueIdentifier>{ef8fc09b-73c0-4684-b16c-81406b87bb05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\State">
+      <UniqueIdentifier>{f869ae03-0c9d-43f7-af5a-d9992e38742e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition">
+      <UniqueIdentifier>{ba67793e-7b9f-4209-b8d4-ebc448e73ea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Between">
+      <UniqueIdentifier>{debd8717-bf83-4121-9a13-b401071bcae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Any">
+      <UniqueIdentifier>{601db62c-2cad-4517-837b-04a71b8d300b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Condition">
+      <UniqueIdentifier>{cf633ff4-3da8-4ce6-94ad-8f12125c29c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -158,8 +173,17 @@
     <ClCompile Include="AnimatorStateMachine.cpp">
       <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine</Filter>
     </ClCompile>
-    <ClCompile Include="AnimatorControllerParameter.cpp">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\Parameter</Filter>
+    <ClCompile Include="AnimatorState.cpp">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\State</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorTransitionBase.cpp">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorTransition.cpp">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Any</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorStateTransition.cpp">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Between</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +270,21 @@
     </ClInclude>
     <ClInclude Include="AnimatorControllerParameter.h">
       <Filter>소스 파일\Base\Resource\Animation\Controller\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorState.h">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorTransitionBase.h">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorTransition.h">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Any</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorStateTransition.h">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Between</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorContidion.h">
+      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Condition</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

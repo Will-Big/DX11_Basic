@@ -34,7 +34,7 @@ public:
 	~ModelLoader();
 
 	template<typename T>
-	void Load(const std::string& path);
+	void Load(std::filesystem::path path);
 
 private:
 	template <typename T>
@@ -42,7 +42,6 @@ private:
 	template <typename T>
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh);
 	void ProcessAnimation(const aiScene* scene);
-	void ProcessSkinnedAnimation();
 
 	void LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::shared_ptr<Mesh>& mesh);
 	ID3D11ShaderResourceView* LoadEmbeddedTexture(const aiTexture* embeddedTexture);
@@ -51,19 +50,19 @@ private:
 	ComPtr<ID3D11Device> m_Device;
 	ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	ModelData& m_RootData;
-	std::wstring m_Path;
+	std::wstring m_PathStr;
 };
 
 template <typename T>
-void ModelLoader::Load(const std::string& path)
+void ModelLoader::Load(std::filesystem::path path)
 {
-	m_Path.assign(path.begin(), path.end());
+	m_PathStr = path.wstring();
 
 	Assimp::Importer importer;
 
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
 
-	const aiScene* scene = importer.ReadFile(path,
+	const aiScene* scene = importer.ReadFile(path.string(),
 		aiProcess_Triangulate |
 		aiProcess_GenUVCoords |
 		aiProcess_GenNormals |
@@ -124,7 +123,7 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 {
 	if (btdMesh)
 	{
-		LOG_ERROR(L"Mesh is already exist");
+		LOG_ERROR(L"Mesh already exists");
 		return;
 	}
 

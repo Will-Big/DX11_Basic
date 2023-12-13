@@ -30,11 +30,7 @@ void Animator::Initialize()
 		};
 	getChildren(m_Transform.lock());
 
-	if (m_Controller == nullptr)
-	{
-		LOG_ERROR(L"nullptr : Animator Controller");
-		return;
-	}
+	assert(m_Controller != nullptr);
 
 	KeyFrameMapping(children);
 	LoadParameters();
@@ -45,9 +41,6 @@ void Animator::Initialize()
 
 void Animator::Update(float deltaTime)
 {
-	if (m_Controller == nullptr)
-		return;
-
 	m_ProgressTime += deltaTime * 15;
 	double curFrameTime = m_ProgressTime / (m_CurrentClip->first->duration / m_CurrentClip->first->framePerSecond);
 
@@ -89,10 +82,12 @@ float Animator::GetFloat(std::wstring_view name)
 
 int Animator::GetInteger(std::wstring_view name)
 {
+	return 0;
 }
 
 bool Animator::GetBool(std::wstring_view name)
 {
+	return true;
 }
 
 void Animator::SetFloat(std::wstring_view name, float value)

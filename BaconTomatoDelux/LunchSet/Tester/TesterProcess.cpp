@@ -21,19 +21,31 @@
 #include "../Common/Light.h"
 #include "../Common/Animator.h"
 
-#include <random>
+
+/**
+ * \todo list
+ *		- Resource Manager 수정
+ *			- 공유자원 추가하기
+ *				- Shader, Input Layout, Sampler 등 ...
+ *			- filesystem 사용하기(경로 단순화) - OK
+ *		- Shader Macro 사용해서 오브젝트마다 다른 Shader 사용하기
+ *		- FSM 만들기
+ *		- PBR 적용하기
+ *			- Metalic, Roughness map 적용하기
+ *			- 환경 조명 적용하기
+ */
 
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	: GameProcess(hInst, L"Tester Process", 800, 600, true)
 {
 	// Shader Compile
-
-	// todo : shader, input layout, sampler 등 모두 공유자원으로 변경
 	static auto vertexShader = std::make_shared<VertexShader>(m_Graphics->GetDevice());
-	vertexShader->Create(L"../Resource/Shader/BoneVertexShader.hlsl", "main", "vs_5_0");
+	vertexShader->Create(L"../Resource/Shader/BoneVertexShader.hlsl", "main", nullptr);
+
+	RES_MAN.LoadShader<VertexShader>("BoneVertexShader.hlsl", "main", nullptr, L"BoneVertexShader");
 
 	static auto pixelShader = std::make_shared<PixelShader>(m_Graphics->GetDevice());
-	pixelShader->Create(L"../Resource/Shader/LightPixelShader.hlsl", "main", "ps_5_0");
+	pixelShader->Create(L"../Resource/Shader/LightPixelShader.hlsl", "main", nullptr);
 
 	static auto inputLayout = std::make_shared<InputLayout>(m_Graphics->GetDevice(), vertexShader->GetBlob());
 	inputLayout->Create<BoneVertex>();
@@ -42,29 +54,17 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	sampler->Create();
 
 	m_Graphics->GetDeviceContext()->PSSetSamplers(0, 1, sampler->GetComPtr().GetAddressOf());
-	m_Renderer->SetInputLayout(inputLayout); 
+	m_Renderer->SetInputLayout(inputLayout);
 	m_Renderer->SetShader(vertexShader);
 	m_Renderer->SetShader(pixelShader);
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dis(0.0, 1000.0);
+	auto testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
+	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
+	RES_MAN.LoadModel<BoneVertex>(L"SkinningTest.fbx", L"SkinningTest");
+	RES_MAN.GetModel<ModelData>(L"SkinningTest", testGO);
+	testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 
-	for(int i = 0; i < 1; i++)
-	{
-		auto testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
-		// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
-		RES_MAN.Load<ModelData, BoneVertex>(L"SkinningTest.fbx");
-		RES_MAN.Get<ModelData>(L"SkinningTest.fbx", testGO);
-		testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
-
-		Vector3 pos;
-		pos.x = dis(gen);
-		pos.y = dis(gen);
-		pos.z = dis(gen);
-
-		testGO->GetComponent<Transform>().lock()->SetPosition(pos);
-	}
+	testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
 
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));
@@ -75,7 +75,7 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	m_GameObjects.back()->AddComponent<Light>();
 
 	// temp(Scene)
-	for(auto& go : m_GameObjects)
+	for (auto& go : m_GameObjects)
 		go->InitializeComponents();
 }
 

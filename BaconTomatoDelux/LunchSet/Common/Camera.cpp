@@ -25,13 +25,8 @@ void Camera::LateUpdate(float deltaTime)
 {
 	auto transform = m_Transform.lock();
 
-	if (!transform)
-	{
-		LOG_ERROR(L"nullptr : Transform");
-		return;
-	}
+	assert(transform != nullptr);
 
-	//if(transform->IsChanged())
 	UpdateMatrix(transform);
 }
 

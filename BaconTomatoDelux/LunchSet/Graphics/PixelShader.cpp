@@ -10,9 +10,9 @@ PixelShader::~PixelShader()
 {
 }
 
-void PixelShader::Create(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel)
+void PixelShader::Create(const WCHAR* szFileName, LPCSTR szEntryPoint, D3D_SHADER_MACRO* defines)
 {
-	CompileShaderFromFile(szFileName, szEntryPoint, szShaderModel);
+	CompileShaderFromFile(szFileName, szEntryPoint, "ps_5_0", defines);
 	HR_T(m_Device->CreatePixelShader(
 		m_Blob->GetBufferPointer(), 
 		m_Blob->GetBufferSize(), 

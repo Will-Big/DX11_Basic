@@ -46,11 +46,7 @@ void SkinnedMeshRenderer::Render(Renderer* renderer)
 	auto meshfilter = m_MeshFilter.lock();
 	auto transform = m_Transform.lock();
 
-	if (!meshfilter or !transform)
-	{
-		LOG_MESSAGE(L"nullptr Component");
-		return;
-	}
+	assert(meshfilter != nullptr && transform != nullptr);
 
 	TransformData td{ transform->GetMatrix().Transpose() };
 

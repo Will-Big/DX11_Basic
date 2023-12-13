@@ -1,6 +1,11 @@
 ﻿#pragma once
 #include <variant>
 
+/**
+ * \brief
+ * \ref     : https://docs.unity3d.com/ScriptReference/AnimatorControllerParameter.html
+ */
+
 enum class AnimatorControllerParameterType
 {
     Float,

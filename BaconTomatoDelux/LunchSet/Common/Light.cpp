@@ -21,11 +21,7 @@ void Light::PreRender(Renderer* renderer)
 	auto transform = m_Transform.lock();
 	auto lightDir = transform->GetForward();
 
-	if (!transform)
-	{
-		LOG_ERROR(L"nullptr : Transform");
-		return;
-	}
+	assert(transform != nullptr);
 
 	direction.Normalize();
 	LightData ld

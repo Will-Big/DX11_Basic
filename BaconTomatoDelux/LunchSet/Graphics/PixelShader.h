@@ -7,7 +7,7 @@ public:
 	PixelShader(ComPtr<ID3D11Device> device);
 	~PixelShader() override;
 	
-	void Create(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel) override;
+	void Create(const WCHAR* szFileName, LPCSTR szEntryPoint, D3D_SHADER_MACRO* defines) override;
 
 	ComPtr<ID3D11PixelShader> GetComPtr() { return m_PixelShader; }
 

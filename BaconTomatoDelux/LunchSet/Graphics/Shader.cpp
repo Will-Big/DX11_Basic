@@ -10,7 +10,7 @@ Shader::~Shader()
 {
 }
 
-void Shader::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel)
+void Shader::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, const D3D_SHADER_MACRO* defines)
 {
 	HRESULT hr = S_OK;
 
@@ -27,8 +27,7 @@ void Shader::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint,
 #endif
 
 	ID3DBlob* pErrorBlob = nullptr;
-	hr = D3DCompileFromFile(szFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, szEntryPoint, szShaderModel,
-		dwShaderFlags, 0, m_Blob.GetAddressOf(), &pErrorBlob);
+	hr = D3DCompileFromFile(szFileName, defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, szEntryPoint, szShaderModel,dwShaderFlags, 0, m_Blob.GetAddressOf(), &pErrorBlob);
 	if (FAILED(hr))
 	{
 		if (pErrorBlob)

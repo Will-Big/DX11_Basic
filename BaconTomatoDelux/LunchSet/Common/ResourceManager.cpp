@@ -7,17 +7,17 @@
 #include "MeshRenderer.h"
 #include "SkinnedMeshRenderer.h"
 #include "Material.h"
-#include "AnimatorController.h"
 
 // temp(Scene)
 #include "GameProcess.h"
-
-#include <filesystem>
 
 void ResourceManager::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
 {
 	m_Device = device;
 	m_DeviceContext = deviceContext;
+
+	modelPath = fs::path(L"../Resource/FBX/");
+	shaderPath = fs::path(L"../Resource/Shader/");
 }
 
 void ResourceManager::GetStaticModelData(std::wstring_view fileName, ModelData& data, std::weak_ptr<GameObject> gameObject)
