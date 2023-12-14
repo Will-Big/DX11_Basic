@@ -1,10 +1,12 @@
 #include "LightHeader.hlsli"
 
-#define DIFFUSE 1                   // 00001
-#define NORMAL (DIFFUSE << 1)       // 00010
-#define SPECULAR (NORMAL << 1)      // 00100
-#define OPACITY (SPECULAR << 1)     // 01000
-#define EMISSIVE (OPACITY << 1)     // 10000
+#define DIFFUSE 1                   // 0000001
+#define NORMAL (DIFFUSE << 1)       // 0000010
+#define SPECULAR (NORMAL << 1)      // 0000100
+#define OPACITY (SPECULAR << 1)     // 0001000
+#define EMISSIVE (OPACITY << 1)     // 0010000
+#define METALNESS (EMISSIVE << 1)   // 0100000
+#define ROUGHNESS (METALNESS << 1)  // 1000000
 
 #define DEFAULT_COLOR (float4(1, 1, 1, 1))
 

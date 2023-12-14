@@ -50,19 +50,28 @@ private:
 	ComPtr<ID3D11Device> m_Device;
 	ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	ModelData& m_RootData;
-	std::wstring m_PathStr;
+	std::filesystem::path m_folderPath;
 };
 
 template <typename T>
 void ModelLoader::Load(std::filesystem::path path)
 {
-	m_PathStr = path.wstring();
+	m_folderPath = path;
+
+	// warn : fbx 파일 이름이 폴더 이름과 같아야 함
+	std::filesystem::path fbxPath = m_folderPath / m_folderPath.filename().replace_extension(".fbx");
+
+	// 파일 유효성 검사
+	if (!std::filesystem::exists(fbxPath) or fbxPath.extension() != L".fbx") {
+		MessageBoxW(nullptr, L"FBX file does not exist", L"LOG_ERROR", MB_OK);
+		return;
+	}
 
 	Assimp::Importer importer;
 
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
 
-	const aiScene* scene = importer.ReadFile(path.string(),
+	const aiScene* scene = importer.ReadFile(fbxPath.string(),
 		aiProcess_Triangulate |
 		aiProcess_GenUVCoords |
 		aiProcess_GenNormals |
@@ -224,6 +233,8 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 		aiTextureType_SPECULAR,
 		aiTextureType_OPACITY,
 		aiTextureType_EMISSIVE,
+		aiTextureType_METALNESS,
+		aiTextureType_SHININESS,
 	};
 
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];

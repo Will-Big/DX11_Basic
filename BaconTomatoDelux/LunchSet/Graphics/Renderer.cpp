@@ -70,7 +70,7 @@ void Renderer::SetPerObject(const ObjectSettings& settings)
 		m_DeviceContext->IASetIndexBuffer(ib->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
 	}
 
-	// Textures
+	// Textures Mapping
 	{
 		const std::array<std::shared_ptr<Texture>, btdTextureType_END>& ts = settings.textures;
 

@@ -1,4 +1,7 @@
 ﻿#pragma once
+
+#include <cassert>
+
 #include "Component.h"
 #include "IUpdate.h"
 

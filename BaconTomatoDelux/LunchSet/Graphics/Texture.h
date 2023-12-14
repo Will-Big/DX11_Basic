@@ -7,6 +7,8 @@ enum btdTextureType
 	btdTextureType_SPECULAR,
 	btdTextureType_OPACITY,
 	btdTextureType_EMISSIVE,
+	btdTextureType_METALNESS,
+	btdTextureType_ROUGHNESS,
 	btdTextureType_END,
 };
 

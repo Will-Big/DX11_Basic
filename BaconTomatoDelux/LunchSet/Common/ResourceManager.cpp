@@ -15,12 +15,9 @@ void ResourceManager::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11Devic
 {
 	m_Device = device;
 	m_DeviceContext = deviceContext;
-
-	modelPath = fs::path(L"../Resource/FBX/");
-	shaderPath = fs::path(L"../Resource/Shader/");
 }
 
-void ResourceManager::GetStaticModelData(std::wstring_view fileName, ModelData& data, std::weak_ptr<GameObject> gameObject)
+void ResourceManager::LinkModelData(std::wstring_view fileName, ModelData& data, std::weak_ptr<GameObject> gameObject)
 {
 	auto parent = gameObject.lock();
 
@@ -37,10 +34,10 @@ void ResourceManager::GetStaticModelData(std::wstring_view fileName, ModelData& 
 		childTransform->SetParent(gameObject);
 
 		childTransform->SetLocalScale(subModel.scale);
-		childTransform->SetRotation(subModel.rotation);
+		childTransform->SetLocalRotation(subModel.rotation);
 		childTransform->SetLocalPosition(subModel.position);
 
-		GetStaticModelData(fileName, subModel, child);
+		LinkModelData(fileName, subModel, child);
 
 		// temp(Scene)
 		GameProcess::m_GameObjects.push_back(child);

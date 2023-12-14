@@ -24,15 +24,15 @@ ModelLoader::~ModelLoader()
 void ModelLoader::ProcessAnimation(const aiScene* scene)
 {
 	// Animator Controller 중복 검사
-	if (RES_MAN.animatorControllers.find(m_PathStr) != RES_MAN.animatorControllers.end())
+	if (RES_MAN.animatorControllers.find(m_folderPath.wstring()) != RES_MAN.animatorControllers.end())
 	{
 		LOG_ERROR(L"Animator Controller : Duplicated exist");
 		return;
 	}
 
-	// todo : m_PathStr 로 animationController 를 생성하면 재활용이 불가능하므로 변경
-	RES_MAN.animatorControllers[m_PathStr] = std::make_shared<AnimatorController>(m_PathStr);
-	auto& ctrl = RES_MAN.animatorControllers[m_PathStr];
+	// todo : m_folderPath 로 animationController 를 생성하면 재활용이 불가능하므로 변경
+	RES_MAN.animatorControllers[m_folderPath.wstring()] = std::make_shared<AnimatorController>(m_folderPath.wstring());
+	auto& ctrl = RES_MAN.animatorControllers[m_folderPath.wstring()];
 
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++)
 	{
@@ -102,18 +102,18 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 		aiString str;
 		mat->GetTexture(type, i, &str);
 
-		std::string sTextureName = str.C_Str();
-		std::wstring wsTextureName(sTextureName.begin(), sTextureName.end());
+		// aiString -> path 변환
+		fs::path texturePath = m_folderPath / str.C_Str();
 		btdTextureType btdType = aiType2btdType(type);
 
 		// 전체 material 중 key 확인
-		auto materialTextures = RES_MAN.materials.find(m_PathStr);
+		auto materialTextures = RES_MAN.materials.find(m_folderPath.wstring());
 		// Mesh 가 사용하는 texture 참조 얻기
 		auto& meshRefTexture = mesh->textures[btdType];
 
 		// 존재하는 texture 라면 참조 할당
-		if (materialTextures != RES_MAN.materials.end() && (*materialTextures->second)[wsTextureName])
-			meshRefTexture = (*materialTextures->second)[wsTextureName];
+		if (materialTextures != RES_MAN.materials.end() && (*materialTextures->second)[texturePath.wstring()])
+			meshRefTexture = (*materialTextures->second)[texturePath.wstring()];
 		else
 		{
 			const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(str.C_Str());
@@ -122,16 +122,16 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 			if (embeddedTexture != nullptr)
 				newTexture = std::make_shared<Texture>(LoadEmbeddedTexture(embeddedTexture), btdType);
 			else
-				newTexture = std::make_shared<Texture>(m_Device, wsTextureName, btdType);
+				newTexture = std::make_shared<Texture>(m_Device, texturePath.wstring(), btdType);
 
-			RES_MAN.materials[m_PathStr] = std::make_shared<Material>(m_PathStr);
-			(*RES_MAN.materials[m_PathStr])[wsTextureName] = newTexture;
+			RES_MAN.materials[m_folderPath.wstring()] = std::make_shared<Material>(m_folderPath.wstring());
+			(*RES_MAN.materials[m_folderPath.wstring()])[texturePath.wstring()] = newTexture;
 
 			// 새로 생성한 texture 참조 할당
 			meshRefTexture = newTexture;
 		}
 
-		LOG_MESSAGE(wsTextureName.c_str());
+		LOG_MESSAGE(texturePath.c_str());
 	}
 }
 
@@ -196,6 +196,10 @@ btdTextureType aiType2btdType(aiTextureType type)
 		return btdTextureType_OPACITY;
 	case aiTextureType_EMISSIVE:
 		return btdTextureType_EMISSIVE;
+	case aiTextureType_METALNESS:
+		return btdTextureType_METALNESS;
+	case aiTextureType_SHININESS:
+		return btdTextureType_ROUGHNESS;
 	default:
 		LOG_ERROR(L"Invalid Texture Type");
 		return btdTextureType_END;

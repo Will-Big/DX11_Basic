@@ -14,7 +14,6 @@
 class VertexBuffer;
 class IndexBuffer;
 
-
 struct BoneReference
 {
 	std::string name;
@@ -25,7 +24,7 @@ class Mesh
 {
 public:
 	Mesh(ComPtr<ID3D11Device> device);
-	~Mesh();
+	~Mesh() = default;
 
 	std::shared_ptr<VertexBuffer> vertexBuffer;
 	std::shared_ptr<IndexBuffer> indexBuffer;

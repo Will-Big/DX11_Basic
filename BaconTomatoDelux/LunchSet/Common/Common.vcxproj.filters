@@ -143,9 +143,6 @@
     <ClCompile Include="ModelLoader.cpp">
       <Filter>소스 파일\Base\Resource\ModelLoader</Filter>
     </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>소스 파일\Base\Resource\Material</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>소스 파일\Base\Resource\Mesh</Filter>
     </ClCompile>

@@ -27,6 +27,9 @@
  *		- Resource Manager 수정
  *			- 공유자원 추가하기
  *				- Shader, Input Layout, Sampler 등 ...
+ *					- Shader - OK
+ *					- InputLayout
+ *					- Sampler
  *			- filesystem 사용하기(경로 단순화) - OK
  *		- Shader Macro 사용해서 오브젝트마다 다른 Shader 사용하기
  *		- FSM 만들기
@@ -35,41 +38,41 @@
  *			- 환경 조명 적용하기
  */
 
+static std::shared_ptr<GameObject> testGO;
+
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	: GameProcess(hInst, L"Tester Process", 800, 600, true)
 {
 	// Shader Compile
-	static auto vertexShader = std::make_shared<VertexShader>(m_Graphics->GetDevice());
-	vertexShader->Create(L"../Resource/Shader/BoneVertexShader.hlsl", "main", nullptr);
+	RES_MAN.LoadShader<VertexShader>("LightVertexShader.hlsl", "main", nullptr, L"LightVertexShader");
+	RES_MAN.LoadShader<PixelShader>("LightPixelShader.hlsl", "main", nullptr, L"LightPixelShader");
+	
 
-	RES_MAN.LoadShader<VertexShader>("BoneVertexShader.hlsl", "main", nullptr, L"BoneVertexShader");
-
-	static auto pixelShader = std::make_shared<PixelShader>(m_Graphics->GetDevice());
-	pixelShader->Create(L"../Resource/Shader/LightPixelShader.hlsl", "main", nullptr);
-
-	static auto inputLayout = std::make_shared<InputLayout>(m_Graphics->GetDevice(), vertexShader->GetBlob());
-	inputLayout->Create<BoneVertex>();
+	static auto inputLayout = std::make_shared<InputLayout>(m_Graphics->GetDevice(), RES_MAN.Get<VertexShader>(L"LightVertexShader")->GetBlob());
+	inputLayout->Create<StaticVertex>();
 
 	static auto sampler = std::make_shared<Sampler>(m_Graphics->GetDevice());
 	sampler->Create();
 
 	m_Graphics->GetDeviceContext()->PSSetSamplers(0, 1, sampler->GetComPtr().GetAddressOf());
 	m_Renderer->SetInputLayout(inputLayout);
-	m_Renderer->SetShader(vertexShader);
-	m_Renderer->SetShader(pixelShader);
+	m_Renderer->SetShader(RES_MAN.Get<VertexShader>(L"LightVertexShader"));
+	m_Renderer->SetShader(RES_MAN.Get<PixelShader>(L"LightPixelShader"));
 
-	auto testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
+	testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
-	RES_MAN.LoadModel<BoneVertex>(L"SkinningTest.fbx", L"SkinningTest");
-	RES_MAN.GetModel<ModelData>(L"SkinningTest", testGO);
-	testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
+	// cerberus
+	RES_MAN.LoadModel<BoneVertex>(L"cerberus", L"cerberus");
+	RES_MAN.GetModel<ModelData>(L"cerberus", testGO);
+	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 
 	testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
+	testGO->GetComponent<Transform>().lock()->SetLocalEulerRotation({0,90,0});
 
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));
 	m_GameObjects.back()->AddComponent<Camera>();
-	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 0.f, 70.f, -200.f });
+	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 0.f, 0.f, -200.f });
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Light"));
 	m_GameObjects.back()->AddComponent<Light>();
