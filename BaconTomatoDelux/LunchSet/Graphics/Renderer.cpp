@@ -86,7 +86,7 @@ void Renderer::SetPerObject(const ObjectSettings& settings)
 			{
 				m_DeviceContext->PSSetShaderResources(texType, 1, ts[texType]->GetComPtr().GetAddressOf());
 
-				dataStruct.ShaderScope |= 1 << (texType);
+				dataStruct.ShaderScope |= 1 << (texType); 
 			}
 		}
 

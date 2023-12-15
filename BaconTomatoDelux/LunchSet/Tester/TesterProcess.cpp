@@ -41,12 +41,11 @@
 static std::shared_ptr<GameObject> testGO;
 
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
-	: GameProcess(hInst, L"Tester Process", 800, 600, true)
+	: GameProcess(hInst, L"Tester Process", 1800, 1200, true)
 {
 	// Shader Compile
 	RES_MAN.LoadShader<VertexShader>("LightVertexShader.hlsl", "main", nullptr, L"LightVertexShader");
 	RES_MAN.LoadShader<PixelShader>("LightPixelShader.hlsl", "main", nullptr, L"LightPixelShader");
-	
 
 	static auto inputLayout = std::make_shared<InputLayout>(m_Graphics->GetDevice(), RES_MAN.Get<VertexShader>(L"LightVertexShader")->GetBlob());
 	inputLayout->Create<StaticVertex>();
@@ -89,6 +88,9 @@ TesterProcess::~TesterProcess()
 void TesterProcess::Update()
 {
 	GameProcess::Update();
+	static float rot = 0.0f;
+	//testGO->GetComponent<Transform>().lock()->SetLocalEulerRotation({0, rot, 0});
+	//rot += 0.001f;
 }
 
 void TesterProcess::Render(Renderer* renderer)

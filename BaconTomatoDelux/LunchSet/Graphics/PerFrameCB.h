@@ -18,6 +18,7 @@ struct LightData
 {
 	Vector4 LightDirection;
 	Vector4 LightColor;
+	float LightIntensity;
 
 	const static std::vector<std::pair<btdShaderScope, uint32_t>> bindings;
 };

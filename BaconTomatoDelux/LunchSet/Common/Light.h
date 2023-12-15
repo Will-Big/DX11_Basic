@@ -10,14 +10,12 @@ class Light : public Component, public IPreRender
 {
 public:
 	Light(std::weak_ptr<GameObject> owner);
-	~Light() override;
+	~Light() override = default;
 
 	void PreRender(Renderer* renderer) override;
 	void GUI() override;
 
-private:
-
 public:
-	// temp
 	Vector3 direction = { 1.f, 0.f, 0.f };
+	float intensity = 1.0f;
 };

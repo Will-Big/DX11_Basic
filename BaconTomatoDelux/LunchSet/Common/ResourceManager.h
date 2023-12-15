@@ -22,9 +22,10 @@ class ResourceManager
 public:
 	void Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext);
 
+	// 사용시 T 와 resourceName 유의
 	template<typename T>
 	void LoadShader(std::string_view fileName, std::string_view entryPoint, D3D_SHADER_MACRO* macro, std::wstring_view resourceName);
-
+	
 	template<typename T, typename = decltype(T::desc)>
 	void LoadModel(std::wstring_view modelFolderName, std::wstring_view resourceName);
 

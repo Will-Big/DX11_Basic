@@ -12,10 +12,6 @@ Light::Light(std::weak_ptr<GameObject> owner)
 {
 }
 
-Light::~Light()
-{
-}
-
 void Light::PreRender(Renderer* renderer)
 {
 	auto transform = m_Transform.lock();

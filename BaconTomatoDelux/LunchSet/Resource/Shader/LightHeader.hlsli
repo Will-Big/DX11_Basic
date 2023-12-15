@@ -22,6 +22,7 @@ cbuffer LightData : register(b0) // PS 0
 {
     float4 gWorldLightDirection;
     float4 gWorldLightColor;
+    float gWorldLightIntensity;
 }
 
 cbuffer MaterialData : register(b1) // PS 1
@@ -39,6 +40,8 @@ Texture2D txNormal : register(t1);
 Texture2D txSpecular : register(t2);
 Texture2D txOpacity : register(t3);
 Texture2D txEmissive : register(t4);
+Texture2D txMetalness : register(t5);
+Texture2D txRoughness : register(t6);
 SamplerState samLinear : register(s0);
 
 //--------------------------------------------------------------------------------------
