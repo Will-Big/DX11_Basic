@@ -36,14 +36,13 @@ void Camera::UpdateMatrix(std::shared_ptr<Transform>& transform)
 	Vector3 to = { 0.0f, 0.0f, 1.0f };
 	Vector3 up = transform->GetUp();
 	m_MatView = XMMatrixLookToLH(eye, to, up);
-	m_MatProjection = XMMatrixPerspectiveFovLH(XM_PIDIV2, 800.f / 600.f, 1.f, 2000.f);
+	m_MatProjection = XMMatrixPerspectiveFovLH(XM_PIDIV2, 1800.f / 1200.f, 1.f, 2000.f);
 }
 
 void Camera::PreRender(Renderer* renderer)
 {
 	auto transform = m_Transform.lock();
 	auto& camPos = transform->GetPosition();
-
 
 	if (!transform)
 	{

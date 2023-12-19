@@ -95,18 +95,10 @@ void Renderer::SetShader(std::shared_ptr<T> shader)
 
 	if constexpr (std::is_base_of_v<VertexShader, T>)
 	{
-		ID3D11VertexShader* previousShader = nullptr;
-		m_DeviceContext->VSGetShader(&previousShader, nullptr, nullptr);
-
-		if (previousShader != shader->GetComPtr().Get())
-			m_DeviceContext->VSSetShader(shader->GetComPtr().Get(), nullptr, 0);
+		m_DeviceContext->VSSetShader(shader->GetComPtr().Get(), nullptr, 0);
 	}
 	else if constexpr (std::is_base_of_v<PixelShader, T>)
 	{
-		//ID3D11PixelShader* previousShader = nullptr;
-		//m_DeviceContext->PSGetShader(&previousShader, nullptr, nullptr);
-
-		//if (previousShader != shader->GetComPtr().Get())
 		m_DeviceContext->PSSetShader(shader->GetComPtr().Get(), nullptr, 0);
 	}
 }

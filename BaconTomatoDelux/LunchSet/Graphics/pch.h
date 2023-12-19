@@ -26,9 +26,11 @@ using namespace Microsoft::WRL;
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <DirectXTex.h>
 #include <directxtk/SimpleMath.h>
 #include <directxtk/DDSTextureLoader.h>
 #include <directxtk/WICTextureLoader.h>
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 

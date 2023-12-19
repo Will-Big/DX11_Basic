@@ -68,7 +68,7 @@ float4 main(PS_INPUT input) : SV_TARGET
         normal = normalize(mul(normalTangentSpace, worldTransform));
     }
 
-    float cosNL = max(0.f, dot(normal, -gWorldLightDirection));
+    float cosNL = max(0.f, dot(normal, -gWorldLightDirection.rgb));
     float3 viewDir = normalize(input.viewDir);
     float3 halfVec = normalize(viewDir - gWorldLightDirection.xyz);
     float cosNH = max(0.f, dot(normal, halfVec));
@@ -99,7 +99,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 
         // BRDF
         float3 diffuse = kd * albedo.xyz;
-        float3 specular = (F * D * G) / max(EPSILON, 4.0 * cosNL * cosNV);
+        specular = (F * D * G) / max(EPSILON, 4.0 * cosNL * cosNV);
         directLighting += (diffuse + specular) * gWorldLightColor * cosNL;
     }
 

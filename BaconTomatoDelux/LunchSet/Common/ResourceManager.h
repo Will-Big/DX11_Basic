@@ -25,7 +25,7 @@ public:
 	// 사용시 T 와 resourceName 유의
 	template<typename T>
 	void LoadShader(std::string_view fileName, std::string_view entryPoint, D3D_SHADER_MACRO* macro, std::wstring_view resourceName);
-	
+
 	template<typename T, typename = decltype(T::desc)>
 	void LoadModel(std::wstring_view modelFolderName, std::wstring_view resourceName);
 
@@ -65,7 +65,6 @@ public:
 
 	// Path
 	const fs::path shaderPath = fs::path(L"../Resource/Shader/");
-	//const fs::path modelPath = fs::path(L"../Resource/FBX/");
 	const fs::path modelPath = fs::path(L"../Resource/Model/");
 
 private:
@@ -160,15 +159,12 @@ void ResourceManager::GetModel(std::wstring_view resourceName, std::weak_ptr<Gam
 
 	static_assert(isSupportedType, "Unsupported file type");
 
-	if constexpr (std::is_same_v<ModelData, T>)
+	if (const auto searched = models.find(resourceName.data()); searched == models.end())
 	{
-		if (const auto searched = models.find(resourceName.data()); searched == models.end())
-		{
-			MessageBoxW(nullptr, L"Data needs to be loaded before it can be accessed", L"LOG_ERROR", MB_OK);
-		}
-		else
-		{
-			LinkModelData(resourceName, searched->second, gameObject);
-		}
+		MessageBoxW(nullptr, L"Data needs to be loaded before it can be accessed", L"LOG_ERROR", MB_OK);
+	}
+	else
+	{
+		LinkModelData(resourceName, searched->second, gameObject);
 	}
 }

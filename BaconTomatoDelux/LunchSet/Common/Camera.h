@@ -20,8 +20,7 @@ public:
 
 private:
 	void UpdateMatrix(std::shared_ptr<Transform>& transform);
-
-private:
+	
 	Matrix m_MatView = Matrix::Identity;
 	Matrix m_MatProjection = Matrix::Identity;
 };
