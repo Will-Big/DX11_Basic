@@ -8,10 +8,13 @@
 #define METALNESS (EMISSIVE << 1)   // 0100000
 #define ROUGHNESS (METALNESS << 1)  // 1000000
 
-#define EPSILON 0.00001
-#define PI 3.141592
 #define DEFAULT_COLOR (float4(1, 1, 1, 1))
 
+//#define EPSILON 0.00001
+//#define PI 3.141592
+
+static const float PI = 3.141592f;
+static const float Epsilon = 0.00001f;
 static const float3 Fdielectric = { 0.04f, 0.04f, 0.04f };
 
 float ndfGGX(float cosLh, float roughness)
@@ -57,35 +60,36 @@ float4 main(PS_INPUT input) : SV_TARGET
     }
 
     float3 ambient = albedo * 0.3f;
-    float3 normal = normalize(input.normal);
 
+    float3 normal = normalize(input.normal);
     if (gShaderScope & NORMAL)
     {
         float3 tangent = normalize(input.tangent);
-        float3 biTangent = cross(normal, tangent);
+        float3 biTangent = normalize(input.biTangent);
         float3 normalTangentSpace = txNormal.Sample(samLinear, input.uv).rgb * 2.0f - 1.0f;
         float3x3 worldTransform = float3x3(tangent, biTangent, normal);
         normal = normalize(mul(normalTangentSpace, worldTransform));
     }
 
-    float cosNL = max(0.f, dot(normal, -gWorldLightDirection.rgb));
     float3 viewDir = normalize(input.viewDir);
-    float3 halfVec = normalize(viewDir - gWorldLightDirection.xyz);
+    float3 halfVec = normalize(viewDir - gWorldLightDirection);
     float cosNH = max(0.f, dot(normal, halfVec));
+    float cosNL = max(0.f, dot(normal, -gWorldLightDirection));
 
     float3 specular = 0.f;
+#ifdef NON_PBR
     if (gShaderScope & SPECULAR)
     {
 		specular = pow(cosNH, gSpecularPower); // todo : delete
         float4 specularIntensity = txSpecular.Sample(samLinear, input.uv);
         specular = specular * specularIntensity;
     }
-
+#endif
     
     float3 directLighting = 0.0f;
     if ((gShaderScope & METALNESS) && (gShaderScope & ROUGHNESS))
     {
-        float cosLH = max(0.f, dot(normal, viewDir));
+        float cosLH = max(0.f, dot(halfVec, viewDir));
         float cosNV = max(0.f, dot(normal, viewDir));
 
         float metalness = txMetalness.Sample(samLinear, input.uv);
@@ -98,8 +102,8 @@ float4 main(PS_INPUT input) : SV_TARGET
         float G = gaSchlickGGX(cosNL, cosNH, roughness);
 
         // BRDF
-        float3 diffuse = kd * albedo.xyz;
-        specular = (F * D * G) / max(EPSILON, 4.0 * cosNL * cosNV);
+        float3 diffuse = kd * albedo;
+        specular = (F * D * G) / max(Epsilon, 4.0 * cosNL * cosNV);
         directLighting += (diffuse + specular) * gWorldLightColor * cosNL;
     }
 

@@ -32,9 +32,10 @@
  *					- Sampler
  *			- filesystem 사용하기(경로 단순화) - OK
  *		- Shader Macro 사용해서 오브젝트마다 다른 Shader 사용하기
+ *			- 오브젝트 별로 Shader 를 런타임에 교체할 수 있도록 변경하기
  *		- FSM 만들기
  *		- PBR 적용하기
- *			- Metalic, Roughness map 적용하기
+ *			- Metalic, Roughness map 적용하기 - OK
  *			- 환경 조명 적용하기
  */
 
@@ -60,9 +61,9 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 
 	testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
-	// PBR : cerberus
-	RES_MAN.LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt");
-	RES_MAN.GetModel<ModelData>(L"Primrose_Egypt", testGO);
+	// PBR : cerberus Primrose_Egypt
+	RES_MAN.LoadModel<StaticVertex>(L"cerberus", L"cerberus");
+	RES_MAN.GetModel<ModelData>(L"cerberus", testGO);
 	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 
 	testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
@@ -89,8 +90,8 @@ void TesterProcess::Update()
 {
 	GameProcess::Update();
 	static float rot = 0.0f;
-	testGO->GetComponent<Transform>().lock()->SetLocalEulerRotation({0, rot, 0});
-	rot += 0.01f;
+	//testGO->GetComponent<Transform>().lock()->SetLocalEulerRotation({0, rot, 0});
+	//rot += 0.01f;
 }
 
 void TesterProcess::Render(Renderer* renderer)

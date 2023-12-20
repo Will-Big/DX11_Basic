@@ -19,7 +19,7 @@ public:
 	void GUI() override;
 
 private:
-	void UpdateMatrix(std::shared_ptr<Transform>& transform);
+	void UpdateMatrix();
 	
 	Matrix m_MatView = Matrix::Identity;
 	Matrix m_MatProjection = Matrix::Identity;

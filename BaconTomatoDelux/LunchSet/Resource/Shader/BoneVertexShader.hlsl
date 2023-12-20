@@ -4,8 +4,6 @@ PS_INPUT main(BVS_INPUT input)
 {
     PS_INPUT output;
 
-    float4 pos = input.position;
-
     matrix matWorld;
 
 #ifdef VERTEX_SKINNING
@@ -28,6 +26,7 @@ PS_INPUT main(BVS_INPUT input)
     // 노멀 및 탄젠트 벡터 월드 변환 & 노멀라이즈
     output.normal = normalize(mul(input.normal, (float3x3) matWorld));
     output.tangent = normalize(mul(input.tangent, (float3x3) matWorld));
+    output.biTangent = cross(output.normal, output.tangent);
 
     // 텍스처
     output.uv = input.uv;

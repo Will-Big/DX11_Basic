@@ -19,30 +19,29 @@ Camera::~Camera()
 void Camera::Initialize()
 {
 	Component::Initialize();
+
+	m_MatProjection = XMMatrixPerspectiveFovLH(XM_PIDIV2, 1800.f / 1200.f, 1.f, 2000.f);
 }
 
 void Camera::LateUpdate(float deltaTime)
 {
-	auto transform = m_Transform.lock();
+	assert(!m_Transform.expired());
 
-	assert(transform != nullptr);
-
-	UpdateMatrix(transform);
+	UpdateMatrix();
 }
 
-void Camera::UpdateMatrix(std::shared_ptr<Transform>& transform)
+void Camera::UpdateMatrix()
 {
-	Vector3 eye = transform->GetPosition();
+	Vector3 eye = m_Transform.lock()->GetPosition();
 	Vector3 to = { 0.0f, 0.0f, 1.0f };
-	Vector3 up = transform->GetUp();
+	Vector3 up = m_Transform.lock()->GetUp();
 	m_MatView = XMMatrixLookToLH(eye, to, up);
-	m_MatProjection = XMMatrixPerspectiveFovLH(XM_PIDIV2, 1800.f / 1200.f, 1.f, 2000.f);
 }
 
 void Camera::PreRender(Renderer* renderer)
 {
 	auto transform = m_Transform.lock();
-	auto& camPos = transform->GetPosition();
+	auto camPos = transform->GetPosition();
 
 	if (!transform)
 	{
@@ -55,8 +54,8 @@ void Camera::PreRender(Renderer* renderer)
 		CameraData cd
 		{
 			m_MatView.Transpose(),
-			m_MatProjection.Transpose(),
-			{camPos.x, camPos.y, camPos.z, 1.f}, // todo : transform position
+			m_MatProjection.Transpose(),	// todo : 업데이트 주기 변경(Once Updated)
+			{camPos.x, camPos.y, camPos.z, 0.f}, // todo : transform position
 		};
 
 		FrameSettings frameSet
