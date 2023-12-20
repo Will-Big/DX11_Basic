@@ -1,5 +1,8 @@
 ﻿#include "pch.h"
 #include "Transform.h"
+
+#include <imgui.h>
+
 #include "GameObject.h"
 
 Transform::Transform(std::weak_ptr<GameObject> owner)
@@ -24,6 +27,11 @@ void Transform::LookAt(const Vector3& position)
 void Transform::LookAt(std::weak_ptr<GameObject> target)
 {
 	// todo
+}
+
+void Transform::SetLocalMatrix(const Matrix& matrix)
+{
+
 }
 
 void Transform::SetScale(const Vector3& scale)
@@ -126,6 +134,32 @@ void Transform::UpdateTransform()
 		}
 		else
 			LOG_ERROR(L"nullptr : child Transform");
+	}
+}
+
+void Transform::GUI()
+{
+	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		// Local Scale
+		if (ImGui::DragFloat3("Local Scale", &m_LocalScale.x, 0.1f))
+		{
+			m_bDirty = true;
+		}
+
+		// Local Rotation (as Euler angles)
+		Vector3 eulerRotation = m_LocalRotation.ToEuler(); // Convert quaternion to Euler if needed
+		if (ImGui::DragFloat3("Local Rotation", &eulerRotation.x, 0.1f))
+		{
+			m_LocalRotation = Quaternion::CreateFromYawPitchRoll(eulerRotation);
+			m_bDirty = true;
+		}
+
+		// Local Position
+		if (ImGui::DragFloat3("Local Position", &m_LocalPosition.x, 0.1f))
+		{
+			m_bDirty = true;
+		}
 	}
 }
 

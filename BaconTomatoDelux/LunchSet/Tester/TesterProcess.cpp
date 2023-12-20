@@ -67,15 +67,16 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 
 	testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
-	testGO->GetComponent<Transform>().lock()->SetLocalEulerRotation({0,90,0});
+	testGO->GetComponent<Transform>().lock()->SetRenderGUI(true);
+	//testGO->GetComponent<Transform>().lock()->SetLocalEulerRotation({0,90,0});
 
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));
-	m_GameObjects.back()->AddComponent<Camera>();
+	m_GameObjects.back()->AddComponent<Camera>().lock()->SetRenderGUI(true);
 	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 0.f, 0.f, -200.f });
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Light"));
-	m_GameObjects.back()->AddComponent<Light>();
+	m_GameObjects.back()->AddComponent<Light>().lock()->SetRenderGUI(true);
 
 	// temp(Scene)
 	for (auto& go : m_GameObjects)
@@ -89,9 +90,6 @@ TesterProcess::~TesterProcess()
 void TesterProcess::Update()
 {
 	GameProcess::Update();
-	static float rot = 0.0f;
-	//testGO->GetComponent<Transform>().lock()->SetLocalEulerRotation({0, rot, 0});
-	//rot += 0.01f;
 }
 
 void TesterProcess::Render(Renderer* renderer)

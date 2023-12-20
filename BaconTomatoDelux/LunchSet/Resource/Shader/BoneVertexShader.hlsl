@@ -17,7 +17,6 @@ PS_INPUT main(BVS_INPUT input)
 
 	// 카메라 벡터
     output.position = mul(input.position, matWorld);
-    output.viewDir = normalize(output.position.xyz - gWorldCameraPosition.xyz);
 
     // 정점 뷰 변환 및 투영 변환
     output.position = mul(output.position, gViewMatrix);

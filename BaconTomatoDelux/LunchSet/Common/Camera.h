@@ -20,7 +20,8 @@ public:
 
 private:
 	void UpdateMatrix();
-	
+
+	bool m_bInit = true;
 	Matrix m_MatView = Matrix::Identity;
 	Matrix m_MatProjection = Matrix::Identity;
 };

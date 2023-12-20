@@ -4,17 +4,23 @@
  */
 
 __declspec(align(16))
-struct CameraData
+struct VSCameraData
 {
 	Matrix View;
-	Matrix Projection;
-	Vector4 CameraPosition;
 
 	const static std::vector<std::pair<btdShaderScope, uint32_t>> bindings;
 };
 
 __declspec(align(16))
-struct LightData
+struct PSCameraData
+{
+	Vector4 Position;
+
+	const static std::vector<std::pair<btdShaderScope, uint32_t>> bindings;
+};
+
+__declspec(align(16))
+struct PSLightData
 {
 	Vector4 LightDirection;
 	Vector4 LightColor;

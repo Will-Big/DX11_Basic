@@ -22,7 +22,7 @@ struct PipelineData
  * 매 객체마다 변화될 상수 버퍼
  */
 __declspec(align(16))
-struct TransformData
+struct VSObjectData
 {
 	Matrix World;
 
@@ -30,7 +30,15 @@ struct TransformData
 };
 
 __declspec(align(16))
-struct MaterialData
+struct VsMatrixPallete
+{
+    Matrix Array[128];
+
+    const static std::vector<std::pair<btdShaderScope, uint32_t>> bindings;
+};
+
+__declspec(align(16))
+struct PsMaterialData
 {
     uint32_t ShaderScope;
     float SpecularPower;
@@ -39,10 +47,3 @@ struct MaterialData
     const static std::vector<std::pair<btdShaderScope, uint32_t>> bindings;
 };
 
-__declspec(align(16))
-struct MatrixPallete
-{
-    Matrix Array[128];
-
-    const static std::vector<std::pair<btdShaderScope, uint32_t>> bindings;
-};

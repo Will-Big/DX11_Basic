@@ -3,10 +3,12 @@
 #include "Texture.h"
 
 // CB
-struct CameraData;
-struct LightData;
-struct TransformData;
-struct MatrixPallete;
+struct VSFixedData;
+struct VSCameraData;
+struct PSCameraData;
+struct PSLightData;
+struct VSObjectData;
+struct VsMatrixPallete;
 
 class VertexBuffer;
 class IndexBuffer;
@@ -16,11 +18,19 @@ class VertexShader;
 class PixelShader;
 class InputLayout;
 
+
+struct FixedSettings
+{
+	const VSFixedData* vsFixed = nullptr;
+};
+
+
 // 상수버퍼의 변화가 없었다면 nullptr 로 넘기기
 struct FrameSettings
 {
-	const CameraData* camera = nullptr;
-	const LightData* light = nullptr;
+	const VSCameraData* vsCamera = nullptr;
+	const PSCameraData* psCamera = nullptr;
+	const PSLightData* light = nullptr;
 };
 
 struct ObjectSettings
@@ -29,12 +39,12 @@ struct ObjectSettings
 	std::shared_ptr<IndexBuffer> indexBuffer;
 	std::array<std::shared_ptr<Texture>, btdTextureType_END> textures;
 
-	const TransformData* transform = nullptr;
+	const VSObjectData* transform = nullptr;
 };
 
 struct MatrixPalleteSettings
 {
-	const MatrixPallete* pallete;
+	const VsMatrixPallete* pallete;
 };
 
 class Renderer
@@ -43,6 +53,7 @@ public:
 	Renderer(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext);
 	~Renderer();
 
+	void SetFixed(const FixedSettings& settings);
 	void SetPerFrame(const FrameSettings& settings);
 	void SetPerObject(const ObjectSettings& settings);
 	void SetMatrixPallete(const MatrixPalleteSettings& settings);

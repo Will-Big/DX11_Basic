@@ -102,6 +102,9 @@
     <ClInclude Include="InputLayout.h">
       <Filter>소스 파일\Pipeline\VertexShader</Filter>
     </ClInclude>
+    <ClInclude Include="FixedCB.h">
+      <Filter>헤더 파일\ConstantBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -150,6 +153,9 @@
       <Filter>헤더 파일\ConstantBuffer\Meta</Filter>
     </ClCompile>
     <ClCompile Include="PerObjectCB.cpp">
+      <Filter>헤더 파일\ConstantBuffer\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedCB.cpp">
       <Filter>헤더 파일\ConstantBuffer\Meta</Filter>
     </ClCompile>
   </ItemGroup>

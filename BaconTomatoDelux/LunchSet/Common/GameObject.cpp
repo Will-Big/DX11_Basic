@@ -98,7 +98,8 @@ void GameObject::GUI()
 {
 	for (auto& cp : m_Components)
 	{
-		cp->GUI();
+		if(cp->IsRenderGUI())
+			cp->GUI();
 	}
 }
 

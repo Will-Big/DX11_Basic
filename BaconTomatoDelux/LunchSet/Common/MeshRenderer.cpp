@@ -37,7 +37,7 @@ void MeshRenderer::Render(Renderer* renderer)
 
 	assert(meshfilter != nullptr && transform != nullptr);
 
-	TransformData td {transform->GetMatrix().Transpose()};
+	VSObjectData td {transform->GetMatrix().Transpose()};
 
 	ObjectSettings objSet {
 		meshfilter->mesh->vertexBuffer,

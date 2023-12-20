@@ -20,7 +20,7 @@ void Light::PreRender(Renderer* renderer)
 	assert(transform != nullptr);
 
 	direction.Normalize();
-	LightData ld
+	PSLightData ld
 	{
 		 {direction.x, direction.y, direction.z, 1.0f},	// todo : Transform
 		 {1.0f, 1.0f, 1.0f, 1.0f},	// todo : Color
@@ -28,6 +28,7 @@ void Light::PreRender(Renderer* renderer)
 
 	FrameSettings frameSet
 	{
+		nullptr,
 		nullptr,
 		&ld
 	};

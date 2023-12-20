@@ -20,8 +20,12 @@ public:
 	void LookAt(std::weak_ptr<GameObject> target);
 
 	// Local
+	void SetLocalMatrix(const Matrix& matrix);
 	void SetLocalScale(const Vector3& localScale) { m_LocalScale = localScale; m_bDirty = true; }
-	void SetLocalEulerRotation(const Vector3& localEulerRotation) { m_LocalRotation = Quaternion::CreateFromYawPitchRoll(localEulerRotation); m_bDirty = true; }
+	void SetLocalEulerRotation(const Vector3& localEulerRotation)
+	{
+		m_LocalRotation = Quaternion::CreateFromYawPitchRoll(localEulerRotation); m_bDirty = true;
+	}
 	void SetLocalRotation(const Quaternion& localRotation) { m_LocalRotation = localRotation; m_bDirty = true; }
 	void SetLocalPosition(const Vector3& localPosition) { m_LocalPosition = localPosition; m_bDirty = true; }
 
@@ -59,6 +63,9 @@ public:
 
 private:
 	void UpdateTransform();
+
+public:
+	void GUI() override;
 
 private:
 	// Local

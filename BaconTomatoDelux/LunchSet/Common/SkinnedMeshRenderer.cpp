@@ -48,7 +48,7 @@ void SkinnedMeshRenderer::Render(Renderer* renderer)
 
 	assert(meshfilter != nullptr && transform != nullptr);
 
-	TransformData td{ transform->GetMatrix().Transpose() };
+	VSObjectData td{ transform->GetMatrix().Transpose() };
 
 	ObjectSettings objSet{
 		meshfilter->mesh->vertexBuffer,
@@ -58,7 +58,7 @@ void SkinnedMeshRenderer::Render(Renderer* renderer)
 	};
 	renderer->SetPerObject(objSet);
 
-	MatrixPallete mp;
+	VsMatrixPallete mp;
 	for(size_t i = 0; i < m_Bones.size(); ++i)
 	{
 		mp.Array[i] = (meshfilter->mesh->boneReferences[i].offset * m_Bones[i]->GetMatrix()).Transpose();

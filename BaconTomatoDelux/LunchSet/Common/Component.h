@@ -16,6 +16,8 @@ public:
 
 	void SetEnabled(bool enable) { m_bEnabled = enable; };
 	bool IsEnabled() { return m_bEnabled; }
+	void SetRenderGUI(bool bGUI) { m_bGUI = bGUI; }
+	bool IsRenderGUI() { return m_bGUI; }
 
 	std::weak_ptr<GameObject> GetOwner() { return m_Owner; }
 
@@ -27,5 +29,6 @@ protected:
 	std::weak_ptr<Transform> m_Transform;
 
 	bool m_bEnabled = true;
+	bool m_bGUI = false;
 };
 

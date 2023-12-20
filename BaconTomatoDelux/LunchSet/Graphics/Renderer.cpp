@@ -6,6 +6,7 @@
 #include "InputLayout.h"
 #include "Texture.h"
 
+#include "FixedCB.h"
 #include "PerFrameCB.h"
 #include "PerObjectCB.h"
 
@@ -18,23 +19,41 @@ Renderer::~Renderer()
 {
 }
 
+void Renderer::SetFixed(const FixedSettings& settings)
+{
+	if (settings.vsFixed)
+	{
+		static ConstantBuffer<VSFixedData> vf{ m_Device, m_DeviceContext };
+		vf.Update(settings.vsFixed);
+		SetConstantBuffer<VSFixedData>(vf);
+	}
+}
+
 void Renderer::SetPerFrame(const FrameSettings& settings)
 {
 	// Constant Buffers
-	// Camera Data
-	if (settings.camera)
+	// VS Camera Data
+	if (settings.vsCamera)
 	{
-		static ConstantBuffer<CameraData> wd{ m_Device, m_DeviceContext };
-		wd.Update(settings.camera);
-		SetConstantBuffer<CameraData>(wd);
+		static ConstantBuffer<VSCameraData> vc{ m_Device, m_DeviceContext };
+		vc.Update(settings.vsCamera);
+		SetConstantBuffer<VSCameraData>(vc);
+	}
+
+	// PS Camera Data
+	if (settings.psCamera)
+	{
+		static ConstantBuffer<PSCameraData> pc{ m_Device, m_DeviceContext };
+		pc.Update(settings.psCamera);
+		SetConstantBuffer<PSCameraData>(pc);
 	}
 
 	// Light Data
 	if (settings.light)
 	{
-		static ConstantBuffer<LightData> ld{ m_Device, m_DeviceContext };
+		static ConstantBuffer<PSLightData> ld{ m_Device, m_DeviceContext };
 		ld.Update(settings.light);
-		SetConstantBuffer<LightData>(ld);
+		SetConstantBuffer<PSLightData>(ld);
 	}
 }
 
@@ -75,18 +94,18 @@ void Renderer::SetPerObject(const ObjectSettings& settings)
 		const std::array<std::shared_ptr<Texture>, btdTextureType_END>& ts = settings.textures;
 
 		// Material Data
-		static ConstantBuffer<MaterialData> md{ m_Device, m_DeviceContext };
+		static ConstantBuffer<PsMaterialData> md{ m_Device, m_DeviceContext };
 		// todo : 상수 데이터 삭제
-		MaterialData dataStruct {0, 20.0f, 2.0f};
+		PsMaterialData dataStruct{ 0, 20.0f, 2.0f };
 
 
-		for(uint32_t texType = btdTextureType_DIFFUSE; texType < btdTextureType_END; texType++)
+		for (uint32_t texType = btdTextureType_DIFFUSE; texType < btdTextureType_END; texType++)
 		{
 			if (ts[texType] != nullptr)
 			{
 				m_DeviceContext->PSSetShaderResources(texType, 1, ts[texType]->GetComPtr().GetAddressOf());
 
-				dataStruct.ShaderScope |= 1 << (texType); 
+				dataStruct.ShaderScope |= 1 << (texType);
 			}
 		}
 
@@ -98,7 +117,7 @@ void Renderer::SetPerObject(const ObjectSettings& settings)
 	// Transform Data
 	if (settings.transform)
 	{
-		static ConstantBuffer<TransformData> td{ m_Device, m_DeviceContext };
+		static ConstantBuffer<VSObjectData> td{ m_Device, m_DeviceContext };
 
 		// todo : 부모 게임오브젝트당 한번만 하게 변경
 		td.Update(settings.transform);
@@ -108,8 +127,8 @@ void Renderer::SetPerObject(const ObjectSettings& settings)
 
 void Renderer::SetMatrixPallete(const MatrixPalleteSettings& settings)
 {
-	static ConstantBuffer<MatrixPallete> mp{ m_Device, m_DeviceContext };
-	
+	static ConstantBuffer<VsMatrixPallete> mp{ m_Device, m_DeviceContext };
+
 	mp.Update(settings.pallete);
 	SetConstantBuffer(mp);
 }

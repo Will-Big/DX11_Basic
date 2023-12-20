@@ -14,7 +14,7 @@
 //#define PI 3.141592
 
 static const float PI = 3.141592f;
-static const float Epsilon = 0.00001f;
+static const float Epsilon = 0.1f;
 static const float3 Fdielectric = { 0.04f, 0.04f, 0.04f };
 
 float ndfGGX(float cosLh, float roughness)
@@ -71,7 +71,7 @@ float4 main(PS_INPUT input) : SV_TARGET
         normal = normalize(mul(normalTangentSpace, worldTransform));
     }
 
-    float3 viewDir = normalize(input.viewDir);
+    float3 viewDir = normalize(gWorldCameraPosition - input.worldPosition);
     float3 halfVec = normalize(viewDir - gWorldLightDirection);
     float cosNH = max(0.f, dot(normal, halfVec));
     float cosNL = max(0.f, dot(normal, -gWorldLightDirection));

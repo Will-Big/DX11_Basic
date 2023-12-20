@@ -1,31 +1,41 @@
 //--------------------------------------------------------------------------------------
 // Constant Buffer
 //--------------------------------------------------------------------------------------
-cbuffer CameraData : register(b0) // VS 0
+
+
+cbuffer VSFixedData : register(b0) // VS 0
 {
-    matrix gViewMatrix;             // once updated per frame
     matrix gProjectionMatrix;       // rarely updated
-    float4 gWorldCameraPosition;    // once updated per frame (need in PS)
 }
 
-cbuffer ObjectData : register(b1) // VS 1
+cbuffer VSCameraData : register(b1) // VS 1
+{
+    matrix gViewMatrix;             // once updated per frame
+}
+
+cbuffer VSObjectData : register(b2) // VS 2
 {
     matrix gWorldMatrix;             // always updated per object
 }
 
-cbuffer MatrixPallete : register(b2) // VS 2
+cbuffer VSMatrixPallete : register(b3) // VS 3
 {
     matrix gMatrixPalleteArray[128]; // always updated per skinned object
 }
 
-cbuffer LightData : register(b0) // PS 0
+cbuffer PSCameraData :register(b0) // PS 0
+{
+    float4 gWorldCameraPosition; // once updated per frame
+}
+
+cbuffer PSLightData : register(b1) // PS 1
 {
     float4 gWorldLightDirection;     // once updated per frame
     float4 gWorldLightColor;         // once updated per frame
     float gWorldLightIntensity;      // once updated per frame
 }
 
-cbuffer MaterialData : register(b1) // PS 1
+cbuffer PSMaterialData : register(b2) // PS 2
 {
     uint gShaderScope;               // always updated per object
     float gSpecularPower;            // always updated per object
@@ -71,9 +81,9 @@ struct BVS_INPUT
 struct PS_INPUT
 {
     float4 position : SV_POSITION; // 변환된 픽셀 위치
+    float4 worldPosition : WORLDPOS;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
     float3 biTangent : BITANGENT;
     float2 uv : TEXCOORD0;
-    float3 viewDir : TEXCOORD1;
 };

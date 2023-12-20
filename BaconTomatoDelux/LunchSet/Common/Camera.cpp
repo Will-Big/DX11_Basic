@@ -5,6 +5,7 @@
 
 #include "Transform.h"
 #include "../Graphics/Renderer.h"
+#include "../Graphics/FixedCB.h"
 #include "../Graphics/PerFrameCB.h"
 
 Camera::Camera(std::weak_ptr<GameObject> owner)
@@ -32,9 +33,12 @@ void Camera::LateUpdate(float deltaTime)
 
 void Camera::UpdateMatrix()
 {
-	Vector3 eye = m_Transform.lock()->GetPosition();
+	auto transform = m_Transform.lock();
+
+	Vector3 eye = transform->GetPosition();
 	Vector3 to = { 0.0f, 0.0f, 1.0f };
-	Vector3 up = m_Transform.lock()->GetUp();
+	Vector3 up = transform->GetUp();
+
 	m_MatView = XMMatrixLookToLH(eye, to, up);
 }
 
@@ -49,18 +53,40 @@ void Camera::PreRender(Renderer* renderer)
 		return;
 	}
 
+	if (m_bInit)
+	{
+		VSFixedData vf
+		{
+			m_MatProjection.Transpose()
+		};
+
+		FixedSettings fixedSet
+		{
+			&vf
+		};
+
+		renderer->SetFixed(fixedSet);
+		m_bInit = false;
+	}
+
 	if (transform->IsChanged())
 	{
-		CameraData cd
+		VSCameraData vc
 		{
 			m_MatView.Transpose(),
-			m_MatProjection.Transpose(),	// todo : 업데이트 주기 변경(Once Updated)
-			{camPos.x, camPos.y, camPos.z, 0.f}, // todo : transform position
+		};
+
+
+		auto pos = transform->GetPosition();
+		PSCameraData pc
+		{
+			{pos.x, pos.y, pos.z, 1.0f}
 		};
 
 		FrameSettings frameSet
 		{
-			&cd,
+			&vc,
+			&pc,
 			nullptr,
 		};
 

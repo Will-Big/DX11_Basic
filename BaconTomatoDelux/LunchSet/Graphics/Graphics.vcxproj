@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="FixedCB.h" />
     <ClInclude Include="Forward.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputLayout.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="VertexStruct.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FixedCB.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="PerFrameCB.cpp" />
     <ClCompile Include="PerObjectCB.cpp" />
