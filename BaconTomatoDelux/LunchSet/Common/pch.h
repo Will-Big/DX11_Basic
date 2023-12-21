@@ -36,6 +36,9 @@ using namespace DirectX::SimpleMath;
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+// GUI
+#include <imgui.h>
+
 // USER
 #include "../Graphics/Helper.h"
 

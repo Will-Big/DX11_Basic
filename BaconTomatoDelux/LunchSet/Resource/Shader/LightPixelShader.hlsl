@@ -10,11 +10,8 @@
 
 #define DEFAULT_COLOR (float4(1, 1, 1, 1))
 
-//#define EPSILON 0.00001
-//#define PI 3.141592
-
 static const float PI = 3.141592f;
-static const float Epsilon = 0.1f;
+static const float Epsilon = 0.0001f;
 static const float3 Fdielectric = { 0.04f, 0.04f, 0.04f };
 
 float ndfGGX(float cosLh, float roughness)
@@ -64,7 +61,9 @@ float4 main(PS_INPUT input) : SV_TARGET
     float3 normal = normalize(input.normal);
     if (gShaderScope & NORMAL)
     {
-        float3 tangent = normalize(input.tangent);
+        //float3 tangent = normalize(input.tangent - dot(input.tangent, normal) * normal);
+        //float3 biTangent = cross(normal, tangent);
+    	float3 tangent = normalize(input.tangent);
         float3 biTangent = normalize(input.biTangent);
         float3 normalTangentSpace = txNormal.Sample(samLinear, input.uv).rgb * 2.0f - 1.0f;
         float3x3 worldTransform = float3x3(tangent, biTangent, normal);
@@ -77,14 +76,13 @@ float4 main(PS_INPUT input) : SV_TARGET
     float cosNL = max(0.f, dot(normal, -gWorldLightDirection));
 
     float3 specular = 0.f;
-#ifdef NON_PBR
+
     if (gShaderScope & SPECULAR)
     {
 		specular = pow(cosNH, gSpecularPower); // todo : delete
         float4 specularIntensity = txSpecular.Sample(samLinear, input.uv);
         specular = specular * specularIntensity;
     }
-#endif
     
     float3 directLighting = 0.0f;
     if ((gShaderScope & METALNESS) && (gShaderScope & ROUGHNESS))

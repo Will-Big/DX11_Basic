@@ -105,6 +105,15 @@
     <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Condition">
       <UniqueIdentifier>{cf633ff4-3da8-4ce6-94ad-8f12125c29c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Manager">
+      <UniqueIdentifier>{dc75c1a5-24d4-4187-b8d0-86f38dfd1e96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource">
+      <UniqueIdentifier>{351b3bad-8cd2-4067-a2dd-36289c18486a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Input">
+      <UniqueIdentifier>{48f38bf2-ea66-4a02-b4b1-e1d359097c82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -121,9 +130,6 @@
     </ClCompile>
     <ClCompile Include="Script.cpp">
       <Filter>소스 파일\Components\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>소스 파일\Base\Resource</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>소스 파일\Base</Filter>
@@ -182,6 +188,12 @@
     <ClCompile Include="AnimatorStateTransition.cpp">
       <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Between</Filter>
     </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>소스 파일\Manager\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>소스 파일\Manager\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -198,9 +210,6 @@
     </ClInclude>
     <ClInclude Include="Script.h">
       <Filter>소스 파일\Components\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>소스 파일\Base\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>소스 파일\Base</Filter>
@@ -282,6 +291,12 @@
     </ClInclude>
     <ClInclude Include="AnimatorContidion.h">
       <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>소스 파일\Manager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>소스 파일\Manager\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

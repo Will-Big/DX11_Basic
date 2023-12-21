@@ -87,3 +87,5 @@ struct PS_INPUT
     float3 biTangent : BITANGENT;
     float2 uv : TEXCOORD0;
 };
+
+

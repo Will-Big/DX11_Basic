@@ -14,12 +14,6 @@ Light::Light(std::weak_ptr<GameObject> owner)
 
 void Light::PreRender(Renderer* renderer)
 {
-	auto transform = m_Transform.lock();
-	auto lightDir = transform->GetForward();
-
-	assert(transform != nullptr);
-
-	direction.Normalize();
 	PSLightData ld
 	{
 		 {direction.x, direction.y, direction.z, 1.0f},	// todo : Transform
@@ -40,4 +34,5 @@ void Light::PreRender(Renderer* renderer)
 void Light::GUI()
 {
 	ImGui::DragFloat3("Light Direction", reinterpret_cast<float*>(&direction), 0.01f);
+	direction.Normalize();
 }

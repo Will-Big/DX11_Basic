@@ -67,3 +67,16 @@ struct BoneVertex
 		}
 	}
 };
+
+
+struct ProfessorVertex
+{
+	Vector4 position;
+	Vector3 normal;
+	Vector3 tangent;
+	Vector3 bitangent;
+	Vector2 uv;
+
+	// for Input Layout
+	const static std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
+};

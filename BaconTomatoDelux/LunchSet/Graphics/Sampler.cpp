@@ -2,15 +2,15 @@
 #include "Sampler.h"
 
 Sampler::Sampler(ComPtr<ID3D11Device> device)
-	: m_Device(device)
 {
+    Create(device);
 }
 
 Sampler::~Sampler()
 {
 }
 
-void Sampler::Create()
+void Sampler::Create(ComPtr<ID3D11Device> device)
 {
     D3D11_SAMPLER_DESC samplerDesc = {};
     samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
@@ -19,5 +19,5 @@ void Sampler::Create()
     samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
     samplerDesc.MinLOD = 0.0f;
     samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-    HR_T(m_Device->CreateSamplerState(&samplerDesc, m_SamplerState.GetAddressOf()));
+    HR_T(device->CreateSamplerState(&samplerDesc, m_SamplerState.GetAddressOf()));
 }

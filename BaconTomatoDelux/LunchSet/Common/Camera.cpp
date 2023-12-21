@@ -1,9 +1,9 @@
 ﻿#include "pch.h"
 #include "Camera.h"
-
-#include <imgui.h>
-
 #include "Transform.h"
+
+#include "GameProcess.h"
+
 #include "../Graphics/Renderer.h"
 #include "../Graphics/FixedCB.h"
 #include "../Graphics/PerFrameCB.h"
@@ -21,7 +21,7 @@ void Camera::Initialize()
 {
 	Component::Initialize();
 
-	m_MatProjection = XMMatrixPerspectiveFovLH(XM_PIDIV2, 1800.f / 1200.f, 1.f, 2000.f);
+	m_MatProjection = XMMatrixPerspectiveFovLH(XM_PIDIV2, static_cast<float>(GameProcess::Width) / static_cast<float>(GameProcess::Height), 1.f, 2000.f);
 }
 
 void Camera::LateUpdate(float deltaTime)
@@ -98,6 +98,7 @@ void Camera::GUI()
 {
 	auto camPos = m_Transform.lock()->GetPosition();
 
+	// 카메라 위치 조정 UI
 	if (ImGui::DragFloat3("Camera Position", reinterpret_cast<float*>(&camPos), 0.5f))
 		m_Transform.lock()->SetPosition(camPos);
 }

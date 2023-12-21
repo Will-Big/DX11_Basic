@@ -10,6 +10,9 @@
 #include "GameObject.h"
 #include "ResourceManager.h"
 
+uint32_t GameProcess::Width = 0;
+uint32_t GameProcess::Height = 0;
+
 std::vector<std::shared_ptr<GameObject>> GameProcess::m_GameObjects;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -19,6 +22,9 @@ GameProcess::GameProcess(HINSTANCE hInst, std::wstring_view title, int width, in
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(292);
+
+	GameProcess::Width = width;
+	GameProcess::Height = height;
 
 	// 윈도우 클래스 구조체 정의
 	WNDCLASS wndclass;

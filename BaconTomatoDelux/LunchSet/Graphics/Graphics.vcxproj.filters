@@ -175,6 +175,9 @@
     <FxCompile Include="..\Resource\Shader\BoneVertexShader.hlsl">
       <Filter>리소스 파일\Light</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resource\Shader\PBR.hlsl">
+      <Filter>리소스 파일\Light</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resource\Shader\Header.hlsli">

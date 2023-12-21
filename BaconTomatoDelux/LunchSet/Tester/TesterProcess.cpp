@@ -45,24 +45,23 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	: GameProcess(hInst, L"Tester Process", 1800, 1200, true)
 {
 	// Shader Compile
-	RES_MAN.LoadShader<VertexShader>("LightVertexShader.hlsl", "main", nullptr, L"LightVertexShader");
-	RES_MAN.LoadShader<PixelShader>("LightPixelShader.hlsl", "main", nullptr, L"LightPixelShader");
+	RES_MAN.LoadShader<VertexShader>("PBR.hlsl", "main_vs", nullptr, L"PBR_VS");
+	RES_MAN.LoadShader<PixelShader>("PBR.hlsl", "main_ps", nullptr, L"PBR_PS");
 
-	static auto inputLayout = std::make_shared<InputLayout>(m_Graphics->GetDevice(), RES_MAN.Get<VertexShader>(L"LightVertexShader")->GetBlob());
-	inputLayout->Create<StaticVertex>();
+	static auto inputLayout = std::make_shared<InputLayout>(m_Graphics->GetDevice(), RES_MAN.Get<VertexShader>(L"PBR_VS")->GetBlob());
+	inputLayout->Create<ProfessorVertex>();
 
 	static auto sampler = std::make_shared<Sampler>(m_Graphics->GetDevice());
-	sampler->Create();
 
 	m_Graphics->GetDeviceContext()->PSSetSamplers(0, 1, sampler->GetComPtr().GetAddressOf());
 	m_Renderer->SetInputLayout(inputLayout);
-	m_Renderer->SetShader(RES_MAN.Get<VertexShader>(L"LightVertexShader"));
-	m_Renderer->SetShader(RES_MAN.Get<PixelShader>(L"LightPixelShader"));
+	m_Renderer->SetShader(RES_MAN.Get<VertexShader>(L"PBR_VS"));
+	m_Renderer->SetShader(RES_MAN.Get<PixelShader>(L"PBR_PS"));
 
 	testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
-	RES_MAN.LoadModel<StaticVertex>(L"cerberus", L"cerberus");
+	RES_MAN.LoadModel<ProfessorVertex>(L"cerberus", L"cerberus");
 	RES_MAN.GetModel<ModelData>(L"cerberus", testGO);
 	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 

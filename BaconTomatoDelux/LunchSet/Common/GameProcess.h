@@ -26,6 +26,9 @@ protected:
 	std::unique_ptr<Renderer> m_Renderer;
 
 public:
+	static uint32_t Width;
+	static uint32_t Height;
+
 	// temp (Scene 으로 이동)
 	static std::vector<std::shared_ptr<GameObject>> m_GameObjects;
 };
