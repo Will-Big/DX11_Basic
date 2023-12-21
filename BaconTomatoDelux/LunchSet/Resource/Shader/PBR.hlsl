@@ -115,7 +115,7 @@ PixelShaderInput main_vs(VertexShaderInput vin)
     PixelShaderInput vout;
 
     vout.position = mul(vin.position, gWorldMatrix).xyz;
-    vout.texcoord = float2(vin.texcoord.x, vin.texcoord.y);
+    vout.texcoord = vin.texcoord;
 
 	// Pass tangent space basis vectors (for normal mapping).
     float3x3 TBN = float3x3(vin.tangent, vin.bitangent, vin.normal);
@@ -158,10 +158,10 @@ float4 main_ps(PixelShaderInput pin) : SV_Target
 	//float3 lr = lights[i].radiance;
 
 	// Half-vector between ld and lr.
-    float3 hv = normalize(view + gWorldLightDirection.xyz);
+    float3 hv = normalize(view - gWorldLightDirection.xyz);
 
 		// Calculate angles between surface normal and various light vectors.
-    float cosNL = max(0.0, dot(normal, gWorldLightDirection.xyz));
+    float cosNL = max(0.0, dot(normal, - gWorldLightDirection.xyz));
     float cosNH = max(0.0, dot(normal, hv));
 
 		// Calculate Fresnel term for direct lighting. 
