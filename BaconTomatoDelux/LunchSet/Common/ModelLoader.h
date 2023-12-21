@@ -171,12 +171,12 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 			vertex.tangent.y = mesh->mTangents[i].y;
 			vertex.tangent.z = mesh->mTangents[i].z;
 
-			//if(std::is_same_v<ProfessorVertex, T>)
-			//{
-			//	vertex.bitangent.x = mesh->mBitangents[i].x;
-			//	vertex.bitangent.y = mesh->mBitangents[i].y;
-			//	vertex.bitangent.z = mesh->mBitangents[i].z;
-			//}
+			if constexpr (std::is_same_v<ProfessorVertex, T>)
+			{
+				vertex.bitangent.x = mesh->mBitangents[i].x;
+				vertex.bitangent.y = mesh->mBitangents[i].y;
+				vertex.bitangent.z = mesh->mBitangents[i].z;
+			}
 		}
 
 		vertices.push_back(std::move(vertex));

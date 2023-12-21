@@ -119,7 +119,7 @@ PixelShaderInput main_vs(VertexShaderInput vin)
 
 	// Pass tangent space basis vectors (for normal mapping).
     float3x3 TBN = float3x3(vin.tangent, vin.bitangent, vin.normal);
-    vout.tangentBasis = mul((float3x3) gWorldMatrix, transpose(TBN));
+    vout.tangentBasis = mul((float3x3) gWorldMatrix, TBN);
 
     float4x4 mvpMatrix = mul(mul(gWorldMatrix, gViewMatrix), gProjectionMatrix);
     vout.pixelPosition = mul(vin.position, mvpMatrix);
@@ -140,7 +140,7 @@ float4 main_ps(PixelShaderInput pin) : SV_Target
 
 	// Get current fragment's normal and transform to world space.
     float3 normal = normalize(2.0 * normalTexture.Sample(defaultSampler, pin.texcoord).rgb - 1.0);
-    normal = normalize(mul(pin.tangentBasis, normal));
+    normal = normalize(mul(normal, pin.tangentBasis));
 	
 	// Angle between surface normal and outgoing light direction.
     float cosNV = max(0.0, dot(normal, view));

@@ -97,7 +97,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 
         float roughness = txRoughness.Sample(samLinear, input.uv);
         float D = ndfGGX(cosNH, max(0.1f, roughness));
-        float G = gaSchlickGGX(cosNL, cosNH, roughness);
+        float G = gaSchlickGGX(cosNL, cosNV, roughness);
 
         // BRDF
         float3 diffuse = kd * albedo;

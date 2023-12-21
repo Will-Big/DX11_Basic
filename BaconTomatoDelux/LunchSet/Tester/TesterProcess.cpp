@@ -42,7 +42,7 @@
 static std::shared_ptr<GameObject> testGO;
 
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
-	: GameProcess(hInst, L"Tester Process", 1800, 1200, true)
+	: GameProcess(hInst, L"Tester Process", 800, 600, true)
 {
 	// Shader Compile
 	RES_MAN.LoadShader<VertexShader>("LightVertexShader.hlsl", "main", nullptr, L"PBR_VS");
