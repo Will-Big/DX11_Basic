@@ -6,10 +6,6 @@ Sampler::Sampler(ComPtr<ID3D11Device> device)
     Create(device);
 }
 
-Sampler::~Sampler()
-{
-}
-
 void Sampler::Create(ComPtr<ID3D11Device> device)
 {
     D3D11_SAMPLER_DESC samplerDesc = {};

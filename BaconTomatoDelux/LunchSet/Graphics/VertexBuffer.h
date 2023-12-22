@@ -4,8 +4,8 @@
 class VertexBuffer
 {
 public:
-	VertexBuffer();
-	~VertexBuffer();
+	VertexBuffer() = default;
+	~VertexBuffer() = default;
 
 	template<typename T, typename = decltype(T::desc)>
 	void Create(ComPtr<ID3D11Device> device, const std::vector<T>& vertices);

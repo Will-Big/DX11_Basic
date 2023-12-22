@@ -5,7 +5,7 @@ class InputLayout
 {
 public:
 	InputLayout(ComPtr<ID3D11Device> device, ComPtr<ID3DBlob> blob);
-	~InputLayout();
+	~InputLayout() = default;
 
 	template<typename T, typename = decltype(T::desc)>
 	void Create();

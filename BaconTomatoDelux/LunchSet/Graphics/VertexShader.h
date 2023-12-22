@@ -5,7 +5,7 @@ class VertexShader : public Shader
 {
 public:
 	VertexShader(ComPtr<ID3D11Device> device);
-	~VertexShader() override;
+	~VertexShader() override = default;
 
 	void Create(const WCHAR* szFileName, LPCSTR szEntryPoint, D3D_SHADER_MACRO* defines) override;
 

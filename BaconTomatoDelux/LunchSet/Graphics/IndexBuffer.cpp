@@ -5,10 +5,6 @@ IndexBuffer::IndexBuffer()
 {
 }
 
-IndexBuffer::~IndexBuffer()
-{
-}
-
 void IndexBuffer::Create(ComPtr<ID3D11Device> device, const std::vector<uint32_t>& indices)
 {
 	m_IndexCount = indices.size();

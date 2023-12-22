@@ -5,7 +5,7 @@ class PixelShader : public Shader
 {
 public:
 	PixelShader(ComPtr<ID3D11Device> device);
-	~PixelShader() override;
+	~PixelShader() override = default;
 	
 	void Create(const WCHAR* szFileName, LPCSTR szEntryPoint, D3D_SHADER_MACRO* defines) override;
 

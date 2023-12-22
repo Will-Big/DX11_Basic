@@ -6,10 +6,6 @@ Shader::Shader(ComPtr<ID3D11Device> device)
 {
 }
 
-Shader::~Shader()
-{
-}
-
 void Shader::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, const D3D_SHADER_MACRO* defines)
 {
 	HRESULT hr = S_OK;

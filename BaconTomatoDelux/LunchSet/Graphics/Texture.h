@@ -21,7 +21,7 @@ class Texture
 public:
 	Texture(ComPtr<ID3D11Device> device, std::wstring_view path, btdTextureType type);
 	Texture(ComPtr<ID3D11ShaderResourceView> shaderResourceView, btdTextureType type);
-	~Texture();
+	~Texture() = default;
 
 	ComPtr<ID3D11ShaderResourceView> GetComPtr() { return m_ShaderResourceView; }
 

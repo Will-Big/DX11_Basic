@@ -14,10 +14,6 @@ Texture::Texture(ComPtr<ID3D11ShaderResourceView> shaderResourceView, btdTexture
 {
 }
 
-Texture::~Texture()
-{
-}
-
 void Texture::Create(ComPtr<ID3D11Device> device, std::wstring_view path)
 {
     std::filesystem::path fsPath(path);
@@ -25,7 +21,7 @@ void Texture::Create(ComPtr<ID3D11Device> device, std::wstring_view path)
 
     if (extension == L".dds" || extension == L".DDS")
     {
-        HR_T(::CreateDDSTextureFromFile(device.Get(), fsPath.c_str(), nullptr, m_ShaderResourceView.GetAddressOf()));
+	    HR_T(::CreateDDSTextureFromFile(device.Get(), fsPath.c_str(), nullptr, m_ShaderResourceView.GetAddressOf()));
     }
     else if (extension == L".tga" || extension == L".TGA")
     {

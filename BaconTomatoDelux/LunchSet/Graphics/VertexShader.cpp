@@ -6,10 +6,6 @@ VertexShader::VertexShader(ComPtr<ID3D11Device> device)
 {
 }
 
-VertexShader::~VertexShader()
-{
-}
-
 void VertexShader::Create(const WCHAR* szFileName, LPCSTR szEntryPoint, D3D_SHADER_MACRO* defines)
 {
 	CompileShaderFromFile(szFileName, szEntryPoint, "vs_5_0", defines);

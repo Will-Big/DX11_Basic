@@ -4,7 +4,7 @@ class IndexBuffer
 {
 public:
 	IndexBuffer();
-	~IndexBuffer();
+	~IndexBuffer() = default;
 
 	void Create(ComPtr<ID3D11Device> device, const std::vector<uint32_t>& indices);
 	ComPtr<ID3D11Buffer> GetComPtr() { return m_IndexBuffer; }

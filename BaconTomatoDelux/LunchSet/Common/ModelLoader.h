@@ -132,7 +132,7 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 {
 	if (btdMesh)
 	{
-		LOG_ERROR(L"Mesh already exists");
+		//LOG_ERROR(L"Mesh already exists");
 		return;
 	}
 

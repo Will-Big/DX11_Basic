@@ -4,7 +4,7 @@ class Sampler
 {
 public:
 	Sampler(ComPtr<ID3D11Device> device);
-	~Sampler();
+	~Sampler() = default;
 
 	ComPtr<ID3D11SamplerState> GetComPtr() { return m_SamplerState; }
 

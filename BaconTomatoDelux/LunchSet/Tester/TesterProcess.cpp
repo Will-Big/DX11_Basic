@@ -61,8 +61,8 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
-	RES_MAN.LoadModel<StaticVertex>(L"cerberus", L"cerberus");
-	RES_MAN.GetModel<ModelData>(L"cerberus", testGO);
+	RES_MAN.LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt");
+	RES_MAN.GetModel<ModelData>(L"Primrose_Egypt", testGO);
 	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 
 	testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
