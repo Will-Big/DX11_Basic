@@ -94,6 +94,9 @@ void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, ModelData& mod
 {
 	std::string name = node->mName.C_Str();
 
+	if(name == "RootNode")
+		name = m_folderPath.filename().string();
+
 	// 기본 데이터 입력
 	model.name.assign(name.begin(), name.end());
 	LOG_MESSAGE(model.name.c_str());

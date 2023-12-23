@@ -17,6 +17,36 @@ void ResourceManager::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11Devic
 	m_DeviceContext = deviceContext;
 }
 
+void ResourceManager::GetModel(std::wstring_view resourceName, std::weak_ptr<GameObject> gameObject)
+{
+	if (const auto searched = models.find(resourceName.data()); searched == models.end())
+	{
+		MessageBoxW(nullptr, L"Data needs to be loaded before it can be accessed", L"LOG_ERROR", MB_OK);
+	}
+	else
+	{
+		LinkModelData(resourceName, searched->second, gameObject);
+	}
+}
+
+
+std::shared_ptr<GameObject> ResourceManager::GetModel(std::wstring_view resourceName)
+{
+	if (const auto searched = models.find(resourceName.data()); searched == models.end())
+	{
+		MessageBoxW(nullptr, L"Data needs to be loaded before it can be accessed", L"LOG_ERROR", MB_OK);
+		return nullptr;
+	}
+	else
+	{
+		std::shared_ptr<GameObject> go = GameObject::Create(searched->second.name);
+		LinkModelData(resourceName, searched->second, std::weak_ptr(go));
+
+		return go;
+	}
+}
+
+
 void ResourceManager::LinkModelData(std::wstring_view fileName, ModelData& data, std::weak_ptr<GameObject> gameObject)
 {
 	auto parent = gameObject.lock();
@@ -82,4 +112,3 @@ void ResourceManager::SetMaterial(std::shared_ptr<Material> material, std::weak_
 	else
 		LOG_ERROR(L"nullptr : MeshRenderer OR SkinnedMeshRenderer");
 }
-

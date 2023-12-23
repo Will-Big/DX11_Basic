@@ -59,17 +59,22 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	m_Renderer->SetShader(RES_MAN.Get<VertexShader>(L"PBR_VS"));
 	m_Renderer->SetShader(RES_MAN.Get<PixelShader>(L"PBR_PS"));
 
-	testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
 	RES_MAN.LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt");
-	RES_MAN.GetModel<ModelData>(L"Primrose_Egypt", testGO);
-	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 
+	// Model Data Load 방식 1 (reference)
+	testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
+	RES_MAN.GetModel(L"Primrose_Egypt", testGO);
+
+	// Model Data Load 방식 2 (return)
+	//testGO = RES_MAN.GetModel(L"Primrose_Egypt");
+	//m_GameObjects.push_back(testGO);
 	testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
 	testGO->GetComponent<Transform>().lock()->SetRenderGUI(true);
-	//testGO->GetComponent<Transform>().lock()->SetLocalEulerRotation({0,90,0});
 
+	// Animator test
+	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));
 	m_GameObjects.back()->AddComponent<Camera>().lock()->SetRenderGUI(true);

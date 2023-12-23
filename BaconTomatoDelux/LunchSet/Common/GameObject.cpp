@@ -124,8 +124,13 @@ std::shared_ptr<GameObject> GameObject::Create(std::wstring_view name)
 		AccessibleGameObject(std::wstring_view name) : GameObject(name) {}
 		~AccessibleGameObject() override = default;
 	};
-
+	
 	auto gameObject = std::make_shared<AccessibleGameObject>(name);
+
+	// GameObject 의 생성자가 아니라 Create 함수에서 AddComponent 를 해주는 이유
+	//		생성자에서 AddComponent 를 하면, GameObject 의 생성이 완료되지 않은 시점에
+	//		AddComponent 함수가 수행되면서 컴포넌트를 생성하기 위한 인자 중 GameObject 의 weak_ptr 이
+	//		생성되지 않은 상황에서 AddComponent 가 이루어지기 때문에 nullptr 로 들어가게 됨
 	gameObject->AddComponent<Transform>();
 
 	return gameObject;
