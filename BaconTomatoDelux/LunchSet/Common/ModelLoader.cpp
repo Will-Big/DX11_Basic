@@ -98,6 +98,16 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 
 void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::shared_ptr<Mesh>& mesh)
 {
+	// 전체 material 중 key 확인
+	auto materialTextures = RES_MAN.materials.find(m_folderPath.filename());
+
+	// key 가 존재하지 않을 경우 생성
+	if (materialTextures == RES_MAN.materials.end())
+	{
+		RES_MAN.materials[m_folderPath.filename()] = std::make_shared<Material>(m_folderPath.filename().wstring());
+		materialTextures = RES_MAN.materials.find(m_folderPath.filename());
+	}
+
 	for (UINT i = 0; i < mat->GetTextureCount(type); i++) {
 		aiString str;
 		mat->GetTexture(type, i, &str);
@@ -105,16 +115,6 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 		// aiString -> path 변환
 		fs::path texturePath = m_folderPath / str.C_Str();
 		btdTextureType btdType = aiType2btdType(type);
-
-		// 전체 material 중 key 확인
-		auto materialTextures = RES_MAN.materials.find(m_folderPath.filename());
-
-		// key 가 존재하지 않을 경우 생성
-		if (materialTextures == RES_MAN.materials.end())
-		{
-			RES_MAN.materials[m_folderPath.filename()] = std::make_shared<Material>(m_folderPath.filename().wstring());
-			materialTextures = RES_MAN.materials.find(m_folderPath.filename());
-		}
 
 		// Mesh 가 사용하는 texture 참조 얻기
 		auto& meshRefTexture = mesh->textures[btdType];
@@ -132,12 +132,10 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 			else
 				newTexture = std::make_shared<Texture>(m_Device, texturePath.wstring(), btdType);
 
-			(*RES_MAN.materials[m_folderPath.filename()])[texturePath.filename().wstring()] = newTexture;
+			(*materialTextures->second)[texturePath.filename().wstring()] = newTexture;
 
 			// 새로 생성한 texture 참조 할당
 			meshRefTexture = newTexture;
-
-			auto t1 = RES_MAN.materials[m_folderPath.filename()];
 
 			LOG_MESSAGE(texturePath.filename().c_str());
 		}

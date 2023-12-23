@@ -91,8 +91,8 @@ void GameProcess::Loop()
 			m_Graphics->RenderBegin();
 
 			Render(m_Renderer.get());
-
 			ImGuiRender();
+
 			m_Graphics->RenderEnd();
 		}
 	}

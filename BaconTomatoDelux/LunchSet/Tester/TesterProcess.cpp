@@ -37,6 +37,7 @@
  *		- PBR 적용하기
  *			- Metalic, Roughness map 적용하기 - OK
  *			- 환경 조명 적용하기
+ *			- Bitangent 계산하지 않고 버텍스에 직접 넣기
  */
 
 static std::shared_ptr<GameObject> testGO;

@@ -29,9 +29,6 @@ void MeshRenderer::Start()
 
 void MeshRenderer::Render(Renderer* renderer)
 {
-	//if (m_Owner.lock()->GetName() == L"Beta_Surface")
-	//	return;
-
 	auto meshfilter = m_MeshFilter.lock();
 	auto transform = m_Transform.lock();
 
