@@ -15,5 +15,5 @@ public:
 	~MeshFilter() override;
 
 public:
-	std::shared_ptr<Mesh> mesh;
+	std::vector<std::shared_ptr<Mesh>> meshes;
 };

@@ -23,8 +23,8 @@ struct ModelData
 	Quaternion rotation = { 0.f, 0.f, 0.f, 1.0f };
 	Vector3 position = { 0.f, 0.f, 0.f };
 
-	std::shared_ptr<Mesh> mesh;
-	std::vector<ModelData> subs;
+	std::vector<std::shared_ptr<Mesh>> subMeshes;
+	std::vector<ModelData> children;
 };
 
 class ModelLoader
@@ -109,17 +109,11 @@ void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, ModelData& mod
 	model.position = Vector3{ translation.x, translation.y, translation.z };
 
 	// 모든 메시에 대해 처리
+	model.subMeshes.resize(node->mNumMeshes);
 	for (uint32_t i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-
-		// 메쉬별로 별도의 ModelData 객체 생성
-		ModelData meshModel{};
-		meshModel.name = model.name + L"_Mesh_" + std::to_wstring(i); // 이름 구분을 위해 인덱스 추가
-		ProcessMesh<T>(mesh, scene, meshModel.mesh);
-
-		// 메쉬 모델을 현재 모델의 자식으로 추가
-		model.subs.push_back(meshModel);
+		ProcessMesh<T>(mesh, scene, model.subMeshes[i]);
 	}
 
 	// 계층 구조 생성
@@ -127,7 +121,7 @@ void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, ModelData& mod
 	{
 		ModelData subModel{};
 		ProcessNode<T>(node->mChildren[i], scene, subModel);
-		model.subs.push_back(subModel);
+		model.children.push_back(subModel);
 	}
 }
 

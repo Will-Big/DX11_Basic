@@ -21,13 +21,16 @@ void ResourceManager::LinkModelData(std::wstring_view fileName, ModelData& data,
 {
 	auto parent = gameObject.lock();
 
-	if (data.mesh)
+	if (!data.subMeshes.empty())
 	{
-		SetMesh(data.mesh, parent);
-		SetMaterial(RES_MAN.materials[fileName.data()], parent);
+		for(auto& mesh : data.subMeshes)
+		{
+			SetMesh(mesh, parent);
+			SetMaterial(RES_MAN.materials[fileName.data()], parent);
+		}
 	}
 
-	for(auto& subModel : data.subs)
+	for(auto& subModel : data.children)
 	{
 		auto child = GameObject::Create(subModel.name);
 		auto childTransform = child->GetComponent<Transform>().lock();
@@ -66,7 +69,7 @@ void ResourceManager::SetMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<GameOb
 	if (meshFilter == nullptr)
 		meshFilter = gameObject->AddComponent<MeshFilter>().lock();
 
-	meshFilter->mesh = mesh;
+	meshFilter->meshes.push_back(mesh);
 }
 
 void ResourceManager::SetMaterial(std::shared_ptr<Material> material, std::weak_ptr<GameObject> gameObject)

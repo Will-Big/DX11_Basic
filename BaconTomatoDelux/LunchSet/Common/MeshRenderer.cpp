@@ -34,15 +34,19 @@ void MeshRenderer::Render(Renderer* renderer)
 
 	assert(meshfilter != nullptr && transform != nullptr);
 
-	VSObjectData td {transform->GetMatrix().Transpose()};
+	VSObjectData td{ transform->GetMatrix().Transpose() };
 
-	ObjectSettings objSet {
-		meshfilter->mesh->vertexBuffer,
-		meshfilter->mesh->indexBuffer,
-		meshfilter->mesh->textures,
-		&td,
-	};
+	// render sub meshes
+	for (const auto& mesh : meshfilter->meshes)
+	{
+		ObjectSettings objSet{
+			mesh->vertexBuffer,
+			mesh->indexBuffer,
+			mesh->textures,
+			&td,
+		};
 
-	renderer->SetPerObject(objSet);
-	renderer->Draw();
+		renderer->SetPerObject(objSet);
+		renderer->Draw();
+	}
 }
