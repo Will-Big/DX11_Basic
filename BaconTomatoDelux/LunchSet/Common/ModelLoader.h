@@ -72,10 +72,7 @@ void ModelLoader::Load(std::filesystem::path path)
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
 
 	const aiScene* scene = importer.ReadFile(fbxPath.string(),
-		aiProcess_Triangulate |
-		aiProcess_GenUVCoords |
-		aiProcess_GenNormals |
-		aiProcess_CalcTangentSpace |
+		aiProcessPreset_TargetRealtime_MaxQuality |
 		aiProcess_ConvertToLeftHanded
 	);
 
@@ -111,11 +108,18 @@ void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, ModelData& mod
 	model.rotation = Quaternion{ rotation.x, rotation.y, rotation.z, rotation.w };
 	model.position = Vector3{ translation.x, translation.y, translation.z };
 
-	// 메시 데이터 입력
+	// 모든 메시에 대해 처리
 	for (uint32_t i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		ProcessMesh<T>(mesh, scene, model.mesh);
+
+		// 메쉬별로 별도의 ModelData 객체 생성
+		ModelData meshModel{};
+		meshModel.name = model.name + L"_Mesh_" + std::to_wstring(i); // 이름 구분을 위해 인덱스 추가
+		ProcessMesh<T>(mesh, scene, meshModel.mesh);
+
+		// 메쉬 모델을 현재 모델의 자식으로 추가
+		model.subs.push_back(meshModel);
 	}
 
 	// 계층 구조 생성

@@ -20,10 +20,11 @@ struct BoneReference
 	Matrix offset;
 };
 
-class Mesh
+class Mesh// : public Object
 {
 public:
 	Mesh(ComPtr<ID3D11Device> device);
+	//Mesh(ComPtr<ID3D11Device> device, std::wstring_view name);
 	~Mesh() = default;
 
 	std::shared_ptr<VertexBuffer> vertexBuffer;

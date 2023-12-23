@@ -16,5 +16,5 @@ public:
 	const std::shared_ptr<Texture>& operator[](std::wstring_view key) const { return textures.at(key.data()); }
 
 public:
-	std::unordered_map<std::wstring, std::shared_ptr<Texture>> textures;
+	std::map<std::wstring, std::shared_ptr<Texture>> textures;
 };
