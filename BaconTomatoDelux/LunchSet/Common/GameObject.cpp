@@ -2,6 +2,7 @@
 #include "GameObject.h"
 
 #include "Transform.h"
+#include "GameProcess.h"
 
 #include "IUpdate.h"
 #include "ILateUpdate.h"
@@ -18,6 +19,25 @@ GameObject::GameObject(std::wstring_view name)
 
 GameObject::~GameObject()
 {
+	auto transform = GetComponent<Transform>().lock();
+
+	if(transform == nullptr)
+		LOG_ERROR(L"nullptr : Transform");
+
+	// todo : 객체의 삭제 명령을 받았을 때 자신이 갖고 있는 하위 객체를 모두 삭제해야 함
+	// temp Scene
+	for(auto& child : transform->GetChildren())
+	{
+		if (child.expired())
+			continue;
+
+		GameProcess::m_GameObjects.erase(std::remove_if(GameProcess::m_GameObjects.begin(), GameProcess::m_GameObjects.end(),
+			[&](const std::shared_ptr<GameObject>& go)
+			{
+				return child.lock()->GetRoot().lock() == transform;
+			}),
+			GameProcess::m_GameObjects.end());
+	}
 }
 
 void GameObject::InitializeComponents()
@@ -131,7 +151,8 @@ std::shared_ptr<GameObject> GameObject::Create(std::wstring_view name)
 	//		생성자에서 AddComponent 를 하면, GameObject 의 생성이 완료되지 않은 시점에
 	//		AddComponent 함수가 수행되면서 컴포넌트를 생성하기 위한 인자 중 GameObject 의 weak_ptr 이
 	//		생성되지 않은 상황에서 AddComponent 가 이루어지기 때문에 nullptr 로 들어가게 됨
-	gameObject->AddComponent<Transform>();
+	auto transform = gameObject->AddComponent<Transform>();
+	transform.lock()->SetRoot(transform);
 
 	return gameObject;
 }

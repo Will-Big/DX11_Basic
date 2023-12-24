@@ -11,9 +11,10 @@ class Transform : public Component, public IUpdate
 {
 public:
 	Transform(std::weak_ptr<GameObject> owner);
-	~Transform() override;
+	~Transform() override = default;
 
 	// Cycle Interface
+	void Initialize() override;
 	void Update(float deltaTime) override;
 
 	void LookAt(const Vector3& position);
@@ -22,10 +23,7 @@ public:
 	// Local
 	void SetLocalMatrix(const Matrix& matrix);
 	void SetLocalScale(const Vector3& localScale) { m_LocalScale = localScale; m_bDirty = true; }
-	void SetLocalEulerRotation(const Vector3& localEulerRotation)
-	{
-		m_LocalRotation = Quaternion::CreateFromYawPitchRoll(localEulerRotation); m_bDirty = true;
-	}
+	void SetLocalEulerRotation(const Vector3& localEulerRotation) { m_LocalRotation = Quaternion::CreateFromYawPitchRoll(localEulerRotation); m_bDirty = true; }
 	void SetLocalRotation(const Quaternion& localRotation) { m_LocalRotation = localRotation; m_bDirty = true; }
 	void SetLocalPosition(const Vector3& localPosition) { m_LocalPosition = localPosition; m_bDirty = true; }
 
@@ -36,6 +34,8 @@ public:
 	void SetRotation(const Quaternion& localRotation);
 	void SetPosition(const Vector3& position);
 
+	// Hierarchy
+	void SetRoot(std::weak_ptr<Transform> root) { m_Root = root; }
 	void SetParent(std::weak_ptr<GameObject> parent);
 
 	// Local

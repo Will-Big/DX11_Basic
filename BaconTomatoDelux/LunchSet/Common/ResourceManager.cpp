@@ -30,7 +30,7 @@ void ResourceManager::GetModel(std::wstring_view resourceName, std::weak_ptr<Gam
 }
 
 
-std::shared_ptr<GameObject> ResourceManager::GetModel(std::wstring_view resourceName)
+std::shared_ptr<GameObject> ResourceManager::GetModel(std::wstring_view resourceName, std::wstring& objectName)
 {
 	if (const auto searched = models.find(resourceName.data()); searched == models.end())
 	{
@@ -39,7 +39,7 @@ std::shared_ptr<GameObject> ResourceManager::GetModel(std::wstring_view resource
 	}
 	else
 	{
-		std::shared_ptr<GameObject> go = GameObject::Create(searched->second.name);
+		std::shared_ptr<GameObject> go = GameObject::Create(objectName);
 		LinkModelData(resourceName, searched->second, std::weak_ptr(go));
 
 		return go;

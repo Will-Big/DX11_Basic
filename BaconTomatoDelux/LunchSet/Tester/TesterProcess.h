@@ -13,4 +13,5 @@ public:
 protected:
 	void Update() override;
 	void Render(Renderer* renderer) override;
+	void ImGuiRender() override;
 };

@@ -10,8 +10,9 @@ Transform::Transform(std::weak_ptr<GameObject> owner)
 {
 }
 
-Transform::~Transform()
+void Transform::Initialize()
 {
+	Component::Initialize();
 }
 
 void Transform::Update(float deltaTime)

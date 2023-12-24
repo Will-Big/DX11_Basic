@@ -13,7 +13,10 @@
 #include "../Graphics/Sampler.h"
 
 // Common Test
+#include <random>
+
 #include "../Common/GameObject.h"
+#include "../Common/InputManager.h"
 #include "../Common/ResourceManager.h"
 #include "../Common/ModelLoader.h"
 #include "../Common/Transform.h"
@@ -38,9 +41,15 @@
  *			- Metalic, Roughness map 적용하기 - OK
  *			- 환경 조명 적용하기
  *			- Bitangent 계산하지 않고 버텍스에 직접 넣기
+ *		- 성능 표시하기
+ *			- 메모리
+ *			- FPS
  */
 
 static std::shared_ptr<GameObject> testGO;
+static size_t needInitIdx = 0;
+static size_t constructCount = 0;
+static size_t deleteCount = 0;
 
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	: GameProcess(hInst, L"Tester Process", 800, 600, true)
@@ -64,24 +73,24 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	RES_MAN.LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt");
 
 	// Model Data Load 방식 1 (reference)
-	testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
-	RES_MAN.GetModel(L"Primrose_Egypt", testGO);
+	//testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
+	//RES_MAN.GetModel(L"Primrose_Egypt", testGO);
 
 	// Model Data Load 방식 2 (return)
 	//testGO = RES_MAN.GetModel(L"Primrose_Egypt");
 	//m_GameObjects.push_back(testGO);
-	testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
-	testGO->GetComponent<Transform>().lock()->SetRenderGUI(true);
+	//testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
+	//testGO->GetComponent<Transform>().lock()->SetRenderGUI(true);
 
 	// Animator test
 	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));
-	m_GameObjects.back()->AddComponent<Camera>().lock()->SetRenderGUI(true);
-	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 0.f, 0.f, -200.f });
+	m_GameObjects.back()->AddComponent<Camera>();
+	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 250.f, 250.f, -200.f });
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Light"));
-	m_GameObjects.back()->AddComponent<Light>().lock()->SetRenderGUI(true);
+	m_GameObjects.back()->AddComponent<Light>();
 
 	// temp(Scene)
 	for (auto& go : m_GameObjects)
@@ -94,10 +103,89 @@ TesterProcess::~TesterProcess()
 
 void TesterProcess::Update()
 {
+	// 무작위 숫자 생성을 위한 엔진과 분포 설정
+	static std::random_device rd;
+	static std::mt19937 rng(rd());
+	static std::uniform_real_distribution<float> uni(0.f, 500.f);
+
+	if (INPUT_MAN.IsKeyHold(VK_UP))
+	{
+		needInitIdx = m_GameObjects.size();
+		std::wstring name = L"Primrose_Egypt" + std::to_wstring(constructCount);
+		auto go = RES_MAN.GetModel(L"Primrose_Egypt", name);
+
+		// 무작위 위치 생성
+		float randomX = uni(rng);
+		float randomY = uni(rng);
+		float randomZ = uni(rng);
+
+		go->GetComponent<Transform>().lock()->SetPosition({ randomX, randomY, randomZ });
+		m_GameObjects.push_back(go);
+
+		for (size_t i = needInitIdx; i < m_GameObjects.size(); i++)
+		{
+			m_GameObjects[i]->InitializeComponents();
+		}
+
+		constructCount++;
+	}
+	else if (INPUT_MAN.IsKeyHold(VK_DOWN))
+	{
+		std::wstring name = L"Primrose_Egypt" + std::to_wstring(deleteCount);
+
+		auto target = std::find_if(m_GameObjects.begin(), m_GameObjects.end(),
+			[&name](const std::shared_ptr<GameObject>& go){
+				return go->GetName() == name;
+			});
+
+		if(target != m_GameObjects.end())
+		{
+			auto rootTransform = (*target)->GetComponent<Transform>().lock();
+
+			m_GameObjects.erase(std::remove_if(m_GameObjects.begin(), m_GameObjects.end(),
+				[&](const std::shared_ptr<GameObject>& obj) {
+					auto root = obj->GetComponent<Transform>().lock()->GetRoot().lock();
+					return root == rootTransform;
+				}),
+				m_GameObjects.end());
+
+			deleteCount++;
+		}
+	}
+
 	GameProcess::Update();
 }
 
 void TesterProcess::Render(Renderer* renderer)
 {
 	GameProcess::Render(renderer);
+}
+
+#include <psapi.h>
+
+void TesterProcess::ImGuiRender()
+{
+	if (!m_bImGuiRender)
+		return;
+
+	ImGui_Initializer::RenderBegin();
+
+	for (auto& go : m_GameObjects)
+		go->GUI();
+
+	PROCESS_MEMORY_COUNTERS_EX pmc;
+	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
+	{
+		SIZE_T physMemUsedByMe = pmc.WorkingSetSize; // 현재 프로세스에 의해 사용되는 실제 메모리 (Working Set)
+		SIZE_T virtMemUsedByMe = pmc.PrivateUsage;   // 현재 프로세스에 의해 사용되는 가상 메모리
+
+		ImGui::Text("Physical Memory Used: %llu MB", physMemUsedByMe / (1024 * 1024));
+		ImGui::Text("Virtual Memory Used: %llu MB", virtMemUsedByMe / (1024 * 1024));
+	}
+	else
+	{
+		ImGui::Text("Memory info not available");
+	}
+
+	ImGui_Initializer::RenderEnd();
 }

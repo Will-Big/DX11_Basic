@@ -24,6 +24,7 @@ public:
 
 	void InitializeComponents();
 	void Start();
+
 	void Update(float deltaTime);
 	void LateUpdate(float deltaTime);
 	void FixedUpdate(float deltaTime);
@@ -55,7 +56,7 @@ public:
 	// GameObject 생성 전역 함수(Add Transform Component)
 	static std::shared_ptr<GameObject> Create(std::wstring_view name);
 
-	// deleted constructor & operator
+	// deleted constructor , = operator
 	GameObject(const GameObject&) = delete;
 	GameObject& operator=(const GameObject&) = delete;
 

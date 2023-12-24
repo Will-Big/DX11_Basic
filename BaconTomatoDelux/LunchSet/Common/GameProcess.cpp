@@ -8,6 +8,7 @@
 
 // Common
 #include "GameObject.h"
+#include "InputManager.h"
 #include "ResourceManager.h"
 
 uint32_t GameProcess::Width = 0;
@@ -65,6 +66,7 @@ GameProcess::GameProcess(HINSTANCE hInst, std::wstring_view title, int width, in
 	m_Renderer = std::make_unique<Renderer>(m_Graphics->GetDevice(), m_Graphics->GetDeviceContext());
 
 	RES_MAN.Initialize(m_Graphics->GetDevice(), m_Graphics->GetDeviceContext());
+	INPUT_MAN.Initialize();
 }
 
 GameProcess::~GameProcess()
@@ -101,6 +103,7 @@ void GameProcess::Loop()
 void GameProcess::Update()
 {
 	// system update
+	INPUT_MAN.Update();
 
 	// temp(Scene)
 	{

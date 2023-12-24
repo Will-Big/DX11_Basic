@@ -36,7 +36,7 @@ public:
 	// 레퍼런스 방식
 	void GetModel(std::wstring_view resourceName, std::weak_ptr<GameObject> gameObject);
 	// 포인터 리턴 방식
-	std::shared_ptr<GameObject> GetModel(std::wstring_view resourceName);
+	std::shared_ptr<GameObject> GetModel(std::wstring_view resourceName, std::wstring& objectName);
 
 	static ResourceManager& GetInstance()
 	{
