@@ -1,51 +1,6 @@
 #pragma once
 #include "ConstantBuffer.h"
-#include "Texture.h"
-
-// CB
-struct VSFixedData;
-struct VSCameraData;
-struct PSCameraData;
-struct PSLightData;
-struct VSObjectData;
-struct VsMatrixPallete;
-
-class VertexBuffer;
-class IndexBuffer;
-class Texture;
-class Shader;
-class VertexShader;
-class PixelShader;
-class InputLayout;
-
-
-struct FixedSettings
-{
-	const VSFixedData* vsFixed = nullptr;
-};
-
-
-// 상수버퍼의 변화가 없었다면 nullptr 로 넘기기
-struct FrameSettings
-{
-	const VSCameraData* vsCamera = nullptr;
-	const PSCameraData* psCamera = nullptr;
-	const PSLightData* light = nullptr;
-};
-
-struct ObjectSettings
-{
-	std::shared_ptr<VertexBuffer> vertexBuffer;
-	std::shared_ptr<IndexBuffer> indexBuffer;
-	std::array<std::shared_ptr<Texture>, btdTextureType_END> textures;
-
-	const VSObjectData* transform = nullptr;
-};
-
-struct MatrixPalleteSettings
-{
-	const VsMatrixPallete* pallete;
-};
+#include "RendererSettings.h"
 
 class Renderer
 {
@@ -73,6 +28,13 @@ private:
 	ComPtr<ID3D11Device> m_Device;
 	ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	uint32_t m_IndexCount = 0;
+
+	// 렌더큐
+	//		일단 텍스처를 기준으로 정렬하는 렌더큐
+	//		하지만 같은 텍스처를 사용하더라도
+	//		다른 쉐이더, 버퍼를 사용하는 특이한 경우가 있을 수 있으므로
+	//		이를 나중에 대비하자
+	std::vector<RenderQueueSettings> m_RenderQueue;
 };
 
 template <typename T, typename>

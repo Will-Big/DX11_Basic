@@ -13,8 +13,6 @@
 #include "../Graphics/Sampler.h"
 
 // Common Test
-#include <random>
-
 #include "../Common/GameObject.h"
 #include "../Common/InputManager.h"
 #include "../Common/ResourceManager.h"
@@ -24,6 +22,9 @@
 #include "../Common/Light.h"
 #include "../Common/Animator.h"
 
+// Homework Test
+#include <random>
+#include <psapi.h>
 
 /**
  * \todo list
@@ -42,8 +43,9 @@
  *			- 환경 조명 적용하기
  *			- Bitangent 계산하지 않고 버텍스에 직접 넣기
  *		- 성능 표시하기
- *			- 메모리
+ *			- 메모리 - OK
  *			- FPS
+ *		- Graphic Resource 교체하며 렌더링하기
  */
 
 static std::shared_ptr<GameObject> testGO;
@@ -103,6 +105,33 @@ TesterProcess::~TesterProcess()
 
 void TesterProcess::Update()
 {
+	UpdateHW2();
+
+	GameProcess::Update();
+}
+
+void TesterProcess::Render(Renderer* renderer)
+{
+	GameProcess::Render(renderer);
+}
+
+void TesterProcess::ImGuiRender()
+{
+	if (!m_bImGuiRender)
+		return;
+
+	ImGui_Initializer::RenderBegin();
+
+	for (auto& go : m_GameObjects)
+		go->GUI();
+
+	ImGuiRenderHW2();
+
+	ImGui_Initializer::RenderEnd();
+}
+
+void TesterProcess::UpdateHW2()
+{
 	// 무작위 숫자 생성을 위한 엔진과 분포 설정
 	static std::random_device rd;
 	static std::mt19937 rng(rd());
@@ -134,11 +163,11 @@ void TesterProcess::Update()
 		std::wstring name = L"Primrose_Egypt" + std::to_wstring(deleteCount);
 
 		auto target = std::find_if(m_GameObjects.begin(), m_GameObjects.end(),
-			[&name](const std::shared_ptr<GameObject>& go){
+			[&name](const std::shared_ptr<GameObject>& go) {
 				return go->GetName() == name;
 			});
 
-		if(target != m_GameObjects.end())
+		if (target != m_GameObjects.end())
 		{
 			auto rootTransform = (*target)->GetComponent<Transform>().lock();
 
@@ -152,40 +181,18 @@ void TesterProcess::Update()
 			deleteCount++;
 		}
 	}
-
-	GameProcess::Update();
 }
 
-void TesterProcess::Render(Renderer* renderer)
+void TesterProcess::ImGuiRenderHW2()
 {
-	GameProcess::Render(renderer);
-}
-
-#include <psapi.h>
-
-void TesterProcess::ImGuiRender()
-{
-	if (!m_bImGuiRender)
-		return;
-
-	ImGui_Initializer::RenderBegin();
-
-	for (auto& go : m_GameObjects)
-		go->GUI();
-
 	PROCESS_MEMORY_COUNTERS_EX pmc;
 	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
 	{
-		SIZE_T physMemUsedByMe = pmc.WorkingSetSize; // 현재 프로세스에 의해 사용되는 실제 메모리 (Working Set)
-		SIZE_T virtMemUsedByMe = pmc.PrivateUsage;   // 현재 프로세스에 의해 사용되는 가상 메모리
-
-		ImGui::Text("Physical Memory Used: %llu MB", physMemUsedByMe / (1024 * 1024));
-		ImGui::Text("Virtual Memory Used: %llu MB", virtMemUsedByMe / (1024 * 1024));
+		ImGui::Text("Physical Memory Used: %llu MB", pmc.WorkingSetSize / (1024 * 1024)); // 현재 프로세스에 의해 사용되는 실제 메모리 (Working Set)
+		ImGui::Text("Virtual Memory Used: %llu MB", pmc.PrivateUsage / (1024 * 1024));   // 현재 프로세스에 의해 사용되는 가상 메모리
 	}
 	else
 	{
 		ImGui::Text("Memory info not available");
 	}
-
-	ImGui_Initializer::RenderEnd();
 }

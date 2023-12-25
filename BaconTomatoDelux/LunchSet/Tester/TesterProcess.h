@@ -14,4 +14,9 @@ protected:
 	void Update() override;
 	void Render(Renderer* renderer) override;
 	void ImGuiRender() override;
+
+
+private:
+	void UpdateHW2();
+	void ImGuiRenderHW2();
 };

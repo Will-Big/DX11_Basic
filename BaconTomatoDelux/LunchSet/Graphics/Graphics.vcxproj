@@ -148,6 +148,7 @@
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="PerObjectCB.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RendererSettings.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="VertexBuffer.h" />
