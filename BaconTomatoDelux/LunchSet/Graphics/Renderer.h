@@ -22,9 +22,13 @@ public:
 	void SetShader(std::shared_ptr<T> shader);
 	void Draw();
 
+	// new
+	void AddRenderQueue(const RenderQueueSettings& settings);
+
 private:
 	template<typename T, typename = decltype(T::bindings)>
 	void SetConstantBuffer(ConstantBuffer<T>& buffer);
+	void SortRenderQueue();
 
 private:
 	ComPtr<ID3D11Device> m_Device;

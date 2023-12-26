@@ -15,6 +15,7 @@
 #include <unordered_map>
 #include <string>
 #include <string_view>
+#include <algorithm>
 
 // WIN
 #include <windows.h>

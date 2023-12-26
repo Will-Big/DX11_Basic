@@ -90,7 +90,7 @@ void Renderer::SetPerObject(const ObjectSettings& settings)
 	}
 
 	// Textures Mapping
-	if(settings.textures)
+	if (settings.textures)
 	{
 		const std::array<std::shared_ptr<Texture>, btdTextureType_END> ts = *settings.textures;
 
@@ -142,6 +142,20 @@ void Renderer::SetInputLayout(std::shared_ptr<InputLayout> layout)
 void Renderer::Draw()
 {
 	m_DeviceContext->DrawIndexed(m_IndexCount, 0, 0);
+}
+
+void Renderer::AddRenderQueue(const RenderQueueSettings& settings)
+{
+	m_RenderQueue.push_back(std::move(settings));
+}
+
+void Renderer::SortRenderQueue()
+{
+	std::sort(m_RenderQueue.begin(), m_RenderQueue.end(),
+		[](const RenderQueueSettings& lhs, const RenderQueueSettings& rhs)
+		{
+			return lhs.textures < rhs.textures;
+		});
 }
 
 

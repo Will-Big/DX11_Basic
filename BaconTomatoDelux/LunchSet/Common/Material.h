@@ -4,8 +4,9 @@
 
 /**
  * \brief	: MeshRenderer 가 참조해야할 데이터를 가지고 있는 클래스
- *			  여러개의 texture 로 조합된 textures 를 들고 있으며 언제든 구성품을 갈아낄 수 있음 (공유자원)
- * \warn	: 이 Material 클래스는 유니티와 모양이 다름. 현재 Mesh 가 들고있는 textures 가 이 Material 이 되어야 함.
+ *			  객체가 가르키는 그래픽 리소스는 공유자원으로 해당 객체를 사용하는 모든 인스턴스가 영향을 받음
+ *			  이 텍스처를 사용하는 객체가 렌더링되기 위해서 필요한 그래픽 리소스를 가리키고 있음 - todo
+ *					shader, input layout, texture 등
  */
 
 class Material : public Object
@@ -14,9 +15,6 @@ public:
 	Material(std::wstring_view name) : Object(name) {}
 	~Material() override = default;
 
-//	std::shared_ptr<Texture>& operator[](std::wstring_view key) { return textureMap[key.data()]; }
-//	const std::shared_ptr<Texture>& operator[](std::wstring_view key) const { return textureMap.at(key.data()); }
-//
 	const std::shared_ptr<Texture>& GetTexture(btdTextureType type)
 	{
 		assert(type < btdTextureType_END);
@@ -28,9 +26,6 @@ public:
 		assert(type < btdTextureType_END);
 		textures[type] = texture;
 	}
-//
-//public:
-//	std::map<std::wstring, std::shared_ptr<Texture>> textureMap;
 
 public:
 	std::array<std::shared_ptr<Texture>, btdTextureType_END> textures;

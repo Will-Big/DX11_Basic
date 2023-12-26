@@ -20,15 +20,15 @@ class InputLayout;
 // Render Queue 를 정렬하여 적절한 순서대로 렌더링한다
 struct RenderQueueSettings
 {
-	const std::shared_ptr<InputLayout> inputLayout;
-	const std::shared_ptr<VertexShader> vertexShader; // 정렬 기준 2
-	const std::shared_ptr<PixelShader> pixelShader;
+	std::shared_ptr<InputLayout> inputLayout;
+	std::shared_ptr<VertexShader> vertexShader; // 정렬 기준 2
+	std::shared_ptr<PixelShader> pixelShader;
 
-	const std::shared_ptr<VertexBuffer> vertexBuffer;
-	const std::shared_ptr<IndexBuffer> indexBuffer;
-	const std::array<std::shared_ptr<Texture>, btdTextureType_END> textures; // 정렬 기준 1
+	std::shared_ptr<VertexBuffer> vertexBuffer;
+	std::shared_ptr<IndexBuffer> indexBuffer;
+	std::array<std::shared_ptr<Texture>, btdTextureType_END>* textures = nullptr; // 정렬 기준 1
 
-	const VSObjectData* transform = nullptr;
+	VSObjectData* transform = nullptr;
 };
 
 struct FixedSettings
