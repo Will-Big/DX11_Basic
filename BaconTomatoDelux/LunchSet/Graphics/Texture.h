@@ -1,16 +1,5 @@
 ﻿#pragma once
-
-enum btdTextureType
-{
-	btdTextureType_DIFFUSE,
-	btdTextureType_NORMALS,
-	btdTextureType_SPECULAR,
-	btdTextureType_OPACITY,
-	btdTextureType_EMISSIVE,
-	btdTextureType_METALNESS,
-	btdTextureType_ROUGHNESS,
-	btdTextureType_END,
-};
+#include "Forward.h"
 
 /**
  * \brief	: Texture 의 정보와 데이터를 관리하는 클래스

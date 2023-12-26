@@ -2,9 +2,21 @@
 
 enum btdShaderScope
 {
-	btdShaderScope_None,
-	btdShaderScope_Vertex,
-	btdShaderScope_Pixel,
+	btdShaderScope_NONE,
+	btdShaderScope_VERTEX,
+	btdShaderScope_PIXEL,
 
-	btdShaderScope_End
+	btdShaderScope_END
+};
+
+enum btdTextureType
+{
+	btdTextureType_DIFFUSE,
+	btdTextureType_NORMALS,
+	btdTextureType_SPECULAR,
+	btdTextureType_OPACITY,
+	btdTextureType_EMISSIVE,
+	btdTextureType_METALNESS,
+	btdTextureType_ROUGHNESS,
+	btdTextureType_END,
 };

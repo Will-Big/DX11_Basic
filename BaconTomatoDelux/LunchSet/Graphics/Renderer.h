@@ -2,6 +2,8 @@
 #include "ConstantBuffer.h"
 #include "RendererSettings.h"
 
+class Graphics;
+
 class Renderer
 {
 public:
@@ -24,6 +26,7 @@ public:
 
 	// new
 	void AddRenderQueue(const RenderQueueSettings& settings);
+	void DrawQueue();
 
 private:
 	template<typename T, typename = decltype(T::bindings)>
@@ -40,6 +43,9 @@ private:
 	//		하지만 같은 텍스처를 사용하더라도
 	//		다른 쉐이더, 버퍼를 사용하는 특이한 경우가 있을 수 있으므로
 	//		이를 나중에 대비하자
+	//		텍스처(머터리얼) 교체를 하지 않기 위해 비교하는 것 조차도 비용이 있는데...
+	//			1. 큐 안에 큐를 만들어서 텍스처별로 큐를 관리한다
+	//			2. 그냥 매 Settings 마다 비교한다	<- 일단 이걸로!
 	std::vector<RenderQueueSettings> m_RenderQueue;
 };
 
@@ -50,10 +56,10 @@ void Renderer::SetConstantBuffer(ConstantBuffer<T>& buffer)
 	{
 		switch (auto [scope, slotNum] = binding; scope)
 		{
-		case btdShaderScope_Vertex:
+		case btdShaderScope_VERTEX:
 			m_DeviceContext->VSSetConstantBuffers(slotNum, 1, buffer.GetComPtr().GetAddressOf());
 			break;
-		case btdShaderScope_Pixel:
+		case btdShaderScope_PIXEL:
 			m_DeviceContext->PSSetConstantBuffers(slotNum, 1, buffer.GetComPtr().GetAddressOf());
 			break;
 		default:

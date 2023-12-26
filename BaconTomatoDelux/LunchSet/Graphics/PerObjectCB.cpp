@@ -3,16 +3,16 @@
 
 const std::vector<std::pair<btdShaderScope, uint32_t>> VSObjectData::bindings
 {
-	{btdShaderScope_Vertex, 2},
+	{btdShaderScope_VERTEX, 2},
 };
 
 const std::vector<std::pair<btdShaderScope, uint32_t>> VsMatrixPallete::bindings
 {
-	{btdShaderScope_Vertex, 3},
+	{btdShaderScope_VERTEX, 3},
 };
 
 const std::vector<std::pair<btdShaderScope, uint32_t>> PsMaterialData::bindings
 {
-	{btdShaderScope_Pixel, 2},
+	{btdShaderScope_PIXEL, 2},
 };
 

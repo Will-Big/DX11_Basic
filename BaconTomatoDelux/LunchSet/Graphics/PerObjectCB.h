@@ -40,7 +40,7 @@ struct VsMatrixPallete
 __declspec(align(16))
 struct PsMaterialData
 {
-    uint32_t ShaderScope;
+    uint32_t textureBitmask;
     float SpecularPower;
     float OpacityPower;
 

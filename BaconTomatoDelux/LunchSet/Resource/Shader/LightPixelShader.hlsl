@@ -43,7 +43,7 @@ float3 fresnelSchlick(float3 F0, float cosTheta)
 float4 main(PS_INPUT input) : SV_TARGET
 {
     float opacity = 1.0f;
-    if (gShaderScope & OPACITY)
+    if (gTextureBitmask & OPACITY)
     {
         opacity = txOpacity.Sample(samLinear, input.uv).a;
         if (opacity <= 0.0f)
@@ -51,7 +51,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     }
 
     float3 albedo = DEFAULT_COLOR;
-    if (gShaderScope & DIFFUSE)
+    if (gTextureBitmask & DIFFUSE)
     {
         albedo = pow(txDiffuse.Sample(samLinear, input.uv).rgb, 2.2f);
     }
@@ -59,7 +59,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     float3 ambient = albedo * 0.3f;
 
     float3 normal = normalize(input.normal);
-    if (gShaderScope & NORMAL)
+    if (gTextureBitmask & NORMAL)
     {
         //float3 tangent = normalize(input.tangent - dot(input.tangent, normal) * normal);
         //float3 biTangent = cross(normal, tangent);
@@ -77,7 +77,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 
     float3 specular = 0.f;
 
-    if (gShaderScope & SPECULAR)
+    if (gTextureBitmask & SPECULAR)
     {
 		specular = pow(cosNH, gSpecularPower); // todo : delete
         float4 specularIntensity = txSpecular.Sample(samLinear, input.uv);
@@ -85,7 +85,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     }
     
     float3 directLighting = 0.0f;
-    if ((gShaderScope & METALNESS) && (gShaderScope & ROUGHNESS))
+    if ((gTextureBitmask & METALNESS) && (gTextureBitmask & ROUGHNESS))
     {
         float cosLH = max(0.f, dot(halfVec, viewDir));
         float cosNV = max(0.f, dot(normal, viewDir));

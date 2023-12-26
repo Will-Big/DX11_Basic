@@ -106,7 +106,7 @@ void Renderer::SetPerObject(const ObjectSettings& settings)
 			{
 				m_DeviceContext->PSSetShaderResources(texType, 1, ts[texType]->GetComPtr().GetAddressOf());
 
-				dataStruct.ShaderScope |= 1 << (texType);
+				dataStruct.textureBitmask |= 1 << (texType);
 			}
 		}
 
@@ -147,6 +147,96 @@ void Renderer::Draw()
 void Renderer::AddRenderQueue(const RenderQueueSettings& settings)
 {
 	m_RenderQueue.push_back(std::move(settings));
+}
+
+void Renderer::DrawQueue()
+{
+	SortRenderQueue();
+
+	static RenderQueueSettings lastSettings;
+
+	// 데이터 초기화
+	lastSettings = {};
+
+	// warn : 일단 텍스처가 같으면 다른게 다 같다는 가정
+	for(auto& settings : m_RenderQueue)
+	{
+		// Compare to previous object
+		if(settings.textures != lastSettings.textures)
+		{
+			// change input layout
+			{
+				SetInputLayout(settings.inputLayout);
+			}
+
+			// change vertex buffer
+			{
+				const std::shared_ptr<VertexBuffer>& vb = settings.vertexBuffer;
+
+				if (vb.get() == nullptr)
+				{
+					LOG_ERROR(L"nullptr : VertexBuffer");
+					return;
+				}
+
+				uint32_t vbStride = vb->GetStride();
+				uint32_t vbOffset = vb->GetOffset();
+
+				m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetComPtr().GetAddressOf(), &vbStride, &vbOffset);
+			}
+
+			// change index buffer
+			{
+				const std::shared_ptr<IndexBuffer>& ib = settings.indexBuffer;
+
+				if (ib.get() == nullptr)
+				{
+					LOG_ERROR(L"nullptr : IndexBuffer");
+					return;
+				}
+
+				m_IndexCount = ib->GetIndexCount();
+				m_DeviceContext->IASetIndexBuffer(ib->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
+			}
+
+			// change texture
+			if (settings.textures)
+			{
+				const std::array<std::shared_ptr<Texture>, btdTextureType_END> ts = *settings.textures;
+
+				// Material Data
+				static ConstantBuffer<PsMaterialData> md{ m_Device, m_DeviceContext };
+				// todo : 상수 데이터 삭제
+				PsMaterialData dataStruct{ 0, 20.0f, 2.0f };
+
+
+				for (uint32_t texType = btdTextureType_DIFFUSE; texType < btdTextureType_END; texType++)
+				{
+					if (ts[texType] != nullptr)
+					{
+						m_DeviceContext->PSSetShaderResources(texType, 1, ts[texType]->GetComPtr().GetAddressOf());
+
+						dataStruct.textureBitmask |= 1 << (texType);
+					}
+				}
+
+				md.Update(&dataStruct);
+				SetConstantBuffer(md);
+			}
+
+			// change transform matrix
+			if (settings.transform)
+			{
+				static ConstantBuffer<VSObjectData> td{ m_Device, m_DeviceContext };
+
+				td.Update(settings.transform);
+				SetConstantBuffer(td);
+			}
+		}
+		lastSettings = settings;
+
+		Draw();
+	}
 }
 
 void Renderer::SortRenderQueue()

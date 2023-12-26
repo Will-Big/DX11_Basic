@@ -37,7 +37,7 @@ cbuffer PSLightData : register(b1) // PS 1
 
 cbuffer PSMaterialData : register(b2) // PS 2
 {
-    uint gShaderScope;               // always updated per object
+    uint gTextureBitmask;            // always updated per object
     float gSpecularPower;            // always updated per object
     float gOpacityPower;             // always updated per object
 }

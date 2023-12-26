@@ -3,5 +3,5 @@
 
 const std::vector<std::pair<btdShaderScope, uint32_t>> VSFixedData::bindings
 {
-	{btdShaderScope_Vertex, 0},
+	{btdShaderScope_VERTEX, 0},
 };
