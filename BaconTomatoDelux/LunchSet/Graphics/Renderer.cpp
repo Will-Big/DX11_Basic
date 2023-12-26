@@ -90,8 +90,9 @@ void Renderer::SetPerObject(const ObjectSettings& settings)
 	}
 
 	// Textures Mapping
+	if(settings.textures)
 	{
-		const std::array<std::shared_ptr<Texture>, btdTextureType_END>& ts = settings.textures;
+		const std::array<std::shared_ptr<Texture>, btdTextureType_END> ts = *settings.textures;
 
 		// Material Data
 		static ConstantBuffer<PsMaterialData> md{ m_Device, m_DeviceContext };

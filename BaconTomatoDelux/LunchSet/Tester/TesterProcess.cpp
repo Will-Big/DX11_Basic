@@ -88,7 +88,7 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));
-	m_GameObjects.back()->AddComponent<Camera>();
+	m_GameObjects.back()->AddComponent<Camera>().lock()->SetRenderGUI(true);
 	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 250.f, 250.f, -200.f });
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Light"));
@@ -160,6 +160,9 @@ void TesterProcess::UpdateHW2()
 	}
 	else if (INPUT_MAN.IsKeyHold(VK_DOWN))
 	{
+		// 실제로 씬에서 적용할 때는 지우는 방식 수정 필요
+		//		현재는 그냥 같은 root 를 가진 모든 오브젝트 삭제 방식
+		//		
 		std::wstring name = L"Primrose_Egypt" + std::to_wstring(deleteCount);
 
 		auto target = std::find_if(m_GameObjects.begin(), m_GameObjects.end(),

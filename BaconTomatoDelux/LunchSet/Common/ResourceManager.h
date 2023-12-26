@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "ModelLoader.h"
-#include "Mesh.h"
 
 #include "../Graphics/Shader.h"
 #include "../Graphics/InputLayout.h"
@@ -11,6 +10,7 @@ namespace fs = std::filesystem;
 
 #define RES_MAN ResourceManager::GetInstance()
 
+class Mesh;
 class Sampler;
 class InputLayout;
 class Material;
@@ -62,7 +62,9 @@ public:
 	std::map<std::wstring, std::shared_ptr<Sampler>> samplers;
 
 	// Model
+	// todo : meshes 추가(model 이 참조하는)
 	std::map<std::wstring, ModelData> models;
+	std::map<std::wstring, std::shared_ptr<Texture>> textures;
 	std::map<std::wstring, std::shared_ptr<Material>> materials;
 	std::map<std::wstring, std::shared_ptr<AnimatorController>> animatorControllers;
 

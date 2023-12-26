@@ -21,12 +21,12 @@ class InputLayout;
 struct RenderQueueSettings
 {
 	const std::shared_ptr<InputLayout> inputLayout;
-	const std::shared_ptr<VertexShader> vertexShader;
+	const std::shared_ptr<VertexShader> vertexShader; // 정렬 기준 2
 	const std::shared_ptr<PixelShader> pixelShader;
 
 	const std::shared_ptr<VertexBuffer> vertexBuffer;
 	const std::shared_ptr<IndexBuffer> indexBuffer;
-	const std::array<std::shared_ptr<Texture>, btdTextureType_END> textures; // 정렬 기준
+	const std::array<std::shared_ptr<Texture>, btdTextureType_END> textures; // 정렬 기준 1
 
 	const VSObjectData* transform = nullptr;
 };
@@ -48,7 +48,7 @@ struct ObjectSettings
 {
 	std::shared_ptr<VertexBuffer> vertexBuffer;
 	std::shared_ptr<IndexBuffer> indexBuffer;
-	std::array<std::shared_ptr<Texture>, btdTextureType_END> textures;
+	std::array<std::shared_ptr<Texture>, btdTextureType_END>* textures;
 
 	const VSObjectData* transform = nullptr;
 };

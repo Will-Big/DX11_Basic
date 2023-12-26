@@ -11,6 +11,7 @@
 
 // 함수 전방 선언
 btdTextureType aiType2btdType(aiTextureType type);
+std::wstring aiString2wstring(const aiString& string);
 
 ModelLoader::ModelLoader(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext, ModelData& modelData)
 	: m_Device(device), m_DeviceContext(deviceContext), m_RootData(modelData)
@@ -36,8 +37,7 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++)
 	{
-		std::string animName(scene->mAnimations[i]->mName.C_Str());
-		std::wstring wsAnimName{ animName.begin(), animName.end() };
+		std::wstring wsAnimName = aiString2wstring(scene->mAnimations[i]->mName);
 
 		auto it = std::find_if(ctrl->animationClips.begin(), ctrl->animationClips.end(), [&wsAnimName](AnimationClip& clip)
 			{
@@ -95,50 +95,58 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 	}
 }
 
-
-void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::shared_ptr<Mesh>& mesh)
+void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene,
+                                        std::weak_ptr<Material>& material)
 {
-	// 전체 material 중 key 확인
-	auto materialTextures = RES_MAN.materials.find(m_folderPath.filename());
-
-	// key 가 존재하지 않을 경우 생성
-	if (materialTextures == RES_MAN.materials.end())
+	for (UINT i = 0; i < mat->GetTextureCount(type); i++) 
 	{
-		RES_MAN.materials[m_folderPath.filename()] = std::make_shared<Material>(m_folderPath.filename().wstring());
-		materialTextures = RES_MAN.materials.find(m_folderPath.filename());
-	}
-
-	for (UINT i = 0; i < mat->GetTextureCount(type); i++) {
 		aiString str;
 		mat->GetTexture(type, i, &str);
 
-		// aiString -> path 변환
-		fs::path texturePath = m_folderPath / str.C_Str();
+		// aiString 변환
+		fs::path path = m_folderPath / str.C_Str();
+		fs::path key = m_folderPath.filename().wstring() + L'/'
+			+ path.filename().replace_extension().wstring();
+		std::wstring materialName = aiString2wstring(mat->GetName());
+
 		btdTextureType btdType = aiType2btdType(type);
 
-		// Mesh 가 사용하는 texture 참조 얻기
-		auto& meshRefTexture = mesh->textures[btdType];
+		// key 검색
+		auto texIt = RES_MAN.textures.find(key);
+		auto matIt = RES_MAN.materials.find(materialName);
 
-		// 해당 key 에 존재하는 texture 일 경우 참조 할당
-		if (const auto tex = (*materialTextures->second)[texturePath.filename().wstring()])
-			meshRefTexture = tex;
-		else
+		// 새로운 material 일 경우, 생성
+		if (matIt == RES_MAN.materials.end())
 		{
-			const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(str.C_Str());
+			auto newMaterial = std::make_shared<Material>(materialName);
+
+			// 리소스 매니저에 할당 및 iterator 갱신
+			RES_MAN.materials.insert({ materialName, newMaterial });
+			matIt = RES_MAN.materials.find(materialName);
+		}
+
+		// 새로운 texture 일 경우, 생성
+		if (texIt == RES_MAN.textures.end())
+		{
 			std::shared_ptr<Texture> newTexture;
+
+			// 내장 texture 확인
+			const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(str.C_Str());
 
 			if (embeddedTexture != nullptr)
 				newTexture = std::make_shared<Texture>(LoadEmbeddedTexture(embeddedTexture), btdType);
 			else
-				newTexture = std::make_shared<Texture>(m_Device, texturePath.wstring(), btdType);
+				newTexture = std::make_shared<Texture>(m_Device, path.wstring(), btdType);
 
-			(*materialTextures->second)[texturePath.filename().wstring()] = newTexture;
+			// 리소스 매니저에 할당 및 iterator 갱신
+			RES_MAN.textures.insert({ newTexture->name, newTexture });
+			texIt = RES_MAN.textures.find(newTexture->name);
 
-			// 새로 생성한 texture 참조 할당
-			meshRefTexture = newTexture;
-
-			LOG_MESSAGE(texturePath.filename().c_str());
+			LOG_MESSAGE(newTexture->name.c_str());
 		}
+
+		matIt->second->SetTexture(btdType, texIt->second);
+		material = matIt->second;
 	}
 }
 
@@ -211,4 +219,11 @@ btdTextureType aiType2btdType(aiTextureType type)
 		LOG_ERROR(L"Invalid Texture Type");
 		return btdTextureType_END;
 	}
+}
+
+std::wstring aiString2wstring(const aiString& string)
+{
+	auto str = std::string(string.C_Str());
+	return std::wstring(str.begin(), str.end());
+
 }

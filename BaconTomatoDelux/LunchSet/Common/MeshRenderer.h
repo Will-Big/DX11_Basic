@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "Component.h"
 #include "IRender.h"
-#include "../Graphics/Texture.h"
 
 class MeshFilter;
 class Material;
@@ -21,9 +20,7 @@ public:
 	void Render(Renderer* renderer) override;
 
 public:
-	// Component
 	std::weak_ptr<MeshFilter> m_MeshFilter;
+	std::vector<std::shared_ptr<Material>> materials;
 
-	// Object
-	std::shared_ptr<Material> m_Material;
 };

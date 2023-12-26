@@ -4,9 +4,9 @@
 #include <filesystem>
 
 Texture::Texture(ComPtr<ID3D11Device> device, std::wstring_view path, btdTextureType type)
-	: type(type), name(path)
+	: type(type)
 {
-    Create(device, path);
+	Create(device, path);
 }
 
 Texture::Texture(ComPtr<ID3D11ShaderResourceView> shaderResourceView, btdTextureType type)
@@ -17,7 +17,10 @@ Texture::Texture(ComPtr<ID3D11ShaderResourceView> shaderResourceView, btdTexture
 void Texture::Create(ComPtr<ID3D11Device> device, std::wstring_view path)
 {
     std::filesystem::path fsPath(path);
-    std::wstring extension = fsPath.extension().wstring();
+    std::wstring extension = fsPath.extension();
+
+    name = fsPath.parent_path().parent_path().filename().wstring()
+		 + L'/' + fsPath.filename().replace_extension().wstring();
 
     if (extension == L".dds" || extension == L".DDS")
     {

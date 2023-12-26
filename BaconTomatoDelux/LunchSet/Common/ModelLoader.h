@@ -6,6 +6,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "Material.h"
 #include "Mesh.h"
 #include "../Graphics/VertexStruct.h"
 #include "../Graphics/VertexBuffer.h"
@@ -23,7 +24,10 @@ struct ModelData
 	Quaternion rotation = { 0.f, 0.f, 0.f, 1.0f };
 	Vector3 position = { 0.f, 0.f, 0.f };
 
-	std::vector<std::shared_ptr<Mesh>> subMeshes;
+	// 이것도 언젠가 weak_ptr 로 바꾸고
+	// Mesh 를 ResourceManager 에서 관리하는 방향으로 ...
+	std::vector<std::shared_ptr<Mesh>> meshes;
+	std::vector<std::weak_ptr<Material>> materials;
 	std::vector<ModelData> children;
 };
 
@@ -40,11 +44,13 @@ private:
 	template <typename T>
 	void ProcessNode(aiNode* node, const aiScene* scene, ModelData& model);
 	template <typename T>
-	void ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh);
-	void ProcessAnimation(const aiScene* scene);
+	void ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh, std::weak_ptr<Material>& btdMaterial);
 
-	void LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::shared_ptr<Mesh>& mesh);
+	void LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::weak_ptr<Material>&
+		material);
 	ID3D11ShaderResourceView* LoadEmbeddedTexture(const aiTexture* embeddedTexture);
+
+	void ProcessAnimation(const aiScene* scene);
 
 private:
 	ComPtr<ID3D11Device> m_Device;
@@ -94,7 +100,7 @@ void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, ModelData& mod
 {
 	std::string name = node->mName.C_Str();
 
-	if(name == "RootNode")
+	if (name == "RootNode")
 		name = m_folderPath.filename().string();
 
 	// 기본 데이터 입력
@@ -111,12 +117,15 @@ void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, ModelData& mod
 	model.rotation = Quaternion{ rotation.x, rotation.y, rotation.z, rotation.w };
 	model.position = Vector3{ translation.x, translation.y, translation.z };
 
-	// 모든 메시에 대해 처리
-	model.subMeshes.resize(node->mNumMeshes);
+	// 모든 mesh 및 material 에 대해 처리
+	// num meshes == num materials 가정하고 사용 중
+	model.meshes.resize(node->mNumMeshes);
+	model.materials.resize(node->mNumMeshes);
+
 	for (uint32_t i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		ProcessMesh<T>(mesh, scene, model.subMeshes[i]);
+		ProcessMeshAndMaterial<T>(mesh, scene, model.meshes[i], model.materials[i]);
 	}
 
 	// 계층 구조 생성
@@ -129,7 +138,7 @@ void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, ModelData& mod
 }
 
 template <typename T>
-void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh)
+void ModelLoader::ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh, std::weak_ptr<Material>& btdMaterial)
 {
 	if (btdMesh)
 	{
@@ -198,7 +207,7 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 				std::string boneName = bone->mName.C_Str();
 				uint32_t boneIndex = 0;
 
-				if(boneMapping.find(boneName) == boneMapping.end())
+				if (boneMapping.find(boneName) == boneMapping.end())
 				{
 					boneIndex = boneIndexCounter;
 					boneIndexCounter++;
@@ -212,7 +221,7 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 				}
 
 				// bone 과 vertex 연결
-				for(uint32_t j = 0; j < bone->mNumWeights; ++j)
+				for (uint32_t j = 0; j < bone->mNumWeights; ++j)
 				{
 					uint32_t vertexID = bone->mWeights[j].mVertexId;
 					float weight = bone->mWeights[j].mWeight;
@@ -248,6 +257,6 @@ void ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_pt
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 	for (const auto& type : types)
 	{
-		LoadMaterialTextures(material, type, scene, btdMesh);
+		LoadMaterialTextures(material, type, scene, btdMaterial);
 	}
 }

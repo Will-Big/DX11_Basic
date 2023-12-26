@@ -3,6 +3,7 @@
 
 #include "GameObject.h"
 #include "Transform.h"
+#include "Mesh.h"
 #include "MeshFilter.h"
 #include "MeshRenderer.h"
 #include "SkinnedMeshRenderer.h"
@@ -49,14 +50,14 @@ std::shared_ptr<GameObject> ResourceManager::GetModel(std::wstring_view resource
 
 void ResourceManager::LinkModelData(std::wstring_view fileName, ModelData& data, std::weak_ptr<GameObject> gameObject)
 {
-	auto parent = gameObject.lock();
+	auto object = gameObject.lock();
 
-	if (!data.subMeshes.empty())
+	if (!data.meshes.empty())
 	{
-		for(auto& mesh : data.subMeshes)
+		for(size_t i = 0; i < data.meshes.size(); i++)
 		{
-			SetMesh(mesh, parent);
-			SetMaterial(RES_MAN.materials[fileName.data()], parent);
+			SetMesh(data.meshes[i], object);
+			SetMaterial(data.materials[i].lock(), object);
 		}
 	}
 
@@ -79,8 +80,6 @@ void ResourceManager::LinkModelData(std::wstring_view fileName, ModelData& data,
 
 void ResourceManager::SetMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<GameObject>& gameObject)
 {
-	LOG_MESSAGE(gameObject->GetName().c_str());
-
 	// 필수 컴포넌트 생성 및 연결
 	if(mesh->boneReferences.empty()) // MeshRenderer (Static Mesh)
 	{
@@ -106,9 +105,9 @@ void ResourceManager::SetMaterial(std::shared_ptr<Material> material, std::weak_
 {
 	// material 연결
 	if (auto meshRenderer = gameObject.lock()->GetComponent<MeshRenderer>().lock())
-		meshRenderer->m_Material = material;
+		meshRenderer->materials.push_back(material);
 	else if (auto skinnedMeshRenderer = gameObject.lock()->GetComponent<SkinnedMeshRenderer>().lock())
-		skinnedMeshRenderer->m_Material = material;
+		skinnedMeshRenderer->m_Material = material;	// todo : 위와 같이 변경
 	else
 		LOG_ERROR(L"nullptr : MeshRenderer OR SkinnedMeshRenderer");
 }
