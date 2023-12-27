@@ -43,7 +43,7 @@
     <Filter Include="헤더 파일\ConstantBuffer\Meta">
       <UniqueIdentifier>{4fc8d17c-eb08-4308-84a6-81a141d5fa2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Pipeline\Resource_Base">
+    <Filter Include="소스 파일\Pipeline\Resources">
       <UniqueIdentifier>{f4b147db-91ef-448a-bd91-eeb7d94025df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -73,10 +73,10 @@
       <Filter>헤더 파일\ConstantBuffer</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>소스 파일\Pipeline\Resource_Base</Filter>
+      <Filter>소스 파일\Pipeline\Resources</Filter>
     </ClInclude>
     <ClInclude Include="VertexStruct.h">
-      <Filter>소스 파일\Pipeline\Resource_Base</Filter>
+      <Filter>소스 파일\Pipeline\Resources</Filter>
     </ClInclude>
     <ClInclude Include="IndexBuffer.h">
       <Filter>소스 파일\Pipeline\Geometry</Filter>
@@ -91,10 +91,10 @@
       <Filter>소스 파일\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>소스 파일\Pipeline\Resource_Base</Filter>
+      <Filter>소스 파일\Pipeline\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Sampler.h">
-      <Filter>소스 파일\Pipeline\Resource_Base</Filter>
+      <Filter>소스 파일\Pipeline\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Forward.h">
       <Filter>헤더 파일</Filter>
@@ -129,10 +129,10 @@
       <Filter>소스 파일\Pipeline\PixelShader</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>소스 파일\Pipeline\Resource_Base</Filter>
+      <Filter>소스 파일\Pipeline\Resources</Filter>
     </ClCompile>
     <ClCompile Include="VertexStruct.cpp">
-      <Filter>소스 파일\Pipeline\Resource_Base</Filter>
+      <Filter>소스 파일\Pipeline\Resources</Filter>
     </ClCompile>
     <ClCompile Include="IndexBuffer.cpp">
       <Filter>소스 파일\Pipeline\Geometry</Filter>
@@ -144,10 +144,10 @@
       <Filter>소스 파일\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>소스 파일\Pipeline\Resource_Base</Filter>
+      <Filter>소스 파일\Pipeline\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Sampler.cpp">
-      <Filter>소스 파일\Pipeline\Resource_Base</Filter>
+      <Filter>소스 파일\Pipeline\Resources</Filter>
     </ClCompile>
     <ClCompile Include="InputLayout.cpp">
       <Filter>소스 파일\Pipeline\VertexShader</Filter>

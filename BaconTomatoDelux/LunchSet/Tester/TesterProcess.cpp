@@ -54,16 +54,21 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	: GameProcess(hInst, L"Tester Process", 1024, 768, true)
 {
 	// Shader Load
-	// PBR
+	// Static
 	ResourceManager::instance->LoadShader<VertexShader>("LightVertexShader.hlsl", "main", nullptr, L"PBR_VS");
 	ResourceManager::instance->LoadShader<PixelShader>("LightPixelShader.hlsl", "main", nullptr, L"PBR_PS");
 
-	// Non-PBR
-	//ResourceManager::instance->LoadShader<VertexShader>()
+	// Skinned
+	ResourceManager::instance->LoadShader<VertexShader>("BoneVertexShader.hlsl", "main", nullptr, L"SKIN_VS");
 
 	// InputLayout Load
+	// Static
 	ResourceManager::instance->LoadInputLayout<StaticVertex>(L"PBR_VS", L"PBR_VS_INPUT");
-	auto pbrInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
+	auto staticInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
+
+	// Skinned
+	ResourceManager::instance->LoadInputLayout<BoneVertex>(L"SKIN_VS", L"SKIN_VS_INPUT");
+	auto skinnedInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
 
 	// Sampler todo : ResourceManager 에서 Load 하게 변경
 	static auto sampler = std::make_shared<Sampler>(m_Graphics->GetDevice());
@@ -73,12 +78,20 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
 
-	std::array<std::shared_ptr<Shader>, btdShaderScope_END> shaders
+	std::array<std::shared_ptr<Shader>, btdShaderScope_END> staticShaders
 	{
 		ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
 		ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
 	};
-	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", shaders, pbrInput);
+	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", staticShaders, staticInput);
+
+
+	std::array<std::shared_ptr<Shader>, btdShaderScope_END> boneShaders
+	{
+		ResourceManager::instance->Get<VertexShader>(L"SKIN_VS"),
+		ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
+	};
+	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", boneShaders, skinnedInput);
 
 	// Model Data Load 방식 1 (reference)
 	//testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
@@ -98,7 +111,7 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 250.f, 250.f, -200.f });
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Light"));
-	m_GameObjects.back()->AddComponent<Light>();
+	m_GameObjects.back()->AddComponent<Light>().lock()->SetRenderGUI(true);
 
 	// temp(Scene)
 	for (auto& go : m_GameObjects)

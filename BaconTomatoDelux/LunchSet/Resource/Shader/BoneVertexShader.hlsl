@@ -23,10 +23,9 @@ PS_INPUT main(BVS_INPUT input)
     output.position = mul(output.position, gViewMatrix);
     output.position = mul(output.position, gProjectionMatrix);
 
-    // 노멀 및 탄젠트 벡터 월드 변환 & 노멀라이즈
-    output.normal = normalize(mul(input.normal, (float3x3) matWorld));
-    output.tangent = normalize(mul(input.tangent, (float3x3) matWorld));
-    output.biTangent = cross(output.normal, output.tangent);
+    // 탄젠트 공간
+    float3x3 TBN = float3x3(input.tangent, input.biTangent, input.normal);
+    output.tangentBasis = mul((float3x3) gWorldMatrix, TBN);
 
     // 텍스처
     output.uv = input.uv;

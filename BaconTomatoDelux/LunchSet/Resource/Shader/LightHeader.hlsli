@@ -65,6 +65,7 @@ struct VS_INPUT
     float4 position : POSITION;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
+    float3 biTangent : BITANGENT;
     float2 uv : TEXCOORD;
 };
 
@@ -73,6 +74,7 @@ struct BVS_INPUT
     float4 position : POSITION;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
+    float3 biTangent : BITANGENT;
     float2 uv : TEXCOORD0;
     int4 blendIndices : BLENDINDICES;
     float4 blendWeights : BLENDWEIGHTS;
@@ -82,9 +84,7 @@ struct PS_INPUT
 {
     float4 position : SV_POSITION; // 변환된 픽셀 위치
     float4 worldPosition : WORLDPOS;
-    float3 normal : NORMAL;
-    float3 tangent : TANGENT;
-    float3 biTangent : BITANGENT;
+    float3x3 tangentBasis : TBASIS;
     float2 uv : TEXCOORD0;
 };
 

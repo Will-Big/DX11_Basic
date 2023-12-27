@@ -10,7 +10,7 @@ enum btdShaderScope
 
 enum btdTextureType
 {
-	btdTextureType_DIFFUSE,
+	btdTextureType_DIFFUSE = 0,
 	btdTextureType_NORMALS,
 	btdTextureType_SPECULAR,
 	btdTextureType_OPACITY,

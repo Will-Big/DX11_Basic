@@ -187,12 +187,9 @@ void ModelLoader::ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std
 			vertex.tangent.y = mesh->mTangents[i].y;
 			vertex.tangent.z = mesh->mTangents[i].z;
 
-			if constexpr (std::is_same_v<ProfessorVertex, T>)
-			{
-				vertex.bitangent.x = mesh->mBitangents[i].x;
-				vertex.bitangent.y = mesh->mBitangents[i].y;
-				vertex.bitangent.z = mesh->mBitangents[i].z;
-			}
+			vertex.bitangent.x = mesh->mBitangents[i].x;
+			vertex.bitangent.y = mesh->mBitangents[i].y;
+			vertex.bitangent.z = mesh->mBitangents[i].z;
 		}
 
 		vertices.push_back(std::move(vertex));

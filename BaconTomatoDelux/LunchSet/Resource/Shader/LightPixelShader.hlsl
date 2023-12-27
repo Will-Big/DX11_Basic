@@ -58,16 +58,11 @@ float4 main(PS_INPUT input) : SV_TARGET
 
     float3 ambient = albedo * 0.3f;
 
-    float3 normal = normalize(input.normal);
+    float3 normal = 0.f;
     if (gTextureBitmask & NORMAL)
     {
-        //float3 tangent = normalize(input.tangent - dot(input.tangent, normal) * normal);
-        //float3 biTangent = cross(normal, tangent);
-    	float3 tangent = normalize(input.tangent);
-        float3 biTangent = normalize(input.biTangent);
-        float3 normalTangentSpace = txNormal.Sample(samLinear, input.uv).rgb * 2.0f - 1.0f;
-        float3x3 worldTransform = float3x3(tangent, biTangent, normal);
-        normal = normalize(mul(normalTangentSpace, worldTransform));
+        normal = normalize(2.0f * txNormal.Sample(samLinear, input.uv).rgb - 1.0f);
+        normal = normalize(mul(normal, input.tangentBasis));
     }
 
     float3 viewDir = normalize(gWorldCameraPosition - input.worldPosition);

@@ -32,6 +32,7 @@ struct StaticVertex
 	Vector4 position;
 	Vector3 normal;
 	Vector3 tangent;
+	Vector3 bitangent;
 	Vector2 uv;
 
 	// for Input Layout
@@ -44,6 +45,7 @@ struct BoneVertex
 	Vector4 position;
 	Vector3 normal;
 	Vector3 tangent;
+	Vector3 bitangent;
 	Vector2 uv;
 
 	int BlendIndices[4] = {};			// 영향 받을 뼈의 인덱스 (최대 4)
