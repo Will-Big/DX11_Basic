@@ -51,21 +51,24 @@
 static std::shared_ptr<GameObject> testGO;
 
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
-	: GameProcess(hInst, L"Tester Process", 1800, 1200, true)
+	: GameProcess(hInst, L"Tester Process", 1024, 768, true)
 {
-	// Shader Compile
+	// Shader Load
+	// PBR
 	ResourceManager::instance->LoadShader<VertexShader>("LightVertexShader.hlsl", "main", nullptr, L"PBR_VS");
 	ResourceManager::instance->LoadShader<PixelShader>("LightPixelShader.hlsl", "main", nullptr, L"PBR_PS");
 
-	static auto svInputLayout = std::make_shared<InputLayout>(m_Graphics->GetDevice(), ResourceManager::instance->Get<VertexShader>(L"PBR_VS")->GetBlob());
-	svInputLayout->Create<StaticVertex>();
+	// Non-PBR
+	//ResourceManager::instance->LoadShader<VertexShader>()
 
+	// InputLayout Load
+	ResourceManager::instance->LoadInputLayout<StaticVertex>(L"PBR_VS", L"PBR_VS_INPUT");
+	auto pbrInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
+
+	// Sampler todo : ResourceManager 에서 Load 하게 변경
 	static auto sampler = std::make_shared<Sampler>(m_Graphics->GetDevice());
 
 	m_Graphics->GetDeviceContext()->PSSetSamplers(0, 1, sampler->GetComPtr().GetAddressOf());
-	m_Renderer->SetInputLayout(svInputLayout);
-	m_Renderer->SetShader(ResourceManager::instance->Get<VertexShader>(L"PBR_VS"));
-	m_Renderer->SetShader(ResourceManager::instance->Get<PixelShader>(L"PBR_PS"));
 
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
@@ -75,7 +78,7 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 		ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
 		ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
 	};
-	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", shaders, svInputLayout);
+	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", shaders, pbrInput);
 
 	// Model Data Load 방식 1 (reference)
 	//testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
@@ -133,17 +136,19 @@ void TesterProcess::ImGuiRender()
 	ImGui_Initializer::RenderEnd();
 }
 
+// 무작위 숫자 생성을 위한 엔진과 분포 설정
+static size_t objectNumber = -1;
+static std::random_device rd;
+static std::mt19937 rng(rd());
+static std::uniform_real_distribution<float> uni(0.f, 500.f);
+
 void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 {
-	// 무작위 숫자 생성을 위한 엔진과 분포 설정
-	static std::random_device rd;
-	static std::mt19937 rng(rd());
-	static std::uniform_real_distribution<float> uni(0.f, 500.f);
 	static size_t needInitIdx = 0;
 	static size_t constructCount = 0;
 	static size_t deleteCount = 0;
 
-	if (input.keyTracker.IsKeyPressed(Keyboard::Keys::Up))
+	if (input.keyState.IsKeyDown(Keyboard::Keys::Up))
 	{
 		needInitIdx = m_GameObjects.size();
 		std::wstring name = L"Primrose_Egypt" + std::to_wstring(constructCount);
@@ -151,10 +156,8 @@ void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 
 		// 무작위 위치 생성
 		float randomX = uni(rng);
-		float randomY = uni(rng);
-		float randomZ = uni(rng);
 
-		go->GetComponent<Transform>().lock()->SetPosition({ randomX, randomY, randomZ });
+		go->GetComponent<Transform>().lock()->SetPosition({ randomX, 100.f, 0.f });
 		m_GameObjects.push_back(go);
 
 		for (size_t i = needInitIdx; i < m_GameObjects.size(); i++)
@@ -192,9 +195,20 @@ void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 	}
 }
 
+void TesterProcess::UpdateHW2_Skinned(const InputStruct& input)
+{
+	static size_t needInitIdx = 0;
+	static size_t constructCount = 0;
+	static size_t deleteCount = 0;
+
+
+}
+
 void TesterProcess::ImGuiRenderHW2()
 {
 	PROCESS_MEMORY_COUNTERS_EX pmc;
+
+
 	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
 	{
 		ImGui::Text("Physical Memory Used: %llu MB", pmc.WorkingSetSize / (1024 * 1024)); // 현재 프로세스에 의해 사용되는 실제 메모리 (Working Set)
@@ -209,4 +223,5 @@ void TesterProcess::ImGuiRenderHW2()
 void TesterProcess::OnInputProcess(const InputStruct& input)
 {
 	UpdateHW2_Primrose(input);
+	UpdateHW2_Skinned(input);
 }

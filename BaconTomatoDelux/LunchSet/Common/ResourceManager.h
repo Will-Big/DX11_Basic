@@ -33,6 +33,9 @@ public:
 		               btdShaderScope_END> shaders, std::
 	               shared_ptr<InputLayout> layout);
 
+	template<typename T>
+	void LoadInputLayout(std::wstring_view vertexShaderKey, std::wstring_view key);
+
 	template <typename T>
 	std::shared_ptr<T> Get(std::wstring_view resourceName);
 
@@ -120,6 +123,27 @@ void ResourceManager::LoadModel(std::wstring_view modelFolderName, std::wstring_
 	modelLoader.Load<T>(folderPath);
 
 	models.insert({ resourceName.data(), modelData });
+}
+
+template <typename T>
+void ResourceManager::LoadInputLayout(std::wstring_view vertexShaderKey, std::wstring_view key)
+{
+	// 중복 검사
+	if (inputLayouts.find(key.data()) != inputLayouts.end())
+		return;
+
+	if(const auto it = shaders.find(vertexShaderKey.data()); it == shaders.end())
+	{
+		MessageBoxW(nullptr, L"VertexShader needs to be loaded before Input Layout can be accessed", L"LOG_ERROR", MB_OK);
+		return;
+	}
+	else
+	{
+		auto layout = std::make_shared<InputLayout>(m_Device, it->second->GetBlob());
+		layout->Create<T>();
+
+		inputLayouts.insert({ key.data(), layout });
+	}
 }
 
 template <typename T>

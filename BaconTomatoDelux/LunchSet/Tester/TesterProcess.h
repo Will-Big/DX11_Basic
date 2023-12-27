@@ -20,6 +20,7 @@ protected:
 
 private:
 	void UpdateHW2_Primrose(const InputStruct& input);
+	void UpdateHW2_Skinned(const InputStruct& input);
 	void ImGuiRenderHW2();
 
 public:

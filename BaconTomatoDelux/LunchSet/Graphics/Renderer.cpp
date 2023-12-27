@@ -158,36 +158,29 @@ void Renderer::DrawQueue()
 	// 데이터 초기화
 	lastSettings = {};
 
-	// warn : 일단 텍스처가 같으면 트랜스폼을 제외한 다른게 다 같다는 가정
-	for(auto& settings : m_RenderQueue)
+	for (auto& settings : m_RenderQueue)
 	{
 		// Compare to previous object
-		if(settings.textures != lastSettings.textures)
+		// change texture
+		if (settings.textures != lastSettings.textures && settings.textures)
 		{
-			// change texture
-			if (settings.textures)
+			const std::array<std::shared_ptr<Texture>, btdTextureType_END>& ts = *settings.textures;
+
+			static ConstantBuffer<PsMaterialData> md{ m_Device, m_DeviceContext }; // todo : 데이터 구체화, 이름에 걸맞지 않음
+			PsMaterialData constantData{ 0, 20.0f, 2.0f }; // todo : 상수 데이터 삭제
+
+			for (uint32_t texType = btdTextureType_DIFFUSE; texType < btdTextureType_END; texType++)
 			{
-				const std::array<std::shared_ptr<Texture>, btdTextureType_END> ts = *settings.textures;
-
-				// Material Data
-				static ConstantBuffer<PsMaterialData> md{ m_Device, m_DeviceContext };
-				// todo : 상수 데이터 삭제
-				PsMaterialData dataStruct{ 0, 20.0f, 2.0f };
-
-
-				for (uint32_t texType = btdTextureType_DIFFUSE; texType < btdTextureType_END; texType++)
+				if (ts[texType] != nullptr)
 				{
-					if (ts[texType] != nullptr)
-					{
-						m_DeviceContext->PSSetShaderResources(texType, 1, ts[texType]->GetComPtr().GetAddressOf());
+					m_DeviceContext->PSSetShaderResources(texType, 1, ts[texType]->GetComPtr().GetAddressOf());
 
-						dataStruct.textureBitmask |= 1 << (texType);
-					}
+					constantData.textureBitmask |= 1 << (texType);
 				}
-
-				md.Update(&dataStruct);
-				SetConstantBuffer(md);
 			}
+
+			md.Update(&constantData);
+			SetConstantBuffer(md);
 		}
 
 		// change input layout
@@ -222,6 +215,16 @@ void Renderer::DrawQueue()
 
 			m_IndexCount = ib->GetIndexCount();
 			m_DeviceContext->IASetIndexBuffer(ib->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
+		}
+
+		// change shaders
+		if (settings.vertexShader != lastSettings.vertexShader)
+		{
+			SetShader(settings.vertexShader);
+		}
+		if (settings.pixelShader != lastSettings.pixelShader)
+		{
+			SetShader(settings.pixelShader);
 		}
 
 		// change transform matrix
