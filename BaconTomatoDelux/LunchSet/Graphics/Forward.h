@@ -2,7 +2,6 @@
 
 enum btdShaderScope
 {
-	btdShaderScope_NONE,
 	btdShaderScope_VERTEX,
 	btdShaderScope_PIXEL,
 

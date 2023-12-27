@@ -72,7 +72,7 @@ void Animator::Update(float deltaTime)
 
 void Animator::SetController(std::wstring_view controllerName)
 {
-	m_Controller = RES_MAN.animatorControllers[controllerName.data()];
+	m_Controller = ResourceManager::instance->animatorControllers[controllerName.data()];
 }
 
 float Animator::GetFloat(std::wstring_view name)

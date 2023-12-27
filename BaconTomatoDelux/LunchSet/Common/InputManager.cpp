@@ -1,80 +1,41 @@
 ﻿#include "pch.h"
 #include "InputManager.h"
 
-#include "GameProcess.h"
+InputManager* InputManager::instance = new InputManager{};
 
-InputManager::InputManager()
+bool InputManager::Initialize(HWND hWnd)
 {
-	width = static_cast<float>(GameProcess::Width);
-	height = static_cast<float>(GameProcess::Height);
+	m_Keyboard = std::make_unique<Keyboard>();
+	m_Mouse = std::make_unique<Mouse>();
+	m_Mouse->SetWindow(hWnd);
+	return true;
 }
 
-void InputManager::Initialize()
+void InputManager::Update(float DeltaTime)
 {
-	for (auto& key : m_keyState)
+	m_MouseState = m_Mouse->GetState();
+	m_MouseStateTracker.Update(m_MouseState);
+
+	m_KeyboardState = m_Keyboard->GetState();
+	m_KeyboardStateTracker.Update(m_KeyboardState);
+
+	for (auto& it : m_InputProcessers)
 	{
-		key.keyState = KeyState::NONE;
-		key.prevPushed = false;
+		(it)->OnInputProcess({m_KeyboardState, m_KeyboardStateTracker, m_MouseState, m_MouseStateTracker});
 	}
 }
 
-void InputManager::Update()
+void InputManager::Finalize()
 {
-	HWND hWnd = GetFocus();
-
-	if (nullptr != hWnd)
-	{
-		for (int i = 0; i < 256; i++)
-		{
-			if (GetAsyncKeyState(i) & 0x8000)
-			{
-				if (m_keyState[i].prevPushed)
-				{
-					m_keyState[i].keyState = KeyState::HOLD;
-				}
-				else
-				{
-					m_keyState[i].keyState = KeyState::DOWN;
-					m_keyState[i].prevPushed = true;
-				}
-			}
-			else
-			{
-				if (m_keyState[i].prevPushed)
-				{
-					m_keyState[i].keyState = KeyState::UP;
-					m_keyState[i].prevPushed = false;
-				}
-				else
-				{
-					m_keyState[i].keyState = KeyState::NONE;
-				}
-			}
-		}
-	}
-	else
-	{
-		for (int i = 0; i < 256; i++)
-		{
-			m_keyState[i].prevPushed = false;
-			if (KeyState::DOWN == m_keyState[i].keyState || KeyState::HOLD == m_keyState[i].keyState)
-			{
-				m_keyState[i].keyState = KeyState::UP;
-			}
-			else if (KeyState::UP == m_keyState[i].keyState)
-			{
-				m_keyState[i].keyState = KeyState::NONE;
-			}
-		}
-	}
-
-	// Mouse 위치 계산
-	POINT ptPos = {};
-	// 현재 마우스 위치
-	GetCursorPos(&ptPos);
-	// 스크린좌표계로 마우스 위치 반환
-	ScreenToClient(hWnd, &ptPos);
-	m_curMousePos = Vector2((float)ptPos.x, (float)ptPos.y);
+	delete instance;
 }
 
+void InputManager::AddInputProcesser(IKeyProcessor* inputProcesser)
+{
+	m_InputProcessers.push_back(inputProcesser);
+}
 
+void InputManager::RemoveInputProcesser(IKeyProcessor* inputProcesser)
+{
+	m_InputProcessers.remove(inputProcesser);
+}

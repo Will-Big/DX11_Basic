@@ -8,8 +8,6 @@
 
 namespace fs = std::filesystem;
 
-#define RES_MAN ResourceManager::GetInstance()
-
 class Mesh;
 class Sampler;
 class InputLayout;
@@ -20,7 +18,10 @@ class ResourceManager
 {
 	// Singleton Manager
 public:
+	static ResourceManager* instance;
+
 	void Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext);
+	void Finalize();
 
 	// 사용시 T 와 resourceName 유의
 	template<typename T>
@@ -28,7 +29,9 @@ public:
 
 	// T = Vertex Struct
 	template<typename T, typename = decltype(T::desc)>
-	void LoadModel(std::wstring_view modelFolderName, std::wstring_view resourceName);
+	void LoadModel(std::wstring_view modelFolderName, std::wstring_view resourceName, std::array<std::shared_ptr<Shader>,
+		               btdShaderScope_END> shaders, std::
+	               shared_ptr<InputLayout> layout);
 
 	template <typename T>
 	std::shared_ptr<T> Get(std::wstring_view resourceName);
@@ -37,12 +40,6 @@ public:
 	void GetModel(std::wstring_view resourceName, std::weak_ptr<GameObject> gameObject);
 	// 포인터 리턴 방식
 	std::shared_ptr<GameObject> GetModel(std::wstring_view resourceName, std::wstring& objectName);
-
-	static ResourceManager& GetInstance()
-	{
-		static ResourceManager instance;
-		return instance;
-	}
 
 	ResourceManager(const ResourceManager&) = delete;
 	ResourceManager& operator=(const ResourceManager&) = delete;
@@ -102,7 +99,7 @@ void ResourceManager::LoadShader(std::string_view fileName, std::string_view ent
 }
 
 template <typename T, typename>
-void ResourceManager::LoadModel(std::wstring_view modelFolderName, std::wstring_view resourceName)
+void ResourceManager::LoadModel(std::wstring_view modelFolderName, std::wstring_view resourceName, std::array<std::shared_ptr<Shader>, btdShaderScope_END> shaders, std::shared_ptr<InputLayout> layout)
 {
 	// 중복 검사
 	if (models.find(resourceName.data()) != models.end())
@@ -117,7 +114,8 @@ void ResourceManager::LoadModel(std::wstring_view modelFolderName, std::wstring_
 
 	// 객체 생성
 	ModelData modelData;
-	ModelLoader modelLoader{ m_Device, m_DeviceContext, modelData };
+	// shaders, layout 은 삭제 예정
+	ModelLoader modelLoader{ m_Device, m_DeviceContext, modelData, shaders, layout };
 	modelLoader.Load<T>(folderPath);
 
 	models.insert({ resourceName.data(), modelData });

@@ -65,13 +65,14 @@ GameProcess::GameProcess(HINSTANCE hInst, std::wstring_view title, int width, in
 	m_Graphics = std::make_unique<Graphics>(m_hWnd, width, height, bImGuiInit);
 	m_Renderer = std::make_unique<Renderer>(m_Graphics->GetDevice(), m_Graphics->GetDeviceContext());
 
-	RES_MAN.Initialize(m_Graphics->GetDevice(), m_Graphics->GetDeviceContext());
-	INPUT_MAN.Initialize();
+	ResourceManager::instance->Initialize(m_Graphics->GetDevice(), m_Graphics->GetDeviceContext());
+	InputManager::instance->Initialize(m_hWnd);
 }
 
 GameProcess::~GameProcess()
 {
-
+	InputManager::instance->Finalize();
+	ResourceManager::instance->Finalize();
 }
 
 void GameProcess::Loop()
@@ -103,7 +104,7 @@ void GameProcess::Loop()
 void GameProcess::Update()
 {
 	// system update
-	INPUT_MAN.Update();
+	InputManager::instance->Update(0.0167f);
 
 	// temp(Scene)
 	{
@@ -169,6 +170,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
+		break;
+	case WM_ACTIVATEAPP:
+		DirectX::Keyboard::ProcessMessage(message, wParam, lParam);
+		DirectX::Mouse::ProcessMessage(message, wParam, lParam);
+		break;
+	case WM_INPUT:
+	case WM_MOUSEMOVE:
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEWHEEL:
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+	case WM_MOUSEHOVER:
+		Mouse::ProcessMessage(message, wParam, lParam);
+		break;
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		Keyboard::ProcessMessage(message, wParam, lParam);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

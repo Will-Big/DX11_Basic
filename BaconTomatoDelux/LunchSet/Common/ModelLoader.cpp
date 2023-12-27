@@ -13,8 +13,8 @@
 btdTextureType aiType2btdType(aiTextureType type);
 std::wstring aiString2wstring(const aiString& string);
 
-ModelLoader::ModelLoader(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext, ModelData& modelData)
-	: m_Device(device), m_DeviceContext(deviceContext), m_RootData(modelData)
+ModelLoader::ModelLoader(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext, ModelData& modelData, std::array<std::shared_ptr<Shader>, btdShaderScope_END> shaders, std::shared_ptr<InputLayout> layout)
+	: m_Device(device), m_DeviceContext(deviceContext), m_RootData(modelData), m_Shaders(shaders)
 {
 }
 
@@ -24,16 +24,19 @@ ModelLoader::~ModelLoader()
 
 void ModelLoader::ProcessAnimation(const aiScene* scene)
 {
+	if (scene->mNumAnimations <= 0)
+		return;
+
 	// Animator Controller 중복 검사
-	if (RES_MAN.animatorControllers.find(m_folderPath.wstring()) != RES_MAN.animatorControllers.end())
+	if (ResourceManager::instance->animatorControllers.find(m_folderPath.wstring()) != ResourceManager::instance->animatorControllers.end())
 	{
 		LOG_ERROR(L"Animator Controller : Duplicated exist");
 		return;
 	}
 
 	// todo : m_folderPath 로 animationController 를 생성하면 재활용이 불가능하므로 변경
-	RES_MAN.animatorControllers[m_folderPath.wstring()] = std::make_shared<AnimatorController>(m_folderPath.wstring());
-	auto& ctrl = RES_MAN.animatorControllers[m_folderPath.wstring()];
+	ResourceManager::instance->animatorControllers[m_folderPath.wstring()] = std::make_shared<AnimatorController>(m_folderPath.wstring());
+	auto& ctrl = ResourceManager::instance->animatorControllers[m_folderPath.wstring()];
 
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++)
 	{
@@ -112,21 +115,21 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 		btdTextureType btdType = aiType2btdType(type);
 
 		// key 검색
-		auto texIt = RES_MAN.textures.find(key);
-		auto matIt = RES_MAN.materials.find(materialName);
+		auto texIt = ResourceManager::instance->textures.find(key);
+		auto matIt = ResourceManager::instance->materials.find(materialName);
 
 		// 새로운 material 일 경우, 생성
-		if (matIt == RES_MAN.materials.end())
+		if (matIt == ResourceManager::instance->materials.end())
 		{
 			auto newMaterial = std::make_shared<Material>(materialName);
 
 			// 리소스 매니저에 할당 및 iterator 갱신
-			RES_MAN.materials.insert({ materialName, newMaterial });
-			matIt = RES_MAN.materials.find(materialName);
+			ResourceManager::instance->materials.insert({ materialName, newMaterial });
+			matIt = ResourceManager::instance->materials.find(materialName);
 		}
 
 		// 새로운 texture 일 경우, 생성
-		if (texIt == RES_MAN.textures.end())
+		if (texIt == ResourceManager::instance->textures.end())
 		{
 			std::shared_ptr<Texture> newTexture;
 
@@ -139,8 +142,8 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 				newTexture = std::make_shared<Texture>(m_Device, path.wstring(), btdType);
 
 			// 리소스 매니저에 할당 및 iterator 갱신
-			RES_MAN.textures.insert({ newTexture->name, newTexture });
-			texIt = RES_MAN.textures.find(newTexture->name);
+			ResourceManager::instance->textures.insert({ newTexture->name, newTexture });
+			texIt = ResourceManager::instance->textures.find(newTexture->name);
 
 			LOG_MESSAGE(newTexture->name.c_str());
 		}

@@ -34,7 +34,7 @@ struct ModelData
 class ModelLoader
 {
 public:
-	ModelLoader(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext, ModelData& modelData);
+	ModelLoader(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext, ModelData& modelData, std::array<std::shared_ptr<Shader>, btdShaderScope_END> shaders, std::shared_ptr<InputLayout> layout);
 	~ModelLoader();
 
 	template<typename T>
@@ -56,6 +56,8 @@ private:
 	ComPtr<ID3D11Device> m_Device;
 	ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	ModelData& m_RootData;
+	std::array<std::shared_ptr<Shader>, btdShaderScope_END> m_Shaders;
+
 	std::filesystem::path m_folderPath;
 };
 

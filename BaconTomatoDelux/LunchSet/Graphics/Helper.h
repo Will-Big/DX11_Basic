@@ -90,7 +90,7 @@ inline void HR_T(HRESULT hr)
 
 
 //--------------------------------------------------------------------------------------
-// Helper for compiling shaders with D3DCompile
+// Helper for compiling m_Shaders with D3DCompile
 //
 // With VS 11, we could load up prebuilt .cso files instead...
 //--------------------------------------------------------------------------------------

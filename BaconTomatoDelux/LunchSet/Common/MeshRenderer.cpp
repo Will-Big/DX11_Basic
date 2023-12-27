@@ -66,6 +66,7 @@ void MeshRenderer::Render(Renderer* renderer)
 		// new
 		// 이렇게 하나하나 박는것보다 머터리얼을 통째로 넘겨주는게...? 뭐가 더 이쁠까, 뭐가 더 좋을까
 		//{
+		//	// 방식 1
 		//	RenderQueueSettings settings{
 		//		materials[i]->inputLayout,
 		//		std::static_pointer_cast<VertexShader>(materials[i]->shaders[btdShaderScope_VERTEX]),
@@ -75,6 +76,13 @@ void MeshRenderer::Render(Renderer* renderer)
 		//		&materials[i]->textures,
 		//		&td
 		//	};
+
+		//	// 방식 2
+		//	//RenderQueueSettings settings{
+		//	//	materials[i],
+		//	//	meshfilter->meshes[i],
+		//	//	&td
+		//	//};
 
 		//	renderer->AddRenderQueue(settings);
 		//}

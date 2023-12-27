@@ -49,37 +49,40 @@
  */
 
 static std::shared_ptr<GameObject> testGO;
-static size_t needInitIdx = 0;
-static size_t constructCount = 0;
-static size_t deleteCount = 0;
 
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	: GameProcess(hInst, L"Tester Process", 800, 600, true)
 {
 	// Shader Compile
-	RES_MAN.LoadShader<VertexShader>("LightVertexShader.hlsl", "main", nullptr, L"PBR_VS");
-	RES_MAN.LoadShader<PixelShader>("LightPixelShader.hlsl", "main", nullptr, L"PBR_PS");
+	ResourceManager::instance->LoadShader<VertexShader>("LightVertexShader.hlsl", "main", nullptr, L"PBR_VS");
+	ResourceManager::instance->LoadShader<PixelShader>("LightPixelShader.hlsl", "main", nullptr, L"PBR_PS");
 
-	static auto inputLayout = std::make_shared<InputLayout>(m_Graphics->GetDevice(), RES_MAN.Get<VertexShader>(L"PBR_VS")->GetBlob());
-	inputLayout->Create<StaticVertex>();
+	static auto svInputLayout = std::make_shared<InputLayout>(m_Graphics->GetDevice(), ResourceManager::instance->Get<VertexShader>(L"PBR_VS")->GetBlob());
+	svInputLayout->Create<StaticVertex>();
 
 	static auto sampler = std::make_shared<Sampler>(m_Graphics->GetDevice());
 
 	m_Graphics->GetDeviceContext()->PSSetSamplers(0, 1, sampler->GetComPtr().GetAddressOf());
-	m_Renderer->SetInputLayout(inputLayout);
-	m_Renderer->SetShader(RES_MAN.Get<VertexShader>(L"PBR_VS"));
-	m_Renderer->SetShader(RES_MAN.Get<PixelShader>(L"PBR_PS"));
+	m_Renderer->SetInputLayout(svInputLayout);
+	m_Renderer->SetShader(ResourceManager::instance->Get<VertexShader>(L"PBR_VS"));
+	m_Renderer->SetShader(ResourceManager::instance->Get<PixelShader>(L"PBR_PS"));
 
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
-	RES_MAN.LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt");
+
+	std::array<std::shared_ptr<Shader>, btdShaderScope_END> shaders
+	{
+		ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
+		ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
+	};
+	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", shaders, svInputLayout);
 
 	// Model Data Load 방식 1 (reference)
 	//testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
-	//RES_MAN.GetModel(L"Primrose_Egypt", testGO);
+	//ResourceManager::instance->GetModel(L"Primrose_Egypt", testGO);
 
 	// Model Data Load 방식 2 (return)
-	//testGO = RES_MAN.GetModel(L"Primrose_Egypt");
+	//testGO = ResourceManager::instance->GetModel(L"Primrose_Egypt");
 	//m_GameObjects.push_back(testGO);
 	//testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
 	//testGO->GetComponent<Transform>().lock()->SetRenderGUI(true);
@@ -97,6 +100,8 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	// temp(Scene)
 	for (auto& go : m_GameObjects)
 		go->InitializeComponents();
+
+	InputManager::instance->AddInputProcesser(this);
 }
 
 TesterProcess::~TesterProcess()
@@ -105,8 +110,6 @@ TesterProcess::~TesterProcess()
 
 void TesterProcess::Update()
 {
-	UpdateHW2();
-
 	GameProcess::Update();
 }
 
@@ -130,18 +133,21 @@ void TesterProcess::ImGuiRender()
 	ImGui_Initializer::RenderEnd();
 }
 
-void TesterProcess::UpdateHW2()
+void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 {
 	// 무작위 숫자 생성을 위한 엔진과 분포 설정
 	static std::random_device rd;
 	static std::mt19937 rng(rd());
 	static std::uniform_real_distribution<float> uni(0.f, 500.f);
+	static size_t needInitIdx = 0;
+	static size_t constructCount = 0;
+	static size_t deleteCount = 0;
 
-	if (INPUT_MAN.IsKeyHold(VK_UP))
+	if (input.keyState.IsKeyDown(Keyboard::Keys::Up))
 	{
 		needInitIdx = m_GameObjects.size();
 		std::wstring name = L"Primrose_Egypt" + std::to_wstring(constructCount);
-		auto go = RES_MAN.GetModel(L"Primrose_Egypt", name);
+		auto go = ResourceManager::instance->GetModel(L"Primrose_Egypt", name);
 
 		// 무작위 위치 생성
 		float randomX = uni(rng);
@@ -158,7 +164,7 @@ void TesterProcess::UpdateHW2()
 
 		constructCount++;
 	}
-	else if (INPUT_MAN.IsKeyHold(VK_DOWN))
+	else if (input.keyState.IsKeyDown(Keyboard::Keys::Down))
 	{
 		// 실제로 씬에서 적용할 때는 지우는 방식 수정 필요
 		//		현재는 그냥 같은 root 를 가진 모든 오브젝트 삭제 방식
@@ -198,4 +204,9 @@ void TesterProcess::ImGuiRenderHW2()
 	{
 		ImGui::Text("Memory info not available");
 	}
+}
+
+void TesterProcess::OnInputProcess(const InputStruct& input)
+{
+	UpdateHW2_Primrose(input);
 }

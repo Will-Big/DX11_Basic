@@ -1,78 +1,50 @@
 ﻿#pragma once
 
-#define INPUT_MAN InputManager::GetInstance()
+#include <directXTK/Mouse.h>
+#include <directXTK/Keyboard.h>
+
+constexpr float ROTATION_GAIN = 0.004f;
+constexpr float MOVEMENT_GAIN = 0.07f;
+
+struct InputStruct
+{
+	const Keyboard::State& keyState;
+	const Keyboard::KeyboardStateTracker& keyTracker;
+	const Mouse::State& mouseState;
+	const Mouse::ButtonStateTracker& mouseTracker;
+};
+
+class IKeyProcessor
+{
+public:
+	virtual void OnInputProcess(const InputStruct& input) = 0;
+};
 
 class InputManager
 {
-private:
-	enum class KeyState
-	{
-		NONE,	  // 현재 및 이전	프레임에 입력 없음
-		DOWN,	  // 현재			프레임에 입력 됨
-		HOLD,	  // 현재 및 이전	프레임에 입력 됨
-		UP,		  // 현재			프레임에 입력 종료함
-	};
-
-	struct KeyInfo
-	{
-		bool prevPushed;
-		KeyState keyState;
-	};
-
-private:
-	InputManager();
-	~InputManager() = default;
-
-private:
-	float width = 0.f;
-	float height = 0.f;
-
-	KeyInfo m_keyState[256] {};	// Windows 키 코드는 0 ~ 255
-	Vector2 m_curMousePos;
-
 public:
-	static InputManager& GetInstance()
-	{
-		static InputManager instance;
-		return instance;
-	}
+	static InputManager* instance;
 
-	InputManager(const InputManager&) = delete;
-	InputManager& operator=(const InputManager&) = delete;
+	std::list<IKeyProcessor*> m_InputProcessers;
 
-	void Initialize();
-	void Update();
+	// input
+	std::unique_ptr<Keyboard>       m_Keyboard;
+	std::unique_ptr<Mouse>          m_Mouse;
+	Keyboard::KeyboardStateTracker	m_KeyboardStateTracker;
+	Mouse::ButtonStateTracker		m_MouseStateTracker;
 
-public: // 키 입력 진행 순서는 아래 함수를 따름
-	inline bool IsKeyNone(int keyCode) const;
-	inline bool IsKeyDown(int keyCode) const;
-	inline bool IsKeyHold(int keyCode) const;
-	inline bool IsKeyUp(int keyCode) const;
-	inline Vector2 GetMousePos() const;
+	Mouse::State					m_MouseState;
+	Keyboard::State					m_KeyboardState;
+
+	bool Initialize(HWND hWnd);
+	void Update(float DeltaTime);
+	void Finalize();
+
+	void AddInputProcesser(IKeyProcessor* inputProcesser);
+	void RemoveInputProcesser(IKeyProcessor* inputProcesser);
+
+private:
+	InputManager() = default;
+	~InputManager() = default;
 };
-
-inline bool InputManager::IsKeyNone(int keyCode) const
-{
-	return m_keyState[keyCode].keyState == KeyState::NONE;
-}
-
-inline bool InputManager::IsKeyDown(int keyCode) const
-{
-	return m_keyState[keyCode].keyState == KeyState::DOWN;
-}
-
-inline bool InputManager::IsKeyHold(int keyCode) const
-{
-	return m_keyState[keyCode].keyState == KeyState::HOLD;
-}
-
-inline bool InputManager::IsKeyUp(int keyCode) const
-{
-	return m_keyState[keyCode].keyState == KeyState::UP;
-}
-
-inline Vector2 InputManager::GetMousePos() const
-{
-	return { m_curMousePos.x - width / 2, -(m_curMousePos.y - height / 2) };
-}
 

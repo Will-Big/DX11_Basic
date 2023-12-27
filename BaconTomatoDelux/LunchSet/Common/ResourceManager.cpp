@@ -12,10 +12,17 @@
 // temp(Scene)
 #include "GameProcess.h"
 
+ResourceManager* ResourceManager::instance = new ResourceManager{};
+
 void ResourceManager::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
 {
 	m_Device = device;
 	m_DeviceContext = deviceContext;
+}
+
+void ResourceManager::Finalize()
+{
+	delete instance;
 }
 
 void ResourceManager::GetModel(std::wstring_view resourceName, std::weak_ptr<GameObject> gameObject)
