@@ -61,6 +61,7 @@ public:
 	// Model
 	// todo : meshes 추가(model 이 참조하는)
 	std::map<std::wstring, ModelData> models;
+	//std::map<std::wstring, std::shared_ptr<Mesh>> meshes;
 	std::map<std::wstring, std::shared_ptr<Texture>> textures;
 	std::map<std::wstring, std::shared_ptr<Material>> materials;
 	std::map<std::wstring, std::shared_ptr<AnimatorController>> animatorControllers;

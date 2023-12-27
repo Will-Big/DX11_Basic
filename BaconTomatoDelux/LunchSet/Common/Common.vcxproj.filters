@@ -21,9 +21,6 @@
     <Filter Include="소스 파일\Base\Component">
       <UniqueIdentifier>{4ff756a7-d2c2-4ab0-8126-7aec78aaa6a0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Base\Resource">
-      <UniqueIdentifier>{f734589b-94e2-4a22-acaf-5536abb8a8cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Base\Scene">
       <UniqueIdentifier>{c67e8784-d44a-48ee-8083-ca448dd43d09}</UniqueIdentifier>
     </Filter>
@@ -42,15 +39,6 @@
     <Filter Include="소스 파일\Components\Transform">
       <UniqueIdentifier>{a1ae790a-aa9e-45f2-be35-7d0c00d36376}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Base\Resource\ModelLoader">
-      <UniqueIdentifier>{6f8fdc6d-373b-4ede-9e1f-de84463df621}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Material">
-      <UniqueIdentifier>{816c1c58-3ed1-4aa8-9278-fc095fb161b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Mesh">
-      <UniqueIdentifier>{c4436063-71c1-4efd-b98f-c0a2efffcd44}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Components\Rendering">
       <UniqueIdentifier>{15358ffd-a4a8-4e9f-ac43-b06919b8c49b}</UniqueIdentifier>
     </Filter>
@@ -66,44 +54,11 @@
     <Filter Include="소스 파일\Components\Animator">
       <UniqueIdentifier>{14fcf69c-c440-43da-8a0a-34b7ffa7a3cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation">
-      <UniqueIdentifier>{9f5ad646-4f77-4628-970f-309a3528bea6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Controller">
-      <UniqueIdentifier>{13d825e1-8c43-471f-89b1-9bba4a54b7c7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Components\Rendering\SkinnedMeshRenderer">
       <UniqueIdentifier>{65bdf7e3-6a31-438e-9f69-717cb0ec7025}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Components\Rendering\MeshFilter">
       <UniqueIdentifier>{a9fd9174-19da-4456-95ae-c938f96551b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Clip &amp; KeyFrame">
-      <UniqueIdentifier>{16df089c-2dfa-41d8-845a-bd7bbef4fba6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Controller\Layer">
-      <UniqueIdentifier>{01939862-2a19-4a24-8ecb-eb901a3258c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine">
-      <UniqueIdentifier>{633abf4f-7a60-4e63-a452-13c7702e570c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Controller\Parameter">
-      <UniqueIdentifier>{ef8fc09b-73c0-4684-b16c-81406b87bb05}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\State">
-      <UniqueIdentifier>{f869ae03-0c9d-43f7-af5a-d9992e38742e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition">
-      <UniqueIdentifier>{ba67793e-7b9f-4209-b8d4-ebc448e73ea0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Between">
-      <UniqueIdentifier>{debd8717-bf83-4121-9a13-b401071bcae4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Any">
-      <UniqueIdentifier>{601db62c-2cad-4517-837b-04a71b8d300b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Condition">
-      <UniqueIdentifier>{cf633ff4-3da8-4ce6-94ad-8f12125c29c1}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Manager">
       <UniqueIdentifier>{dc75c1a5-24d4-4187-b8d0-86f38dfd1e96}</UniqueIdentifier>
@@ -113,6 +68,51 @@
     </Filter>
     <Filter Include="소스 파일\Manager\Input">
       <UniqueIdentifier>{48f38bf2-ea66-4a02-b4b1-e1d359097c82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes">
+      <UniqueIdentifier>{f734589b-94e2-4a22-acaf-5536abb8a8cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\ModelLoader">
+      <UniqueIdentifier>{6f8fdc6d-373b-4ede-9e1f-de84463df621}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Material">
+      <UniqueIdentifier>{816c1c58-3ed1-4aa8-9278-fc095fb161b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Mesh">
+      <UniqueIdentifier>{c4436063-71c1-4efd-b98f-c0a2efffcd44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation">
+      <UniqueIdentifier>{9f5ad646-4f77-4628-970f-309a3528bea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Controller">
+      <UniqueIdentifier>{13d825e1-8c43-471f-89b1-9bba4a54b7c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Controller\Layer">
+      <UniqueIdentifier>{01939862-2a19-4a24-8ecb-eb901a3258c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine">
+      <UniqueIdentifier>{633abf4f-7a60-4e63-a452-13c7702e570c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\State">
+      <UniqueIdentifier>{f869ae03-0c9d-43f7-af5a-d9992e38742e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition">
+      <UniqueIdentifier>{ba67793e-7b9f-4209-b8d4-ebc448e73ea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition\Between">
+      <UniqueIdentifier>{debd8717-bf83-4121-9a13-b401071bcae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition\Any">
+      <UniqueIdentifier>{601db62c-2cad-4517-837b-04a71b8d300b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition\Condition">
+      <UniqueIdentifier>{cf633ff4-3da8-4ce6-94ad-8f12125c29c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Controller\Parameter">
+      <UniqueIdentifier>{ef8fc09b-73c0-4684-b16c-81406b87bb05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Clip &amp; KeyFrame">
+      <UniqueIdentifier>{16df089c-2dfa-41d8-845a-bd7bbef4fba6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -147,10 +147,10 @@
       <Filter>소스 파일\Components\Rendering\MeshRenderer</Filter>
     </ClCompile>
     <ClCompile Include="ModelLoader.cpp">
-      <Filter>소스 파일\Base\Resource\ModelLoader</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\ModelLoader</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>소스 파일\Base\Resource\Mesh</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>소스 파일\Components\Rendering\Camera</Filter>
@@ -162,31 +162,31 @@
       <Filter>소스 파일\Components\Animator</Filter>
     </ClCompile>
     <ClCompile Include="AnimatorController.cpp">
-      <Filter>소스 파일\Base\Resource\Animation\Controller</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller</Filter>
     </ClCompile>
     <ClCompile Include="AnimationClip.cpp">
-      <Filter>소스 파일\Base\Resource\Animation\Clip &amp; KeyFrame</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Clip &amp; KeyFrame</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedMeshRenderer.cpp">
       <Filter>소스 파일\Components\Rendering\SkinnedMeshRenderer</Filter>
     </ClCompile>
     <ClCompile Include="AnimatorControllerLayer.cpp">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\Layer</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\Layer</Filter>
     </ClCompile>
     <ClCompile Include="AnimatorStateMachine.cpp">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine</Filter>
     </ClCompile>
     <ClCompile Include="AnimatorState.cpp">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\State</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\State</Filter>
     </ClCompile>
     <ClCompile Include="AnimatorTransitionBase.cpp">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition</Filter>
     </ClCompile>
     <ClCompile Include="AnimatorTransition.cpp">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Any</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition\Any</Filter>
     </ClCompile>
     <ClCompile Include="AnimatorStateTransition.cpp">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Between</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition\Between</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>소스 파일\Manager\Resource</Filter>
@@ -239,13 +239,13 @@
       <Filter>소스 파일\Components\Rendering\MeshRenderer</Filter>
     </ClInclude>
     <ClInclude Include="ModelLoader.h">
-      <Filter>소스 파일\Base\Resource\ModelLoader</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\ModelLoader</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
-      <Filter>소스 파일\Base\Resource\Material</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Material</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>소스 파일\Base\Resource\Mesh</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>소스 파일\Components\Rendering\Camera</Filter>
@@ -260,37 +260,37 @@
       <Filter>소스 파일\Components\Animator</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorController.h">
-      <Filter>소스 파일\Base\Resource\Animation\Controller</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller</Filter>
     </ClInclude>
     <ClInclude Include="AnimationClip.h">
-      <Filter>소스 파일\Base\Resource\Animation\Clip &amp; KeyFrame</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Clip &amp; KeyFrame</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedMeshRenderer.h">
       <Filter>소스 파일\Components\Rendering\SkinnedMeshRenderer</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorControllerLayer.h">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\Layer</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\Layer</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorStateMachine.h">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorControllerParameter.h">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\Parameter</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\Parameter</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorState.h">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\State</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\State</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorTransitionBase.h">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorTransition.h">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Any</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition\Any</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorStateTransition.h">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Between</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition\Between</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorContidion.h">
-      <Filter>소스 파일\Base\Resource\Animation\Controller\StateMachine\Transition\Condition</Filter>
+      <Filter>소스 파일\Manager\Resource\Resource Classes\Animation\Controller\StateMachine\Transition\Condition</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
       <Filter>소스 파일\Manager\Resource</Filter>

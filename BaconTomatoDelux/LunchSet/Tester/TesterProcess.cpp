@@ -51,7 +51,7 @@
 static std::shared_ptr<GameObject> testGO;
 
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
-	: GameProcess(hInst, L"Tester Process", 800, 600, true)
+	: GameProcess(hInst, L"Tester Process", 1800, 1200, true)
 {
 	// Shader Compile
 	ResourceManager::instance->LoadShader<VertexShader>("LightVertexShader.hlsl", "main", nullptr, L"PBR_VS");
@@ -143,7 +143,7 @@ void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 	static size_t constructCount = 0;
 	static size_t deleteCount = 0;
 
-	if (input.keyState.IsKeyDown(Keyboard::Keys::Up))
+	if (input.keyTracker.IsKeyPressed(Keyboard::Keys::Up))
 	{
 		needInitIdx = m_GameObjects.size();
 		std::wstring name = L"Primrose_Egypt" + std::to_wstring(constructCount);

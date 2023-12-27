@@ -27,6 +27,8 @@ void MeshRenderer::Initialize()
 	Component::Initialize();
 
 	m_MeshFilter = m_Owner.lock()->GetComponent<MeshFilter>();
+
+	// materials 는 ResourceManager 에서 할당함
 }
 
 void MeshRenderer::Start()
@@ -48,43 +50,41 @@ void MeshRenderer::Render(Renderer* renderer)
 	for (size_t i = 0; i < meshfilter->meshes.size(); i++)
 	{
 		// old
-		ObjectSettings objSet2{
-			meshfilter->meshes[i]->vertexBuffer,
-			meshfilter->meshes[i]->indexBuffer,
-			nullptr,
-			&td,
-		};
+		//ObjectSettings objSet2{
+		//	meshfilter->meshes[i]->vertexBuffer,
+		//	meshfilter->meshes[i]->indexBuffer,
+		//	nullptr,
+		//	&td,
+		//};
 
-		if(materials[i] != nullptr)
-		{
-			objSet2.textures = &materials[i]->textures;
-		}
-
-		renderer->SetPerObject(objSet2);
-		renderer->Draw();
-
-		// new
-		// 이렇게 하나하나 박는것보다 머터리얼을 통째로 넘겨주는게...? 뭐가 더 이쁠까, 뭐가 더 좋을까
+		//if(materials[i] != nullptr)
 		//{
-		//	// 방식 1
-		//	RenderQueueSettings settings{
-		//		materials[i]->inputLayout,
-		//		std::static_pointer_cast<VertexShader>(materials[i]->shaders[btdShaderScope_VERTEX]),
-		//		std::static_pointer_cast<PixelShader>(materials[i]->shaders[btdShaderScope_PIXEL]),
-		//		meshfilter->meshes[i]->vertexBuffer,
-		//		meshfilter->meshes[i]->indexBuffer,
-		//		&materials[i]->textures,
-		//		&td
-		//	};
-
-		//	// 방식 2
-		//	//RenderQueueSettings settings{
-		//	//	materials[i],
-		//	//	meshfilter->meshes[i],
-		//	//	&td
-		//	//};
-
-		//	renderer->AddRenderQueue(settings);
+		//	objSet2.textures = &materials[i]->textures;
 		//}
+
+		//renderer->SetPerObject(objSet2);
+		//renderer->Draw();
+		
+		{
+			// 방식 1
+			RenderQueueSettings settings{
+				materials[i]->inputLayout,
+				std::static_pointer_cast<VertexShader>(materials[i]->shaders[btdShaderScope_VERTEX]),
+				std::static_pointer_cast<PixelShader>(materials[i]->shaders[btdShaderScope_PIXEL]),
+				meshfilter->meshes[i]->vertexBuffer,
+				meshfilter->meshes[i]->indexBuffer,
+				&materials[i]->textures,
+				td
+			};
+
+			// 방식 2
+			//RenderQueueSettings settings{
+			//	materials[i],
+			//	meshfilter->meshes[i],
+			//	&td
+			//};
+
+			renderer->AddRenderQueue(settings);
+		}
 	}
 }

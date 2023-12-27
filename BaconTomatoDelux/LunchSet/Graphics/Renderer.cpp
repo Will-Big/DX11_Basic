@@ -146,7 +146,7 @@ void Renderer::Draw()
 
 void Renderer::AddRenderQueue(const RenderQueueSettings& settings)
 {
-	m_RenderQueue.push_back(std::move(settings));
+	m_RenderQueue.push_back(settings);
 }
 
 void Renderer::DrawQueue()
@@ -158,47 +158,12 @@ void Renderer::DrawQueue()
 	// 데이터 초기화
 	lastSettings = {};
 
-	// warn : 일단 텍스처가 같으면 다른게 다 같다는 가정
+	// warn : 일단 텍스처가 같으면 트랜스폼을 제외한 다른게 다 같다는 가정
 	for(auto& settings : m_RenderQueue)
 	{
 		// Compare to previous object
 		if(settings.textures != lastSettings.textures)
 		{
-			// change input layout
-			{
-				SetInputLayout(settings.inputLayout);
-			}
-
-			// change vertex buffer
-			{
-				const std::shared_ptr<VertexBuffer>& vb = settings.vertexBuffer;
-
-				if (vb.get() == nullptr)
-				{
-					LOG_ERROR(L"nullptr : VertexBuffer");
-					return;
-				}
-
-				uint32_t vbStride = vb->GetStride();
-				uint32_t vbOffset = vb->GetOffset();
-
-				m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetComPtr().GetAddressOf(), &vbStride, &vbOffset);
-			}
-
-			// change index buffer
-			{
-				const std::shared_ptr<IndexBuffer>& ib = settings.indexBuffer;
-
-				if (ib.get() == nullptr)
-				{
-					LOG_ERROR(L"nullptr : IndexBuffer");
-					return;
-				}
-
-				m_IndexCount = ib->GetIndexCount();
-				m_DeviceContext->IASetIndexBuffer(ib->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
-			}
-
 			// change texture
 			if (settings.textures)
 			{
@@ -223,20 +188,57 @@ void Renderer::DrawQueue()
 				md.Update(&dataStruct);
 				SetConstantBuffer(md);
 			}
-
-			// change transform matrix
-			if (settings.transform)
-			{
-				static ConstantBuffer<VSObjectData> td{ m_Device, m_DeviceContext };
-
-				td.Update(settings.transform);
-				SetConstantBuffer(td);
-			}
 		}
+
+		// change input layout
+		if (settings.inputLayout != lastSettings.inputLayout)
+		{
+			SetInputLayout(settings.inputLayout);
+		}
+
+		// change vertex & index buffer
+		if (settings.vertexBuffer != lastSettings.vertexBuffer)
+		{
+			const std::shared_ptr<VertexBuffer>& vb = settings.vertexBuffer;
+
+			if (vb.get() == nullptr)
+			{
+				LOG_ERROR(L"nullptr : VertexBuffer");
+				return;
+			}
+
+			uint32_t vbStride = vb->GetStride();
+			uint32_t vbOffset = vb->GetOffset();
+
+			m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetComPtr().GetAddressOf(), &vbStride, &vbOffset);
+
+			const std::shared_ptr<IndexBuffer>& ib = settings.indexBuffer;
+
+			if (ib.get() == nullptr)
+			{
+				LOG_ERROR(L"nullptr : IndexBuffer");
+				return;
+			}
+
+			m_IndexCount = ib->GetIndexCount();
+			m_DeviceContext->IASetIndexBuffer(ib->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
+		}
+
+		// change transform matrix
+		{
+			static ConstantBuffer<VSObjectData> td{ m_Device, m_DeviceContext };
+
+			td.Update(settings.transform);
+			SetConstantBuffer(td);
+		}
+
+		// update last setting
 		lastSettings = settings;
 
 		Draw();
 	}
+
+	m_RenderQueue.clear();
 }
 
 void Renderer::SortRenderQueue()
@@ -244,7 +246,11 @@ void Renderer::SortRenderQueue()
 	std::sort(m_RenderQueue.begin(), m_RenderQueue.end(),
 		[](const RenderQueueSettings& lhs, const RenderQueueSettings& rhs)
 		{
-			return lhs.textures < rhs.textures;
+			if (lhs.textures == rhs.textures) {
+				// textures가 같은 경우, vertexBuffer로 비교
+				return lhs.vertexBuffer < rhs.vertexBuffer;
+			}
+			return lhs.textures < rhs.textures; // textures로 먼저 비교
 		});
 }
 

@@ -30,9 +30,6 @@ public:
 	std::shared_ptr<VertexBuffer> vertexBuffer;
 	std::shared_ptr<IndexBuffer> indexBuffer;
 
-	// todo : 파일 입출력을 통해 경로를 string 값으로 가리키고 runtime 에 ptr로 연결
-	std::array<std::shared_ptr<Texture>, btdTextureType_END> textures;	// Mesh 가 가리키는 texture
-
 	// Bone
 	std::vector<BoneReference> boneReferences;
 };

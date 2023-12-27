@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Texture.h"
+#include "PerObjectCB.h"
 
 // CB
 struct VSFixedData;
@@ -28,7 +29,7 @@ struct RenderQueueSettings
 	std::shared_ptr<IndexBuffer> indexBuffer;
 	std::array<std::shared_ptr<Texture>, btdTextureType_END>* textures = nullptr; // 정렬 기준 1
 
-	VSObjectData* transform = nullptr;
+	VSObjectData transform;
 };
 
 struct FixedSettings

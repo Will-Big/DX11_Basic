@@ -9,12 +9,8 @@
 #include "Animator.h"
 #include "AnimationClip.h"
 
-// 함수 전방 선언
-btdTextureType aiType2btdType(aiTextureType type);
-std::wstring aiString2wstring(const aiString& string);
-
 ModelLoader::ModelLoader(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext, ModelData& modelData, std::array<std::shared_ptr<Shader>, btdShaderScope_END> shaders, std::shared_ptr<InputLayout> layout)
-	: m_Device(device), m_DeviceContext(deviceContext), m_RootData(modelData), m_Shaders(shaders)
+	: m_Device(device), m_DeviceContext(deviceContext), m_RootData(modelData), m_Shaders(shaders), m_InputLayout(layout)
 {
 }
 
@@ -98,9 +94,59 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 	}
 }
 
-void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene,
-                                        std::weak_ptr<Material>& material)
+btdTextureType ModelLoader::aiType2btdType(aiTextureType type)
 {
+	switch (type)
+	{
+	case aiTextureType_DIFFUSE:
+		return btdTextureType_DIFFUSE;
+	case aiTextureType_NORMALS:
+		return btdTextureType_NORMALS;
+	case aiTextureType_SPECULAR:
+		return btdTextureType_SPECULAR;
+	case aiTextureType_OPACITY:
+		return btdTextureType_OPACITY;
+	case aiTextureType_EMISSIVE:
+		return btdTextureType_EMISSIVE;
+	case aiTextureType_METALNESS:
+		return btdTextureType_METALNESS;
+	case aiTextureType_SHININESS:
+		return btdTextureType_ROUGHNESS;
+	default:
+		LOG_ERROR(L"Invalid Texture Type");
+		return btdTextureType_END;
+	}
+}
+
+std::wstring ModelLoader::aiString2wstring(const aiString& string)
+{
+	auto str = std::string(string.C_Str());
+	return std::wstring(str.begin(), str.end());
+}
+
+void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene,
+                                       std::weak_ptr<Material>& material)
+{
+	std::wstring materialName = aiString2wstring(mat->GetName());
+	auto matIt = ResourceManager::instance->materials.find(materialName);
+
+	// 새로운 material 일 경우
+	if (matIt == ResourceManager::instance->materials.end())
+	{
+		// 새로운 material 생성
+		auto sharedMaterial = std::make_shared<Material>(materialName);
+		material = sharedMaterial;
+
+		// 리소스 매니저에 할당
+		ResourceManager::instance->materials.insert({ materialName, sharedMaterial });
+		matIt = ResourceManager::instance->materials.find(materialName);
+
+		// 셰이더 및 인풋 레이아웃 참조
+		material.lock()->shaders = m_Shaders;
+		material.lock()->inputLayout = m_InputLayout;
+	}
+	material = matIt->second;
+
 	for (UINT i = 0; i < mat->GetTextureCount(type); i++) 
 	{
 		aiString str;
@@ -116,26 +162,15 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 
 		// key 검색
 		auto texIt = ResourceManager::instance->textures.find(key);
-		auto matIt = ResourceManager::instance->materials.find(materialName);
 
-		// 새로운 material 일 경우, 생성
-		if (matIt == ResourceManager::instance->materials.end())
-		{
-			auto newMaterial = std::make_shared<Material>(materialName);
-
-			// 리소스 매니저에 할당 및 iterator 갱신
-			ResourceManager::instance->materials.insert({ materialName, newMaterial });
-			matIt = ResourceManager::instance->materials.find(materialName);
-		}
-
-		// 새로운 texture 일 경우, 생성
+		// 새로운 texture 일 경우
 		if (texIt == ResourceManager::instance->textures.end())
 		{
-			std::shared_ptr<Texture> newTexture;
-
 			// 내장 texture 확인
 			const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(str.C_Str());
 
+			// 새로운 texture 생성
+			std::shared_ptr<Texture> newTexture;
 			if (embeddedTexture != nullptr)
 				newTexture = std::make_shared<Texture>(LoadEmbeddedTexture(embeddedTexture), btdType);
 			else
@@ -148,8 +183,7 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, cons
 			LOG_MESSAGE(newTexture->name.c_str());
 		}
 
-		matIt->second->SetTexture(btdType, texIt->second);
-		material = matIt->second;
+		material.lock()->SetTexture(btdType, texIt->second);
 	}
 }
 
@@ -198,35 +232,4 @@ ID3D11ShaderResourceView* ModelLoader::LoadEmbeddedTexture(const aiTexture* embe
 		LOG_ERROR(L"Texture couldn't be created from memory!");
 
 	return texture;
-}
-
-btdTextureType aiType2btdType(aiTextureType type)
-{
-	switch (type)
-	{
-	case aiTextureType_DIFFUSE:
-		return btdTextureType_DIFFUSE;
-	case aiTextureType_NORMALS:
-		return btdTextureType_NORMALS;
-	case aiTextureType_SPECULAR:
-		return btdTextureType_SPECULAR;
-	case aiTextureType_OPACITY:
-		return btdTextureType_OPACITY;
-	case aiTextureType_EMISSIVE:
-		return btdTextureType_EMISSIVE;
-	case aiTextureType_METALNESS:
-		return btdTextureType_METALNESS;
-	case aiTextureType_SHININESS:
-		return btdTextureType_ROUGHNESS;
-	default:
-		LOG_ERROR(L"Invalid Texture Type");
-		return btdTextureType_END;
-	}
-}
-
-std::wstring aiString2wstring(const aiString& string)
-{
-	auto str = std::string(string.C_Str());
-	return std::wstring(str.begin(), str.end());
-
 }

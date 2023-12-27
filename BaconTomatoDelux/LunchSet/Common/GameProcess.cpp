@@ -143,6 +143,8 @@ void GameProcess::Render(Renderer* renderer)
 		{
 			go->Render(renderer);
 		}
+
+		renderer->DrawQueue();
 	}
 }
 

@@ -46,17 +46,21 @@ private:
 	template <typename T>
 	void ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh, std::weak_ptr<Material>& btdMaterial);
 
-	void LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::weak_ptr<Material>&
-		material);
+	void LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::weak_ptr<Material>& material);
 	ID3D11ShaderResourceView* LoadEmbeddedTexture(const aiTexture* embeddedTexture);
 
 	void ProcessAnimation(const aiScene* scene);
+
+	// ai 인자 변환 함수
+	btdTextureType aiType2btdType(aiTextureType type);
+	std::wstring aiString2wstring(const aiString& string);
 
 private:
 	ComPtr<ID3D11Device> m_Device;
 	ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	ModelData& m_RootData;
 	std::array<std::shared_ptr<Shader>, btdShaderScope_END> m_Shaders;
+	std::shared_ptr<InputLayout> m_InputLayout;
 
 	std::filesystem::path m_folderPath;
 };
@@ -144,7 +148,7 @@ void ModelLoader::ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std
 {
 	if (btdMesh)
 	{
-		//LOG_ERROR(L"Mesh already exists");
+		LOG_ERROR(L"Mesh already exists");
 		return;
 	}
 
