@@ -37,7 +37,7 @@ public:
 	Keyboard::State					m_KeyboardState;
 
 	bool Initialize(HWND hWnd);
-	void Update(float DeltaTime);
+	void Update(float deltaTime);
 	void Finalize();
 
 	void AddInputProcesser(IKeyProcessor* inputProcesser);

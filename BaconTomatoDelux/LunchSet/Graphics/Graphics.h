@@ -11,6 +11,7 @@ public:
 
 	ComPtr<ID3D11Device> GetDevice() { return m_Device; }
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() { return m_DeviceContext; }
+	DXGI_QUERY_VIDEO_MEMORY_INFO GetQueryVideoMemoryInfo();
 
 private:
 	void CreateDeviceAndSwapChain();
@@ -18,6 +19,7 @@ private:
 	void SetViewport();
 	void CreateRenderTargetView();
 	void SetBlendState();
+	void InitializeDXGIAdapter();
 
 	void InitialSettings();
 
@@ -39,4 +41,7 @@ private:
 	ComPtr<ID3D11DepthStencilView> m_DepthStencilView;
 	ComPtr<ID3D11RenderTargetView> m_RenderTargetView;
 	ComPtr<ID3D11BlendState> m_BlendState;
+
+	// µð¹ö±×
+	ComPtr<IDXGIAdapter3> m_DXGIAdapter3;
 };

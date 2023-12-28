@@ -7,9 +7,12 @@
 #include "../Graphics/Renderer.h"
 
 // Common
+#include "GameProcess.h"
+
 #include "GameObject.h"
 #include "InputManager.h"
 #include "ResourceManager.h"
+#include "TimeManager.h"
 
 uint32_t GameProcess::Width = 0;
 uint32_t GameProcess::Height = 0;
@@ -61,11 +64,16 @@ GameProcess::GameProcess(HINSTANCE hInst, std::wstring_view title, int width, in
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(m_hWnd);
 
-	// 초기화
+	// 멤버 변수 및 매니저 초기화
 	m_Graphics = std::make_unique<Graphics>(m_hWnd, width, height, bImGuiInit);
+
 	m_Renderer = std::make_unique<Renderer>(m_Graphics->GetDevice(), m_Graphics->GetDeviceContext());
 
+	m_Time = std::make_unique<TimeManager>();
+	m_Time->Initialize();
+
 	ResourceManager::instance->Initialize(m_Graphics->GetDevice(), m_Graphics->GetDeviceContext());
+
 	InputManager::instance->Initialize(m_hWnd);
 }
 
@@ -103,27 +111,30 @@ void GameProcess::Loop()
 
 void GameProcess::Update()
 {
-	// system update
-	InputManager::instance->Update(0.0167f);
+	// system or manager update
+	m_Time->Update();
+	const float deltaTime = m_Time->GetDeltaTime();
+
+	InputManager::instance->Update(deltaTime);
 
 	// temp(Scene)
 	{
 		// Update
 		for (auto& go : m_GameObjects)
 		{
-			go->Update(0.0167f);
+			go->Update(deltaTime);
 		}
 
 		// FixedUpdate
 		for(auto& go : m_GameObjects)
 		{
-			go->FixedUpdate(0.0167f);
+			go->FixedUpdate(deltaTime);
 		}
 
 		// LateUpdate
 		for (auto& go : m_GameObjects)
 		{
-			go->LateUpdate(0.0167f);
+			go->LateUpdate(deltaTime);
 		}
 	}
 }
@@ -144,7 +155,7 @@ void GameProcess::Render(Renderer* renderer)
 			go->Render(renderer);
 		}
 
-		renderer->DrawQueue();
+		renderer->DrawAllQueue();
 	}
 }
 

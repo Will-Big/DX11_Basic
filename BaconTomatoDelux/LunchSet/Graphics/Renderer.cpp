@@ -144,21 +144,32 @@ void Renderer::Draw()
 	m_DeviceContext->DrawIndexed(m_IndexCount, 0, 0);
 }
 
-void Renderer::AddRenderQueue(const RenderQueueSettings& settings)
+void Renderer::AddRenderQueue(const StaticRenderQueueSettings& settings)
 {
-	m_RenderQueue.push_back(settings);
+	m_StaticRenderQueue.push_back(std::move(settings));
 }
 
-void Renderer::DrawQueue()
+void Renderer::AddRenderQueue(const SkinnedRenderQueueSettings& settings)
+{
+	m_SkinnedRenderQueue.push_back(std::move(settings));
+}
+
+void Renderer::DrawAllQueue()
 {
 	SortRenderQueue();
 
-	static RenderQueueSettings lastSettings;
+	DrawStaticQueue();
+	DrawSkinnedQueue();
+}
+
+void Renderer::DrawStaticQueue()
+{
+	static StaticRenderQueueSettings lastSettings;
 
 	// 데이터 초기화
 	lastSettings = {};
 
-	for (auto& settings : m_RenderQueue)
+	for (auto& settings : m_StaticRenderQueue)
 	{
 		// Compare to previous object
 		// change texture
@@ -241,13 +252,114 @@ void Renderer::DrawQueue()
 		Draw();
 	}
 
-	m_RenderQueue.clear();
+	m_StaticRenderQueue.clear();
+}
+
+void Renderer::DrawSkinnedQueue()
+{
+	static SkinnedRenderQueueSettings lastSettings;
+
+	// 데이터 초기화
+	lastSettings = {};
+
+	for (auto& settings : m_SkinnedRenderQueue)
+	{
+		// Compare to previous object
+		// change texture
+		if (settings.textures != lastSettings.textures && settings.textures)
+		{
+			const std::array<std::shared_ptr<Texture>, btdTextureType_END>& ts = *settings.textures;
+
+			static ConstantBuffer<PsMaterialData> md{ m_Device, m_DeviceContext }; // todo : 데이터 구체화, 이름에 걸맞지 않음
+			PsMaterialData constantData{ 0, 20.0f, 2.0f }; // todo : 상수 데이터 삭제
+
+			for (uint32_t texType = btdTextureType_DIFFUSE; texType < btdTextureType_END; texType++)
+			{
+				if (ts[texType] != nullptr)
+				{
+					m_DeviceContext->PSSetShaderResources(texType, 1, ts[texType]->GetComPtr().GetAddressOf());
+
+					constantData.textureBitmask |= 1 << (texType);
+				}
+			}
+
+			md.Update(&constantData);
+			SetConstantBuffer(md);
+		}
+
+		// change input layout
+		if (settings.inputLayout != lastSettings.inputLayout)
+		{
+			SetInputLayout(settings.inputLayout);
+		}
+
+		// change vertex & index buffer
+		if (settings.vertexBuffer != lastSettings.vertexBuffer)
+		{
+			const std::shared_ptr<VertexBuffer>& vb = settings.vertexBuffer;
+
+			if (vb.get() == nullptr)
+			{
+				LOG_ERROR(L"nullptr : VertexBuffer");
+				return;
+			}
+
+			uint32_t vbStride = vb->GetStride();
+			uint32_t vbOffset = vb->GetOffset();
+
+			m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetComPtr().GetAddressOf(), &vbStride, &vbOffset);
+
+			const std::shared_ptr<IndexBuffer>& ib = settings.indexBuffer;
+
+			if (ib.get() == nullptr)
+			{
+				LOG_ERROR(L"nullptr : IndexBuffer");
+				return;
+			}
+
+			m_IndexCount = ib->GetIndexCount();
+			m_DeviceContext->IASetIndexBuffer(ib->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
+		}
+
+		// change shaders
+		if (settings.vertexShader != lastSettings.vertexShader)
+		{
+			SetShader(settings.vertexShader);
+		}
+		if (settings.pixelShader != lastSettings.pixelShader)
+		{
+			SetShader(settings.pixelShader);
+		}
+
+		// change transform matrix
+		{
+			static ConstantBuffer<VSObjectData> od{ m_Device, m_DeviceContext };
+
+			od.Update(settings.transform.get());
+			SetConstantBuffer(od);
+		}
+
+		// change matrix pallete
+		{
+			static ConstantBuffer<VsMatrixPallete> vmp{ m_Device, m_DeviceContext };
+
+			vmp.Update(settings.pallete.get());
+			SetConstantBuffer(vmp);
+		}
+
+		// update last setting
+		lastSettings = settings;
+
+		Draw();
+	}
+
+	m_SkinnedRenderQueue.clear();
 }
 
 void Renderer::SortRenderQueue()
 {
-	std::sort(m_RenderQueue.begin(), m_RenderQueue.end(),
-		[](const RenderQueueSettings& lhs, const RenderQueueSettings& rhs)
+	std::sort(m_StaticRenderQueue.begin(), m_StaticRenderQueue.end(),
+		[](const StaticRenderQueueSettings& lhs, const StaticRenderQueueSettings& rhs)
 		{
 			if (lhs.textures == rhs.textures) {
 				// textures가 같은 경우, vertexBuffer로 비교

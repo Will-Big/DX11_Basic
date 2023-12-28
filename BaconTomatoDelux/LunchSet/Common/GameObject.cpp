@@ -17,29 +17,6 @@ GameObject::GameObject(std::wstring_view name)
 {
 }
 
-GameObject::~GameObject()
-{
-	auto transform = GetComponent<Transform>().lock();
-
-	if(transform == nullptr)
-		LOG_ERROR(L"nullptr : Transform");
-
-	// todo : 객체의 삭제 명령을 받았을 때 자신이 갖고 있는 하위 객체를 모두 삭제해야 함
-	// temp Scene
-	for(auto& child : transform->GetChildren())
-	{
-		if (child.expired())
-			continue;
-
-		GameProcess::m_GameObjects.erase(std::remove_if(GameProcess::m_GameObjects.begin(), GameProcess::m_GameObjects.end(),
-			[&](const std::shared_ptr<GameObject>& go)
-			{
-				return child.lock()->GetRoot().lock() == transform;
-			}),
-			GameProcess::m_GameObjects.end());
-	}
-}
-
 void GameObject::InitializeComponents()
 {
 	for (auto& cp : m_Components)

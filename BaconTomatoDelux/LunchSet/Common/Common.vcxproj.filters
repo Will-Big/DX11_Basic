@@ -114,6 +114,9 @@
     <Filter Include="소스 파일\Manager\Resource\Resource Classes\Animation\Clip &amp; KeyFrame">
       <UniqueIdentifier>{16df089c-2dfa-41d8-845a-bd7bbef4fba6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Manager\Time">
+      <UniqueIdentifier>{8bf0f40e-bb59-4537-af0e-22de74f4b998}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -193,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>소스 파일\Manager\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>소스 파일\Manager\Time</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -297,6 +303,9 @@
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>소스 파일\Manager\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>소스 파일\Manager\Time</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

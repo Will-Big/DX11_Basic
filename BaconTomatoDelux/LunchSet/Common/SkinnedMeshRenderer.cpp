@@ -1,12 +1,15 @@
 ﻿#include "pch.h"
 #include "SkinnedMeshRenderer.h"
-
+#include "GameObject.h"
+#include "ResourceManager.h"
+#include "Material.h"
 #include "Mesh.h"
 #include "MeshFilter.h"
-#include "GameObject.h"
 #include "Transform.h"
+
 #include "../Graphics/Renderer.h"
-#include "../Graphics/PerObjectCB.h"
+#include "../Graphics/VertexShader.h"
+#include "../Graphics/PixelShader.h"
 
 
 SkinnedMeshRenderer::SkinnedMeshRenderer(std::weak_ptr<GameObject> owner)
@@ -20,56 +23,61 @@ SkinnedMeshRenderer::~SkinnedMeshRenderer()
 
 void SkinnedMeshRenderer::Initialize()
 {
-	//Component::Initialize();
-	//m_MeshFilter = m_Owner.lock()->GetComponent<MeshFilter>();
+	Component::Initialize();
+	m_MeshFilter = m_Owner.lock()->GetComponent<MeshFilter>();
 
-	//auto childrenTransform = m_Transform.lock()->GetRoot().lock()->GetOwner().lock()->GetComponentsInChildren<Transform>();
+	auto childrenTransform = m_Transform.lock()->GetRoot().lock()->GetOwner().lock()->GetComponentsInChildren<Transform>();
 
-	//// bone mapping
-	//for(auto& boneRef : m_MeshFilter.lock()->meshes->boneReferences)
-	//{
-	//	for(auto& wChild : childrenTransform)
-	//	{
-	//		auto sChild = wChild.lock();
-	//		std::string sName(sChild->GetOwner().lock()->GetName().begin(), sChild->GetOwner().lock()->GetName().end());
-	//		if(boneRef.name == sName)
-	//		{
-	//			m_Bones.push_back(sChild);
-	//			break;
-	//		}
-	//	}
-	//}
+	// todo : mesh 를 하나로 합치기 + 중위순회 (feat. Mr.Hong)
+	for(auto& mesh : m_MeshFilter.lock()->meshes)
+	{
+		for(auto& bone : mesh->boneReferences)
+		{
+			for(auto& child : childrenTransform)
+			{
+				auto ownerName = child.lock()->GetOwner().lock()->GetName();
+				std::string strName{ ownerName.begin(), ownerName.end() };
+
+				if(bone.name == strName)
+				{
+					m_Bones.push_back(child.lock());
+					break;
+				}
+			}
+		}
+	}
 }
 
 void SkinnedMeshRenderer::Render(Renderer* renderer)
 {
-	//auto meshfilter = m_MeshFilter.lock();
-	//auto transform = m_Transform.lock();
+	auto meshfilter = m_MeshFilter.lock();
+	auto transform = m_Transform.lock();
 
-	//assert(meshfilter != nullptr && transform != nullptr);
+	assert(meshfilter != nullptr && transform != nullptr);
 
-	//VSObjectData td{ transform->GetMatrix().Transpose() };
+	std::shared_ptr<VSObjectData> od = std::make_shared<VSObjectData>();
+	od->World = transform->GetMatrix().Transpose();
 
-	//ObjectSettings objSet{
-	//	meshfilter->meshes->vertexBuffer,
-	//	meshfilter->meshes->indexBuffer,
-	//	meshfilter->meshes->textures,
-	//	&td,
-	//};
-	//renderer->SetPerObject(objSet);
+	for(size_t i = 0; i < meshfilter->meshes.size(); i++)
+	{
+		std::shared_ptr<VsMatrixPallete> vmp = std::make_shared<VsMatrixPallete>();
+		for (size_t j = 0; j < m_Bones.size(); ++j)
+		{
+			vmp->Array[j] = (meshfilter->meshes[i]->boneReferences[j].offset 
+							* m_Bones[j]->GetMatrix()).Transpose();
+		}
 
-	//VsMatrixPallete mp;
-	//for(size_t i = 0; i < m_Bones.size(); ++i)
-	//{
-	//	mp.Array[i] = (meshfilter->meshes->boneReferences[i].offset * m_Bones[i]->GetMatrix()).Transpose();
-	//}
+		SkinnedRenderQueueSettings settings{
+			materials[i]->inputLayout,
+			std::static_pointer_cast<VertexShader>(materials[i]->shaders[btdShaderScope_VERTEX]),
+			std::static_pointer_cast<PixelShader>(materials[i]->shaders[btdShaderScope_PIXEL]),
+			meshfilter->meshes[i]->vertexBuffer,
+			meshfilter->meshes[i]->indexBuffer,
+			&materials[i]->textures,
+			vmp,
+			od,
+		};
 
-	//MatrixPalleteSettings mpSet{
-	//	&mp
-	//};
-
-	//renderer->SetMatrixPallete(mpSet);
-
-
-	//renderer->Draw();
+		renderer->AddRenderQueue(settings);
+	}
 }

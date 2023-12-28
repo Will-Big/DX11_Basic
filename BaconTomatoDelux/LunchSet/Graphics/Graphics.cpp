@@ -11,6 +11,7 @@ Graphics::Graphics(HWND hWnd, int width, int height, bool bImGui)
 	CreateDepthStencilView();
 	SetViewport();
 	SetBlendState();
+	InitializeDXGIAdapter();
 
 	InitialSettings();
 
@@ -41,6 +42,17 @@ void Graphics::RenderEnd()
 	//auto check = m_Device->GetDeviceRemovedReason();
 	HRESULT hr = m_SwapChain->Present(1, 0);
 	HR_T(hr);
+}
+
+DXGI_QUERY_VIDEO_MEMORY_INFO Graphics::GetQueryVideoMemoryInfo()
+{
+	DXGI_QUERY_VIDEO_MEMORY_INFO memoryInfo = {};
+
+	if (m_DXGIAdapter3) {
+		m_DXGIAdapter3->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &memoryInfo);
+	}
+
+	return memoryInfo;
 }
 
 void Graphics::CreateDeviceAndSwapChain()
@@ -155,6 +167,17 @@ void Graphics::SetBlendState()
 	HR_T(m_Device->CreateBlendState(&blendDesc, m_BlendState.GetAddressOf()));
 
 	m_DeviceContext->OMSetBlendState(m_BlendState.Get(), nullptr, 0xffffffff);
+}
+
+void Graphics::InitializeDXGIAdapter()
+{
+	ComPtr<IDXGIDevice> dxgiDevice;
+	m_Device.As(&dxgiDevice);
+
+	ComPtr<IDXGIAdapter> dxgiAdapter;
+	dxgiDevice->GetAdapter(&dxgiAdapter);
+
+	dxgiAdapter.As(&m_DXGIAdapter3);
 }
 
 void Graphics::InitialSettings()

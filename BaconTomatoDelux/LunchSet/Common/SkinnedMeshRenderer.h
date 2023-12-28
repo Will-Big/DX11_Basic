@@ -20,13 +20,9 @@ public:
 	void Render(Renderer* renderer) override;
 
 public:
-	// Component
 	std::weak_ptr<MeshFilter> m_MeshFilter;
-
-	// Object
-	std::shared_ptr<Material> m_Material;
+	std::vector<std::shared_ptr<Material>> materials;
 
 private:
-	// Component
 	std::vector<std::shared_ptr<Transform>> m_Bones;
 };

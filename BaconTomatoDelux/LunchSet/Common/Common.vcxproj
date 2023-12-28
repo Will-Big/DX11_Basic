@@ -176,6 +176,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Script.h" />
     <ClInclude Include="SkinnedMeshRenderer.h" />
+    <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +210,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="SkinnedMeshRenderer.cpp" />
+    <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>

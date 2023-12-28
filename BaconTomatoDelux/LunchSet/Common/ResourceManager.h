@@ -42,7 +42,7 @@ public:
 	// 레퍼런스 방식
 	void GetModel(std::wstring_view resourceName, std::weak_ptr<GameObject> gameObject);
 	// 포인터 리턴 방식
-	std::shared_ptr<GameObject> GetModel(std::wstring_view resourceName, std::wstring& objectName);
+	std::shared_ptr<GameObject> GetModel(std::wstring_view resourceName, std::wstring_view objectName);
 
 	ResourceManager(const ResourceManager&) = delete;
 	ResourceManager& operator=(const ResourceManager&) = delete;
@@ -62,9 +62,8 @@ public:
 	std::map<std::wstring, std::shared_ptr<Sampler>> samplers;
 
 	// Model
-	// todo : meshes 추가(model 이 참조하는)
+	//std::map<std::wstring, std::shared_ptr<Mesh>> meshes; // todo : meshes 추가(model 이 참조하는)
 	std::map<std::wstring, ModelData> models;
-	//std::map<std::wstring, std::shared_ptr<Mesh>> meshes;
 	std::map<std::wstring, std::shared_ptr<Texture>> textures;
 	std::map<std::wstring, std::shared_ptr<Material>> materials;
 	std::map<std::wstring, std::shared_ptr<AnimatorController>> animatorControllers;

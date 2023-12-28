@@ -38,7 +38,7 @@ void ResourceManager::GetModel(std::wstring_view resourceName, std::weak_ptr<Gam
 }
 
 
-std::shared_ptr<GameObject> ResourceManager::GetModel(std::wstring_view resourceName, std::wstring& objectName)
+std::shared_ptr<GameObject> ResourceManager::GetModel(std::wstring_view resourceName, std::wstring_view objectName)
 {
 	if (const auto searched = models.find(resourceName.data()); searched == models.end())
 	{
@@ -114,7 +114,7 @@ void ResourceManager::SetMaterial(std::shared_ptr<Material> material, std::weak_
 	if (auto meshRenderer = gameObject.lock()->GetComponent<MeshRenderer>().lock())
 		meshRenderer->materials.push_back(material);
 	else if (auto skinnedMeshRenderer = gameObject.lock()->GetComponent<SkinnedMeshRenderer>().lock())
-		skinnedMeshRenderer->m_Material = material;	// todo : 위와 같이 변경
+		skinnedMeshRenderer->materials.push_back(material);	// todo : 위와 같이 변경
 	else
 		LOG_ERROR(L"nullptr : MeshRenderer OR SkinnedMeshRenderer");
 }

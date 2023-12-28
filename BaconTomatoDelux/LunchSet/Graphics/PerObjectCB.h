@@ -32,7 +32,7 @@ struct VSObjectData
 __declspec(align(16))
 struct VsMatrixPallete
 {
-    Matrix Array[128];
+    std::array<Matrix, 128> Array;
 
     const static std::vector<std::pair<btdShaderScope, uint32_t>> bindings;
 };

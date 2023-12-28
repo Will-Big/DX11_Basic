@@ -41,8 +41,12 @@ void Animator::Initialize()
 
 void Animator::Update(float deltaTime)
 {
-	m_ProgressTime += deltaTime * 15;
-	double curFrameTime = m_ProgressTime / (m_CurrentClip->first->duration / m_CurrentClip->first->framePerSecond);
+	m_ProgressTime += deltaTime;
+	double totalFrames = m_CurrentClip->first->duration;
+	double framePerSecond = m_CurrentClip->first->framePerSecond;
+
+	// 현재 프레임 계산
+	double curFrameTime = fmod(m_ProgressTime * framePerSecond, totalFrames);
 
 	if(curFrameTime > m_CurrentClip->first->duration)
 	{

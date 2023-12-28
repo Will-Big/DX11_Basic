@@ -75,7 +75,7 @@ public:
 	~AnimationClip() override;
 
 public:
-	std::vector<KeyFrames> keyFrames;	// cache hit 를 위해서 std::vector 사용
+	std::vector<KeyFrames> keyFrames;
 	double duration = 0.0;
 	double framePerSecond = 0.0;
 	bool isLoop = false;

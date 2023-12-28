@@ -7,7 +7,7 @@ IndexBuffer::IndexBuffer()
 
 void IndexBuffer::Create(ComPtr<ID3D11Device> device, const std::vector<uint32_t>& indices)
 {
-	m_IndexCount = indices.size();
+	m_IndexCount = static_cast<uint32_t>(indices.size());
 
 	D3D11_BUFFER_DESC desc{};
 	desc.Usage = D3D11_USAGE_IMMUTABLE;

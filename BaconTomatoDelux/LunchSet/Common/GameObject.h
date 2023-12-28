@@ -20,7 +20,7 @@ class GameObject : public Object, public std::enable_shared_from_this<GameObject
 protected:
 	GameObject(std::wstring_view name);
 public:
-	~GameObject() override;
+	~GameObject() override = default;
 
 	void InitializeComponents();
 	void Start();

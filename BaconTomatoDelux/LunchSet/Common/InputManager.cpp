@@ -11,7 +11,7 @@ bool InputManager::Initialize(HWND hWnd)
 	return true;
 }
 
-void InputManager::Update(float DeltaTime)
+void InputManager::Update(float deltaTime)
 {
 	m_MouseState = m_Mouse->GetState();
 	m_MouseStateTracker.Update(m_MouseState);

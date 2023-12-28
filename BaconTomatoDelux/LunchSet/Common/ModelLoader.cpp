@@ -58,12 +58,10 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 		for (uint32_t j = 0; j < scene->mAnimations[i]->mNumChannels; j++)
 		{
 			auto nodeAnim = scene->mAnimations[i]->mChannels[j];
-			std::string nodeName(nodeAnim->mNodeName.C_Str());
-			std::wstring wsNodeName{ nodeName.begin(), nodeName.end() };
 
 			KeyFrames frame;
-			frame.name = wsNodeName;
-			LOG_MESSAGE(wsNodeName.c_str());
+			frame.name = aiString2wstring(nodeAnim->mNodeName);
+			LOG_MESSAGE(frame.name.c_str());
 
 			// scale
 			frame.scaleKeys.reserve(nodeAnim->mNumScalingKeys);
@@ -82,7 +80,7 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 			}
 
 			// translation
-			frame.positionKeys.reserve(nodeAnim->mNumRotationKeys);
+			frame.positionKeys.reserve(nodeAnim->mNumPositionKeys);
 			for (uint32_t k = 0; k < nodeAnim->mNumPositionKeys; k++)
 			{
 				auto pk = nodeAnim->mPositionKeys[k];

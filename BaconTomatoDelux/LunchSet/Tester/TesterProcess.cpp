@@ -26,6 +26,7 @@
 #include <random>
 #include <psapi.h>
 
+
 /**
  * \todo list
  *		- Resource Manager 수정
@@ -64,11 +65,9 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	// InputLayout Load
 	// Static
 	ResourceManager::instance->LoadInputLayout<StaticVertex>(L"PBR_VS", L"PBR_VS_INPUT");
-	auto staticInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
 
 	// Skinned
 	ResourceManager::instance->LoadInputLayout<BoneVertex>(L"SKIN_VS", L"SKIN_VS_INPUT");
-	auto skinnedInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
 
 	// Sampler todo : ResourceManager 에서 Load 하게 변경
 	static auto sampler = std::make_shared<Sampler>(m_Graphics->GetDevice());
@@ -77,21 +76,6 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
-
-	std::array<std::shared_ptr<Shader>, btdShaderScope_END> staticShaders
-	{
-		ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
-		ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
-	};
-	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", staticShaders, staticInput);
-
-
-	std::array<std::shared_ptr<Shader>, btdShaderScope_END> boneShaders
-	{
-		ResourceManager::instance->Get<VertexShader>(L"SKIN_VS"),
-		ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
-	};
-	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", boneShaders, skinnedInput);
 
 	// Model Data Load 방식 1 (reference)
 	//testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
@@ -103,15 +87,12 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	//testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
 	//testGO->GetComponent<Transform>().lock()->SetRenderGUI(true);
 
-	// Animator test
-	//testGO->AddComponent<Animator>().lock()->SetController(L"../Resource/FBX/SkinningTest.fbx");
-
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));
-	m_GameObjects.back()->AddComponent<Camera>().lock()->SetRenderGUI(true);
-	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 250.f, 250.f, -200.f });
+	m_GameObjects.back()->AddComponent<Camera>();
+	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 250.f, 250.f, -300.f });
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Light"));
-	m_GameObjects.back()->AddComponent<Light>().lock()->SetRenderGUI(true);
+	m_GameObjects.back()->AddComponent<Light>();
 
 	// temp(Scene)
 	for (auto& go : m_GameObjects)
@@ -157,6 +138,9 @@ static std::uniform_real_distribution<float> uni(0.f, 500.f);
 
 void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 {
+	if (objectNumber != 0)
+		return;
+
 	static size_t needInitIdx = 0;
 	static size_t constructCount = 0;
 	static size_t deleteCount = 0;
@@ -166,6 +150,9 @@ void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 		needInitIdx = m_GameObjects.size();
 		std::wstring name = L"Primrose_Egypt" + std::to_wstring(constructCount);
 		auto go = ResourceManager::instance->GetModel(L"Primrose_Egypt", name);
+
+		if (go == nullptr)
+			return;
 
 		// 무작위 위치 생성
 		float randomX = uni(rng);
@@ -210,17 +197,64 @@ void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 
 void TesterProcess::UpdateHW2_Skinned(const InputStruct& input)
 {
+	if (objectNumber != 1)
+		return;
+
 	static size_t needInitIdx = 0;
 	static size_t constructCount = 0;
 	static size_t deleteCount = 0;
 
+	if (input.keyState.IsKeyDown(Keyboard::Keys::Up))
+	{
+		needInitIdx = m_GameObjects.size();
+		std::wstring name = L"SkinningTest" + std::to_wstring(constructCount);
+		auto go = ResourceManager::instance->GetModel(L"SkinningTest", name);
 
+		if (go == nullptr)
+			return;
+
+		// 무작위 위치 생성
+		float randomX = uni(rng);
+
+		go->GetComponent<Transform>().lock()->SetPosition({ randomX, 300.f, 0.f });
+		go->AddComponent<Animator>().lock()->SetController(L"../Resource/Model/SkinningTest");
+		m_GameObjects.push_back(go);
+
+		for (size_t i = needInitIdx; i < m_GameObjects.size(); i++)
+		{
+			m_GameObjects[i]->InitializeComponents();
+		}
+
+		constructCount++;
+	}
+	else if (input.keyState.IsKeyDown(Keyboard::Keys::Down))
+	{
+		std::wstring name = L"SkinningTest" + std::to_wstring(deleteCount);
+
+		auto target = std::find_if(m_GameObjects.begin(), m_GameObjects.end(),
+			[&name](const std::shared_ptr<GameObject>& go) {
+				return go->GetName() == name;
+			});
+
+		if (target != m_GameObjects.end())
+		{
+			auto rootTransform = (*target)->GetComponent<Transform>().lock();
+
+			m_GameObjects.erase(std::remove_if(m_GameObjects.begin(), m_GameObjects.end(),
+				[&](const std::shared_ptr<GameObject>& obj) {
+					auto root = obj->GetComponent<Transform>().lock()->GetRoot().lock();
+					return root == rootTransform;
+				}),
+				m_GameObjects.end());
+
+			deleteCount++;
+		}
+	}
 }
 
 void TesterProcess::ImGuiRenderHW2()
 {
 	PROCESS_MEMORY_COUNTERS_EX pmc;
-
 
 	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
 	{
@@ -230,6 +264,54 @@ void TesterProcess::ImGuiRenderHW2()
 	else
 	{
 		ImGui::Text("Memory info not available");
+	}
+
+	auto info = m_Graphics->GetQueryVideoMemoryInfo();
+
+	// 비디오 메모리 정보 출력
+	ImGui::Text("Current Video Memory Usage: %llu MB", info.CurrentUsage / (1024 * 1024));
+	ImGui::Text("Total Video Memory: %llu MB", info.Budget / (1024 * 1024));
+	ImGui::Text("");
+
+	ImGui::Text("Up Arrow button   : Increase the object \nDown Arrow button : Decrease the object");
+	ImGui::Text("");
+
+	// 'Primrose_Egypt' 라디오 버튼
+	if (ImGui::RadioButton("Primrose_Egypt", objectNumber == 0)) {
+		objectNumber = 0;
+	}
+
+	// 라디오 버튼 사이에 간격을 추가합니다.
+	ImGui::SameLine();
+
+	// 'SkinningTest' 라디오 버튼
+	if (ImGui::RadioButton("SkinningTest", objectNumber == 1)) {
+		objectNumber = 1;
+	}
+
+	if (ImGui::Button("FBX Load")) 
+	{
+		if(objectNumber == 0)
+		{
+			auto staticInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
+			std::array<std::shared_ptr<Shader>, btdShaderScope_END> staticShaders
+			{
+				ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
+				ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
+			};
+			ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", staticShaders, staticInput);
+		}
+
+		else if(objectNumber == 1)
+		{
+			auto skinnedInput = ResourceManager::instance->Get<InputLayout>(L"SKIN_VS_INPUT");
+			std::array<std::shared_ptr<Shader>, btdShaderScope_END> boneShaders
+			{
+				ResourceManager::instance->Get<VertexShader>(L"SKIN_VS"),
+				ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
+			};
+			ResourceManager::instance->LoadModel<BoneVertex>(L"SkinningTest", L"SkinningTest", boneShaders, skinnedInput);
+		}
 	}
 }
 

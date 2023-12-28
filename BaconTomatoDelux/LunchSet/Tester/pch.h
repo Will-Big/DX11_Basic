@@ -29,10 +29,15 @@ using namespace Microsoft::WRL;
 #include <directxtk/SimpleMath.h>
 #include <directxtk/DDSTextureLoader.h>
 #include <directxtk/WICTextureLoader.h>
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
+
+#include <dxgidebug.h>
+#include <dxgi1_4.h>
+#pragma comment(lib, "dxgi.lib")
 
 #endif //PCH_H

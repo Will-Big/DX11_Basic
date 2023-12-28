@@ -2,6 +2,7 @@
 
 class Renderer;
 class Graphics;
+class TimeManager;
 class GameObject;
 
 class GameProcess
@@ -22,8 +23,10 @@ protected:
 	HWND m_hWnd = nullptr;
 	bool m_bImGuiRender = true;
 
+	// system
 	std::unique_ptr<Graphics> m_Graphics;
 	std::unique_ptr<Renderer> m_Renderer;
+	std::unique_ptr<TimeManager> m_Time;
 
 public:
 	static uint32_t Width;
@@ -32,11 +35,3 @@ public:
 	// temp (Scene 으로 이동)
 	static std::vector<std::shared_ptr<GameObject>> m_GameObjects;
 };
-
-/*
- *	https://github.com/PardCode/CPP-3D-Game-Tutorial-Series
- *	https://github.com/Wuszt/Forge
- *	https://www.3dgep.com/forward-plus/
- *
- *	https://www.gamedev.net/tutorials/programming/graphics/opengl-batch-rendering-r3900/
-*/

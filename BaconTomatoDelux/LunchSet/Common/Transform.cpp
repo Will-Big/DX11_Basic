@@ -87,7 +87,7 @@ void Transform::SetParent(std::weak_ptr<GameObject> parent)
 	std::weak_ptr<Transform> root;
 	root = m_Parent;
 
-	while(!root.expired())
+	while (!root.expired())
 	{
 		if (!root.lock()->GetParent().expired())
 			root = root.lock()->GetParent();
@@ -112,9 +112,9 @@ void Transform::UpdateTransform()
 	m_bDirty = false;
 	m_bDirtyFrame = true;
 
-	m_LocalMatrix = 
-		Matrix::CreateScale(m_LocalScale) * 
-		Matrix::CreateFromQuaternion(m_LocalRotation) * 
+	m_LocalMatrix =
+		Matrix::CreateScale(m_LocalScale) *
+		Matrix::CreateFromQuaternion(m_LocalRotation) *
 		Matrix::CreateTranslation(m_LocalPosition);
 
 	if (auto parentTransform = m_Parent.lock())

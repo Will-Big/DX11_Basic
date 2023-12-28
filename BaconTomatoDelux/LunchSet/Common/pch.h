@@ -30,11 +30,15 @@ using namespace Microsoft::WRL;
 #include <directxtk/SimpleMath.h>
 #include <directxtk/DDSTextureLoader.h>
 #include <directxtk/WICTextureLoader.h>
+#include <dxgidebug.h>
+#include <dxgi1_4.h>
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib,"dxgi.lib")
 
 // GUI
 #include <imgui.h>

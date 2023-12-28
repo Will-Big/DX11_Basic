@@ -84,9 +84,14 @@ void ModelLoader::Load(std::filesystem::path path)
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
 
 	const aiScene* scene = importer.ReadFile(fbxPath.string(),
-		aiProcessPreset_TargetRealtime_MaxQuality |
+		aiProcess_Triangulate |
+		aiProcess_GenUVCoords |
+		aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace |
 		aiProcess_ConvertToLeftHanded
 	);
+		//aiProcessPreset_TargetRealtime_MaxQuality |
+		//aiProcess_ConvertToLeftHanded
 
 	if (scene == nullptr)
 	{

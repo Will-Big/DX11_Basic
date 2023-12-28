@@ -24,9 +24,11 @@ public:
 	void SetShader(std::shared_ptr<T> shader);
 	void Draw();
 
-	// new
-	void AddRenderQueue(const RenderQueueSettings& settings);
-	void DrawQueue();
+	void AddRenderQueue(const StaticRenderQueueSettings& settings);
+	void AddRenderQueue(const SkinnedRenderQueueSettings& settings);
+	void DrawAllQueue();
+	void DrawStaticQueue();
+	void DrawSkinnedQueue();
 
 private:
 	template<typename T, typename = decltype(T::bindings)>
@@ -38,15 +40,8 @@ private:
 	ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	uint32_t m_IndexCount = 0;
 
-	// 렌더큐
-	//		일단 텍스처를 기준으로 정렬하는 렌더큐
-	//		하지만 같은 텍스처를 사용하더라도
-	//		다른 쉐이더, 버퍼를 사용하는 특이한 경우가 있을 수 있으므로
-	//		이를 나중에 대비하자
-	//		텍스처(머터리얼) 교체를 하지 않기 위해 비교하는 것 조차도 비용이 있는데...
-	//			1. 큐 안에 큐를 만들어서 텍스처별로 큐를 관리한다
-	//			2. 그냥 매 Settings 마다 비교한다	<- 일단 이걸로!
-	std::vector<RenderQueueSettings> m_RenderQueue;
+	std::vector<StaticRenderQueueSettings> m_StaticRenderQueue;
+	std::vector<SkinnedRenderQueueSettings> m_SkinnedRenderQueue;
 };
 
 template <typename T, typename>

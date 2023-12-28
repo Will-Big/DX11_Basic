@@ -19,7 +19,7 @@ class InputLayout;
 
 // 객체가 직접 Draw Call 을 하는게 아니라, Render Queue 에 GraphicResources 구조체를 넣고
 // Render Queue 를 정렬하여 적절한 순서대로 렌더링한다
-struct RenderQueueSettings
+struct StaticRenderQueueSettings
 {
 	std::shared_ptr<InputLayout> inputLayout;
 	std::shared_ptr<VertexShader> vertexShader; // 정렬 기준 2
@@ -30,6 +30,20 @@ struct RenderQueueSettings
 	std::array<std::shared_ptr<Texture>, btdTextureType_END>* textures = nullptr; // 정렬 기준 1
 
 	VSObjectData transform;
+};
+
+struct SkinnedRenderQueueSettings
+{
+	std::shared_ptr<InputLayout> inputLayout;
+	std::shared_ptr<VertexShader> vertexShader; // 정렬 기준 2
+	std::shared_ptr<PixelShader> pixelShader;
+
+	std::shared_ptr<VertexBuffer> vertexBuffer;
+	std::shared_ptr<IndexBuffer> indexBuffer;
+	std::array<std::shared_ptr<Texture>, btdTextureType_END>* textures = nullptr; // 정렬 기준 1
+
+	std::shared_ptr<VsMatrixPallete> pallete;
+	std::shared_ptr<VSObjectData> transform;
 };
 
 struct FixedSettings
@@ -56,5 +70,5 @@ struct ObjectSettings
 
 struct MatrixPalleteSettings
 {
-	const VsMatrixPallete* pallete;
+	VsMatrixPallete pallete;
 };
