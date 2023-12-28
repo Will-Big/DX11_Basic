@@ -136,6 +136,8 @@ static std::random_device rd;
 static std::mt19937 rng(rd());
 static std::uniform_real_distribution<float> uni(0.f, 500.f);
 
+static int objectCount = 0;
+
 void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 {
 	if (objectNumber != 0)
@@ -166,6 +168,7 @@ void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 		}
 
 		constructCount++;
+		objectCount++;
 	}
 	else if (input.keyState.IsKeyDown(Keyboard::Keys::Down))
 	{
@@ -191,6 +194,7 @@ void TesterProcess::UpdateHW2_Primrose(const InputStruct& input)
 				m_GameObjects.end());
 
 			deleteCount++;
+			objectCount--;
 		}
 	}
 }
@@ -226,6 +230,7 @@ void TesterProcess::UpdateHW2_Skinned(const InputStruct& input)
 		}
 
 		constructCount++;
+		objectCount++;
 	}
 	else if (input.keyState.IsKeyDown(Keyboard::Keys::Down))
 	{
@@ -248,6 +253,7 @@ void TesterProcess::UpdateHW2_Skinned(const InputStruct& input)
 				m_GameObjects.end());
 
 			deleteCount++;
+			objectCount--;
 		}
 	}
 }
@@ -313,6 +319,8 @@ void TesterProcess::ImGuiRenderHW2()
 			ResourceManager::instance->LoadModel<BoneVertex>(L"SkinningTest", L"SkinningTest", boneShaders, skinnedInput);
 		}
 	}
+
+	ImGui::Text("Object Count: %d", objectCount);
 }
 
 void TesterProcess::OnInputProcess(const InputStruct& input)

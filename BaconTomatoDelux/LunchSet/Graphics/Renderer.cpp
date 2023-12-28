@@ -57,83 +57,6 @@ void Renderer::SetPerFrame(const FrameSettings& settings)
 	}
 }
 
-void Renderer::SetPerObject(const ObjectSettings& settings)
-{
-	// Vertex Buffer
-	{
-		const std::shared_ptr<VertexBuffer>& vb = settings.vertexBuffer;
-
-		if (vb.get() == nullptr)
-		{
-			LOG_ERROR(L"nullptr : VertexBuffer");
-			return;
-		}
-
-		uint32_t vbStride = vb->GetStride();
-		uint32_t vbOffset = vb->GetOffset();
-
-		m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetComPtr().GetAddressOf(), &vbStride, &vbOffset);
-	}
-
-	// Index Buffer
-	{
-		const std::shared_ptr<IndexBuffer>& ib = settings.indexBuffer;
-
-		if (ib.get() == nullptr)
-		{
-			LOG_ERROR(L"nullptr : IndexBuffer");
-			return;
-		}
-
-		m_IndexCount = ib->GetIndexCount();
-		m_DeviceContext->IASetIndexBuffer(ib->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
-	}
-
-	// Textures Mapping
-	if (settings.textures)
-	{
-		const std::array<std::shared_ptr<Texture>, btdTextureType_END> ts = *settings.textures;
-
-		// Material Data
-		static ConstantBuffer<PsMaterialData> md{ m_Device, m_DeviceContext };
-		// todo : 상수 데이터 삭제
-		PsMaterialData dataStruct{ 0, 20.0f, 2.0f };
-
-
-		for (uint32_t texType = btdTextureType_DIFFUSE; texType < btdTextureType_END; texType++)
-		{
-			if (ts[texType] != nullptr)
-			{
-				m_DeviceContext->PSSetShaderResources(texType, 1, ts[texType]->GetComPtr().GetAddressOf());
-
-				dataStruct.textureBitmask |= 1 << (texType);
-			}
-		}
-
-		md.Update(&dataStruct);
-		SetConstantBuffer(md);
-	}
-
-	// Constant Buffers
-	// Transform Data
-	if (settings.transform)
-	{
-		static ConstantBuffer<VSObjectData> td{ m_Device, m_DeviceContext };
-
-		// todo : 부모 게임오브젝트당 한번만 하게 변경
-		td.Update(settings.transform);
-		SetConstantBuffer(td);
-	}
-}
-
-void Renderer::SetMatrixPallete(const MatrixPalleteSettings& settings)
-{
-	static ConstantBuffer<VsMatrixPallete> mp{ m_Device, m_DeviceContext };
-
-	mp.Update(settings.pallete);
-	SetConstantBuffer(mp);
-}
-
 void Renderer::SetInputLayout(std::shared_ptr<InputLayout> layout)
 {
 	m_DeviceContext->IASetInputLayout(layout->GetInputLayout().Get());
@@ -360,6 +283,16 @@ void Renderer::SortRenderQueue()
 {
 	std::sort(m_StaticRenderQueue.begin(), m_StaticRenderQueue.end(),
 		[](const StaticRenderQueueSettings& lhs, const StaticRenderQueueSettings& rhs)
+		{
+			if (lhs.textures == rhs.textures) {
+				// textures가 같은 경우, vertexBuffer로 비교
+				return lhs.vertexBuffer < rhs.vertexBuffer;
+			}
+			return lhs.textures < rhs.textures; // textures로 먼저 비교
+		});
+
+	std::sort(m_SkinnedRenderQueue.begin(), m_SkinnedRenderQueue.end(),
+		[](const SkinnedRenderQueueSettings& lhs, const SkinnedRenderQueueSettings& rhs)
 		{
 			if (lhs.textures == rhs.textures) {
 				// textures가 같은 경우, vertexBuffer로 비교
