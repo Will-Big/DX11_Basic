@@ -7,6 +7,7 @@ class Material;
 
 /**
  * \brief	: 정적 3d 모델을 렌더링하는 클래스
+ * \ref		: https://docs.unity3d.com/ScriptReference/MeshRenderer.html
  */
 
 class MeshRenderer : public Component, public IRender
@@ -22,5 +23,4 @@ public:
 public:
 	std::weak_ptr<MeshFilter> m_MeshFilter;
 	std::vector<std::shared_ptr<Material>> materials;
-
 };

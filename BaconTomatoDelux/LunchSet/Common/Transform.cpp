@@ -126,6 +126,9 @@ void Transform::UpdateTransform()
 		m_Matrix = m_LocalMatrix;
 	}
 
+	// Decompose 가 생각보다 오버헤드가 큼
+	m_Matrix.Decompose(m_Scale, m_Rotation, m_Position);
+
 	for (auto& child : m_Children)
 	{
 		if (auto sharedChild = child.lock())

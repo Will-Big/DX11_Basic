@@ -11,6 +11,9 @@
 Camera::Camera(std::weak_ptr<GameObject> owner)
 	: Component(owner)
 {
+	// todo : 카메라 컴포넌트 생성시 관리자에게 등록하기
+	//	= 1. 관리자 만들기
+	//	= 2. callback 등록 시스템 만들기
 }
 
 Camera::~Camera()
@@ -53,6 +56,7 @@ void Camera::PreRender(Renderer* renderer)
 		return;
 	}
 
+	// info : callback 이 생기면 이것도 한번만 실행할 수 있을 듯
 	if (m_bInit)
 	{
 		VSFixedData vf

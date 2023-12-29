@@ -2,7 +2,7 @@
 #include "../Common/GameProcess.h"
 
 // temp Scene
-#include "../Common/InputManager.h"
+#include "../Common/IKeyProcessor.h"
 
 class Transform;
 class Light;

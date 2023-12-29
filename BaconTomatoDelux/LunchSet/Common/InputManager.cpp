@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "InputManager.h"
+#include "IKeyProcessor.h"
 
 InputManager* InputManager::instance = new InputManager{};
 
@@ -19,7 +20,7 @@ void InputManager::Update(float deltaTime)
 	m_KeyboardState = m_Keyboard->GetState();
 	m_KeyboardStateTracker.Update(m_KeyboardState);
 
-	for (auto& it : m_InputProcessers)
+	for (auto& it : m_KeyProcessors)
 	{
 		(it)->OnInputProcess({m_KeyboardState, m_KeyboardStateTracker, m_MouseState, m_MouseStateTracker});
 	}
@@ -30,12 +31,12 @@ void InputManager::Finalize()
 	delete instance;
 }
 
-void InputManager::AddInputProcesser(IKeyProcessor* inputProcesser)
+void InputManager::AddInputProcessor(IKeyProcessor* inputProcesser)
 {
-	m_InputProcessers.push_back(inputProcesser);
+	m_KeyProcessors.push_back(inputProcesser);
 }
 
 void InputManager::RemoveInputProcesser(IKeyProcessor* inputProcesser)
 {
-	m_InputProcessers.remove(inputProcesser);
+	m_KeyProcessors.remove(inputProcesser);
 }

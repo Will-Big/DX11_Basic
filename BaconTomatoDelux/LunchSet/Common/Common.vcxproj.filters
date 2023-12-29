@@ -117,6 +117,18 @@
     <Filter Include="소스 파일\Manager\Time">
       <UniqueIdentifier>{8bf0f40e-bb59-4537-af0e-22de74f4b998}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Components\Collider">
+      <UniqueIdentifier>{cf78f863-45bf-44b7-8b65-ea4c035abe9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Components\Collider\CharacterController">
+      <UniqueIdentifier>{8e9164e2-ecc8-45cc-b98e-498dff0b2e8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Components\Editor">
+      <UniqueIdentifier>{9de1f33f-b2d3-41dd-9b09-1ce35f131e2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Interface\Input">
+      <UniqueIdentifier>{d66b46ea-08f6-4a37-a699-58c13cab49b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -199,6 +211,15 @@
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
       <Filter>소스 파일\Manager\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>소스 파일\Components\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterController.cpp">
+      <Filter>소스 파일\Components\Collider\CharacterController</Filter>
+    </ClCompile>
+    <ClCompile Include="Movement.cpp">
+      <Filter>소스 파일\Components\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +327,18 @@
     </ClInclude>
     <ClInclude Include="TimeManager.h">
       <Filter>소스 파일\Manager\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>소스 파일\Components\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterController.h">
+      <Filter>소스 파일\Components\Collider\CharacterController</Filter>
+    </ClInclude>
+    <ClInclude Include="Movement.h">
+      <Filter>소스 파일\Components\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="IKeyProcessor.h">
+      <Filter>소스 파일\Interface\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

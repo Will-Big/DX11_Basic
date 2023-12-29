@@ -6,18 +6,14 @@
 constexpr float ROTATION_GAIN = 0.004f;
 constexpr float MOVEMENT_GAIN = 0.07f;
 
+class IKeyProcessor;
+
 struct InputStruct
 {
-	const Keyboard::State& keyState;
-	const Keyboard::KeyboardStateTracker& keyTracker;
-	const Mouse::State& mouseState;
-	const Mouse::ButtonStateTracker& mouseTracker;
-};
-
-class IKeyProcessor
-{
-public:
-	virtual void OnInputProcess(const InputStruct& input) = 0;
+	const DirectX::Keyboard::State& keyState;
+	const DirectX::Keyboard::KeyboardStateTracker& keyTracker;
+	const DirectX::Mouse::State& mouseState;
+	const DirectX::Mouse::ButtonStateTracker& mouseTracker;
 };
 
 class InputManager
@@ -25,7 +21,15 @@ class InputManager
 public:
 	static InputManager* instance;
 
-	std::list<IKeyProcessor*> m_InputProcessers;
+	bool Initialize(HWND hWnd);
+	void Update(float deltaTime);
+	void Finalize();
+
+	void AddInputProcessor(IKeyProcessor* inputProcesser);
+	void RemoveInputProcesser(IKeyProcessor* inputProcesser);
+
+private:
+	std::list<IKeyProcessor*> m_KeyProcessors;
 
 	// input
 	std::unique_ptr<Keyboard>       m_Keyboard;
@@ -35,13 +39,6 @@ public:
 
 	Mouse::State					m_MouseState;
 	Keyboard::State					m_KeyboardState;
-
-	bool Initialize(HWND hWnd);
-	void Update(float deltaTime);
-	void Finalize();
-
-	void AddInputProcesser(IKeyProcessor* inputProcesser);
-	void RemoveInputProcesser(IKeyProcessor* inputProcesser);
 
 private:
 	InputManager() = default;

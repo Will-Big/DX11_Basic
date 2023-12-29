@@ -21,6 +21,7 @@
 #include "../Common/Camera.h"
 #include "../Common/Light.h"
 #include "../Common/Animator.h"
+#include "../Common/Movement.h"
 
 // Homework Test
 #include <random>
@@ -77,18 +78,9 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
 
-	// Model Data Load 방식 1 (reference)
-	//testGO = m_GameObjects.emplace_back(GameObject::Create(L"Test GO"));
-	//ResourceManager::instance->GetModel(L"Primrose_Egypt", testGO);
-
-	// Model Data Load 방식 2 (return)
-	//testGO = ResourceManager::instance->GetModel(L"Primrose_Egypt");
-	//m_GameObjects.push_back(testGO);
-	//testGO->GetComponent<Transform>().lock()->SetPosition({0,0,0});
-	//testGO->GetComponent<Transform>().lock()->SetRenderGUI(true);
-
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));
 	m_GameObjects.back()->AddComponent<Camera>();
+	m_GameObjects.back()->AddComponent<Movement>();
 	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 250.f, 250.f, -300.f });
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Light"));
@@ -98,7 +90,7 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	for (auto& go : m_GameObjects)
 		go->InitializeComponents();
 
-	InputManager::instance->AddInputProcesser(this);
+	InputManager::instance->AddInputProcessor(this);
 }
 
 TesterProcess::~TesterProcess()
