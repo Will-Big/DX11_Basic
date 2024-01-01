@@ -36,14 +36,16 @@ void Movement::FixedUpdate(float deltaTime)
 	}
 
 	// 회전 적용
-	if(m_DeltaRotation.LengthSquared() > 0)
+	if(m_YawPitch.LengthSquared() > 0)
 	{
 		Vector3 currentRotation = transform->GetLocalEulerRotation();
-		transform->SetLocalEulerRotation(currentRotation + m_DeltaRotation * deltaTime);
+		currentRotation.x += m_YawPitch.y * deltaTime;
+		currentRotation.y += m_YawPitch.x * deltaTime;
+		transform->SetLocalEulerRotation(currentRotation);
 	}
 
 	// 마우스 회전 값 초기화
-	m_DeltaRotation = Vector3{ 0.f, 0.f, 0.f };
+	m_YawPitch = Vector2{ 0.f, 0.f};
 }
 
 void Movement::GUI()
@@ -73,15 +75,16 @@ void Movement::OnInputProcess(const InputStruct& input)
 	{
 		m_InputDirection += m_Forward;
 	}
-	if (input.keyState.IsKeyDown(Keyboard::S))
+	else if (input.keyState.IsKeyDown(Keyboard::S))
 	{
 		m_InputDirection -= m_Forward;
 	}
+
 	if (input.keyState.IsKeyDown(Keyboard::A))
 	{
 		m_InputDirection -= m_Right;
 	}
-	if (input.keyState.IsKeyDown(Keyboard::D))
+	else if (input.keyState.IsKeyDown(Keyboard::D))
 	{
 		m_InputDirection += m_Right;
 	}
@@ -91,18 +94,28 @@ void Movement::OnInputProcess(const InputStruct& input)
 		m_InputDirection.Normalize();
 	}
 
+
 	// 마우스 회전 처리
-	if (input.mouseState.leftButton && input.mouseTracker.PRESSED)
+	if (input.mouseState.leftButton)
 	{
-		float rotationSpeed = 0.1f; // 회전 속도 조절을 위한 변수
-		float deltaX = static_cast<float>(input.mouseState.x) - m_LastMousePosition.x;
-		float deltaY = static_cast<float>(input.mouseState.y) - m_LastMousePosition.y;
+		if (input.mouseTracker.leftButton == input.mouseTracker.HELD)
+		{
+			// Calculate the delta between the initial and current mouse positions
+			float deltaX = static_cast<float>(input.mouseState.x) - m_LastMousePosition.x;
+			float deltaY = static_cast<float>(input.mouseState.y) - m_LastMousePosition.y;
 
-		m_DeltaRotation.y += deltaX * rotationSpeed; // Yaw 회전
-		m_DeltaRotation.x += deltaY * rotationSpeed; // Pitch 회전
+			// Yaw 회전 (around Y-axis)
+			m_YawPitch.x += deltaX;
 
-		// 마우스 위치 업데이트
+			// Pitch 회전 (around X-axis)
+			m_YawPitch.y += deltaY;
+		}
+
 		m_LastMousePosition.x = static_cast<float>(input.mouseState.x);
 		m_LastMousePosition.y = static_cast<float>(input.mouseState.y);
+	}
+	else
+	{
+		m_LastMousePosition = Vector2{ 0.f, 0.f };
 	}
 }

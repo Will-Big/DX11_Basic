@@ -39,7 +39,7 @@ void Camera::UpdateMatrix()
 	auto transform = m_Transform.lock();
 
 	Vector3 eye = transform->GetPosition();
-	Vector3 to = { 0.0f, 0.0f, 1.0f };
+	Vector3 to = transform->GetForward();
 	Vector3 up = transform->GetUp();
 
 	m_MatView = XMMatrixLookToLH(eye, to, up);

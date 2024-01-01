@@ -27,6 +27,6 @@ private:
 	Vector3 m_Right;
 	Vector3 m_InputDirection;
 
-	Vector3 m_LastMousePosition;
-	Vector3 m_DeltaRotation;
+	Vector2 m_LastMousePosition;
+	Vector2 m_YawPitch;
 };
