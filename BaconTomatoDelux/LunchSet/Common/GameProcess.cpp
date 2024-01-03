@@ -79,6 +79,9 @@ GameProcess::GameProcess(HINSTANCE hInst, std::wstring_view title, int width, in
 
 GameProcess::~GameProcess()
 {
+	// temp Scene delete
+	m_GameObjects.clear();
+
 	InputManager::instance->Finalize();
 	ResourceManager::instance->Finalize();
 }

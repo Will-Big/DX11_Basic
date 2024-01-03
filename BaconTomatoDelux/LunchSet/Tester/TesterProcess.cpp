@@ -78,10 +78,26 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
 
+	auto staticInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
+	std::array<std::shared_ptr<Shader>, btdShaderScope_END> staticShaders
+	{
+		ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
+		ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
+	};
+	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", staticShaders, staticInput);
+
+	auto go = ResourceManager::instance->GetModel(L"Primrose_Egypt", L"Test GO1");
+
+	if (go == nullptr)
+		return;
+
+	go->GetComponent<Transform>().lock()->SetPosition({ 0.f, 0, 0.f });
+	m_GameObjects.push_back(go);
+
 	m_GameObjects.emplace_back(GameObject::Create(L"Camera"));
 	m_GameObjects.back()->AddComponent<Camera>();
 	m_GameObjects.back()->AddComponent<Movement>();
-	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 250.f, 250.f, -300.f });
+	m_GameObjects.back()->GetComponent<Transform>().lock()->SetPosition({ 0.f, 100.f, -200.f });
 
 	m_GameObjects.emplace_back(GameObject::Create(L"Light"));
 	m_GameObjects.back()->AddComponent<Light>();
@@ -252,71 +268,71 @@ void TesterProcess::UpdateHW2_Skinned(const InputStruct& input)
 
 void TesterProcess::ImGuiRenderHW2()
 {
-	PROCESS_MEMORY_COUNTERS_EX pmc;
+	//PROCESS_MEMORY_COUNTERS_EX pmc;
 
-	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
-	{
-		ImGui::Text("Physical Memory Used: %llu MB", pmc.WorkingSetSize / (1024 * 1024)); // 현재 프로세스에 의해 사용되는 실제 메모리 (Working Set)
-		ImGui::Text("Virtual Memory Used: %llu MB", pmc.PrivateUsage / (1024 * 1024));   // 현재 프로세스에 의해 사용되는 가상 메모리
-	}
-	else
-	{
-		ImGui::Text("Memory info not available");
-	}
+	//if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
+	//{
+	//	ImGui::Text("Physical Memory Used: %llu MB", pmc.WorkingSetSize / (1024 * 1024)); // 현재 프로세스에 의해 사용되는 실제 메모리 (Working Set)
+	//	ImGui::Text("Virtual Memory Used: %llu MB", pmc.PrivateUsage / (1024 * 1024));   // 현재 프로세스에 의해 사용되는 가상 메모리
+	//}
+	//else
+	//{
+	//	ImGui::Text("Memory info not available");
+	//}
 
-	auto info = m_Graphics->GetQueryVideoMemoryInfo();
+	//auto info = m_Graphics->GetQueryVideoMemoryInfo();
 
-	// 비디오 메모리 정보 출력
-	ImGui::Text("Current Video Memory Usage: %llu MB", info.CurrentUsage / (1024 * 1024));
-	ImGui::Text("Total Video Memory: %llu MB", info.Budget / (1024 * 1024));
-	ImGui::Text("");
+	//// 비디오 메모리 정보 출력
+	//ImGui::Text("Current Video Memory Usage: %llu MB", info.CurrentUsage / (1024 * 1024));
+	//ImGui::Text("Total Video Memory: %llu MB", info.Budget / (1024 * 1024));
+	//ImGui::Text("");
 
-	ImGui::Text("Up Arrow button   : Increase the object \nDown Arrow button : Decrease the object");
-	ImGui::Text("");
+	//ImGui::Text("Up Arrow button   : Increase the object \nDown Arrow button : Decrease the object");
+	//ImGui::Text("");
 
-	// 'Primrose_Egypt' 라디오 버튼
-	if (ImGui::RadioButton("Primrose_Egypt", objectNumber == 0)) {
-		objectNumber = 0;
-	}
+	//// 'Primrose_Egypt' 라디오 버튼
+	//if (ImGui::RadioButton("Primrose_Egypt", objectNumber == 0)) {
+	//	objectNumber = 0;
+	//}
 
-	// 라디오 버튼 사이에 간격을 추가합니다.
-	ImGui::SameLine();
+	//// 라디오 버튼 사이에 간격을 추가합니다.
+	//ImGui::SameLine();
 
-	// 'SkinningTest' 라디오 버튼
-	if (ImGui::RadioButton("SkinningTest", objectNumber == 1)) {
-		objectNumber = 1;
-	}
+	//// 'SkinningTest' 라디오 버튼
+	//if (ImGui::RadioButton("SkinningTest", objectNumber == 1)) {
+	//	objectNumber = 1;
+	//}
 
-	if (ImGui::Button("FBX Load")) 
-	{
-		if(objectNumber == 0)
-		{
-			auto staticInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
-			std::array<std::shared_ptr<Shader>, btdShaderScope_END> staticShaders
-			{
-				ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
-				ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
-			};
-			ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", staticShaders, staticInput);
-		}
+	//if (ImGui::Button("FBX Load")) 
+	//{
+	//	if(objectNumber == 0)
+	//	{
+	//		auto staticInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
+	//		std::array<std::shared_ptr<Shader>, btdShaderScope_END> staticShaders
+	//		{
+	//			ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
+	//			ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
+	//		};
+	//		ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", staticShaders, staticInput);
+	//	}
 
-		else if(objectNumber == 1)
-		{
-			auto skinnedInput = ResourceManager::instance->Get<InputLayout>(L"SKIN_VS_INPUT");
-			std::array<std::shared_ptr<Shader>, btdShaderScope_END> boneShaders
-			{
-				ResourceManager::instance->Get<VertexShader>(L"SKIN_VS"),
-				ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
-			};
-			ResourceManager::instance->LoadModel<BoneVertex>(L"SkinningTest", L"SkinningTest", boneShaders, skinnedInput);
-		}
-	}
+	//	else if(objectNumber == 1)
+	//	{
+	//		auto skinnedInput = ResourceManager::instance->Get<InputLayout>(L"SKIN_VS_INPUT");
+	//		std::array<std::shared_ptr<Shader>, btdShaderScope_END> boneShaders
+	//		{
+	//			ResourceManager::instance->Get<VertexShader>(L"SKIN_VS"),
+	//			ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
+	//		};
+	//		ResourceManager::instance->LoadModel<BoneVertex>(L"SkinningTest", L"SkinningTest", boneShaders, skinnedInput);
+	//	}
+	//}
 
-	ImGui::Text("Object Count: %d", objectCount);
+	//ImGui::Text("Object Count: %d", objectCount);
 }
 
 void TesterProcess::OnInputProcess(const InputStruct& input)
 {
-	UpdateHW2_Primrose(input);
-	UpdateHW2_Skinned(input);
+	//UpdateHW2_Primrose(input);
+	//UpdateHW2_Skinned(input);
 }

@@ -160,6 +160,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameProcess.h" />
+    <ClInclude Include="ICollidable.h" />
     <ClInclude Include="IFixedUpdate.h" />
     <ClInclude Include="ILateUpdate.h" />
     <ClInclude Include="InputManager.h" />

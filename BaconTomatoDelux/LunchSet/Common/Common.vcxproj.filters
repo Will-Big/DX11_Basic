@@ -129,6 +129,9 @@
     <Filter Include="소스 파일\Components\Rendering\Camera\Editor">
       <UniqueIdentifier>{9de1f33f-b2d3-41dd-9b09-1ce35f131e2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Interface\Collision">
+      <UniqueIdentifier>{4509fc84-6ede-4bcd-95a9-6bd3b07c0c4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -339,6 +342,9 @@
     </ClInclude>
     <ClInclude Include="IKeyProcessor.h">
       <Filter>소스 파일\Interface\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ICollidable.h">
+      <Filter>소스 파일\Interface\Collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

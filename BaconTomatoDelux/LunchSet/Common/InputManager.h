@@ -26,7 +26,7 @@ public:
 	void Finalize();
 
 	void AddInputProcessor(IKeyProcessor* inputProcesser);
-	void RemoveInputProcesser(IKeyProcessor* inputProcesser);
+	void RemoveInputProcessor(IKeyProcessor* inputProcesser);
 
 private:
 	std::list<IKeyProcessor*> m_KeyProcessors;

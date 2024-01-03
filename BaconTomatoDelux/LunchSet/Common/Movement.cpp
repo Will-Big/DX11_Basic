@@ -8,6 +8,11 @@ Movement::Movement(std::weak_ptr<GameObject> owner)
 {
 }
 
+Movement::~Movement()
+{
+	InputManager::instance->RemoveInputProcessor(this);
+}
+
 void Movement::Initialize()
 {
 	Component::Initialize();
@@ -96,9 +101,9 @@ void Movement::OnInputProcess(const InputStruct& input)
 
 
 	// 마우스 회전 처리
-	if (input.mouseState.leftButton)
+	if (input.mouseState.rightButton)
 	{
-		if (input.mouseTracker.leftButton == input.mouseTracker.HELD)
+		if (input.mouseTracker.rightButton == input.mouseTracker.HELD)
 		{
 			// Calculate the delta between the initial and current mouse positions
 			float deltaX = static_cast<float>(input.mouseState.x) - m_LastMousePosition.x;

@@ -36,7 +36,7 @@ void InputManager::AddInputProcessor(IKeyProcessor* inputProcesser)
 	m_KeyProcessors.push_back(inputProcesser);
 }
 
-void InputManager::RemoveInputProcesser(IKeyProcessor* inputProcesser)
+void InputManager::RemoveInputProcessor(IKeyProcessor* inputProcesser)
 {
 	m_KeyProcessors.remove(inputProcesser);
 }

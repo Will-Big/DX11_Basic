@@ -11,7 +11,7 @@ class Movement : public Component, public IFixedUpdate, public IKeyProcessor
 {
 public:
 	Movement(std::weak_ptr<GameObject> owner);
-	~Movement() override = default;
+	~Movement() override;
 
 	void Initialize() override;
 	void Start() override;
