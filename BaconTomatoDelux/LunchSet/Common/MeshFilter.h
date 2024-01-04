@@ -12,7 +12,7 @@ class MeshFilter : public Component
 {
 public:
 	MeshFilter(std::weak_ptr<GameObject> owner);
-	~MeshFilter() override;
+	~MeshFilter() override = default;
 
 public:
 	std::vector<std::shared_ptr<Mesh>> meshes;

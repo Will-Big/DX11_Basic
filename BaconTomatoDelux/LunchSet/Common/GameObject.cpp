@@ -11,6 +11,8 @@
 #include "IRender.h"
 #include "../Graphics/Renderer.h"
 
+#include "imgui.h"
+
 
 GameObject::GameObject(std::wstring_view name)
 	: Object(name)
@@ -93,6 +95,8 @@ void GameObject::Render(Renderer* renderer)
 
 void GameObject::GUI()
 {
+	ImGui::Text(std::string(m_Name.begin(), m_Name.end()).c_str());
+
 	for (auto& cp : m_Components)
 	{
 		if(cp->IsRenderGUI())

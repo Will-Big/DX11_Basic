@@ -7,7 +7,3 @@ MeshFilter::MeshFilter(std::weak_ptr<GameObject> owner)
 	: Component(owner)
 {
 }
-
-MeshFilter::~MeshFilter()
-{
-}

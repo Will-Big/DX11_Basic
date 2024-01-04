@@ -178,9 +178,17 @@ void GameProcess::ImGuiRender()
 
 	RenderProcessInfo();
 
+
+
 	// temp Scene
-	for (auto& go : m_GameObjects)
-		go->GUI();
+	{
+		ImGui::Begin("Hierarchy");
+
+		for (auto& go : m_GameObjects)
+			go->GUI();
+
+		ImGui::End();
+	}
 
 	ImGui_Initializer::RenderEnd();
 }
