@@ -24,7 +24,7 @@ void Camera::Initialize()
 {
 	Component::Initialize();
 
-	m_MatProjection = XMMatrixPerspectiveFovLH(XM_PIDIV2, static_cast<float>(GameProcess::Width) / static_cast<float>(GameProcess::Height), 1.f, 2000.f);
+	m_MatProjection = XMMatrixPerspectiveFovLH(XM_PIDIV4, static_cast<float>(GameProcess::Width) / static_cast<float>(GameProcess::Height), 1.f, 2000.f);
 }
 
 void Camera::LateUpdate(float deltaTime)

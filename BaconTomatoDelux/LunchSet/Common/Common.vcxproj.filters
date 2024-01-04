@@ -221,7 +221,7 @@
     <ClCompile Include="CharacterController.cpp">
       <Filter>소스 파일\Components\Collider\CharacterController</Filter>
     </ClCompile>
-    <ClCompile Include="Movement.cpp">
+    <ClCompile Include="FreeCamera.cpp">
       <Filter>소스 파일\Components\Rendering\Camera\Editor</Filter>
     </ClCompile>
   </ItemGroup>
@@ -337,7 +337,7 @@
     <ClInclude Include="CharacterController.h">
       <Filter>소스 파일\Components\Collider\CharacterController</Filter>
     </ClInclude>
-    <ClInclude Include="Movement.h">
+    <ClInclude Include="FreeCamera.h">
       <Filter>소스 파일\Components\Rendering\Camera\Editor</Filter>
     </ClInclude>
     <ClInclude Include="IKeyProcessor.h">

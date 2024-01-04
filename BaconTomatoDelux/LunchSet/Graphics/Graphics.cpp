@@ -40,7 +40,7 @@ void Graphics::RenderBegin()
 void Graphics::RenderEnd()
 {
 	//auto check = m_Device->GetDeviceRemovedReason();
-	HRESULT hr = m_SwapChain->Present(1, 0);
+	HRESULT hr = m_SwapChain->Present(0, 0);
 	HR_T(hr);
 }
 

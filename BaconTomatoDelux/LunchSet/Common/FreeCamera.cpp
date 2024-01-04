@@ -1,31 +1,31 @@
 ﻿#include "pch.h"
-#include "Movement.h"
+#include "FreeCamera.h"
 #include "InputManager.h"
 #include "Transform.h"
 
-Movement::Movement(std::weak_ptr<GameObject> owner)
+FreeCamera::FreeCamera(std::weak_ptr<GameObject> owner)
 	: Component(owner)
 {
 }
 
-Movement::~Movement()
+FreeCamera::~FreeCamera()
 {
 	InputManager::instance->RemoveInputProcessor(this);
 }
 
-void Movement::Initialize()
+void FreeCamera::Initialize()
 {
 	Component::Initialize();
 
 	InputManager::instance->AddInputProcessor(this);
 }
 
-void Movement::Start()
+void FreeCamera::Start()
 {
 	Component::Start();
 }
 
-void Movement::FixedUpdate(float deltaTime)
+void FreeCamera::Update(float deltaTime)
 {
 	auto transform = m_Transform.lock();
 
@@ -35,33 +35,30 @@ void Movement::FixedUpdate(float deltaTime)
 
 	if (m_InputDirection.LengthSquared() > 0)
 	{
-		Vector3 movement = m_InputDirection * m_Speed * deltaTime;
+		Vector3 movement = m_InputDirection * MOVEMENT_GAIN;
 		Vector3 pos = transform->GetLocalPosition();
 		transform->SetLocalPosition(pos + movement);
 	}
 
 	// 회전 적용
-	if(m_YawPitch.LengthSquared() > 0)
+	if (m_YawPitch.LengthSquared() > 0)
 	{
 		Vector3 currentRotation = transform->GetLocalEulerRotation();
-		currentRotation.x += m_YawPitch.y * deltaTime;
-		currentRotation.y += m_YawPitch.x * deltaTime;
+		currentRotation.x += m_YawPitch.y * ROTATION_GAIN;
+		currentRotation.y += m_YawPitch.x * ROTATION_GAIN;
 		transform->SetLocalEulerRotation(currentRotation);
 	}
 
 	// 마우스 회전 값 초기화
-	m_YawPitch = Vector2{ 0.f, 0.f};
+	m_YawPitch = Vector2{ 0.f, 0.f };
 }
 
-void Movement::GUI()
+void FreeCamera::GUI()
 {
 	auto transform = m_Transform.lock();
 
-	if (ImGui::Begin("Movement Control"))
+	if (ImGui::Begin("FreeCamera Control"))
 	{
-		// 최대 속도 조정
-		ImGui::SliderFloat("Speed", &m_Speed, 0.0f, 500.0f);
-
 		// 현재 입력 방향 표시
 		ImGui::Text("Input Direction: X: %.2f, Y: %.2f, Z: %.2f", m_InputDirection.x, m_InputDirection.y, m_InputDirection.z);
 
@@ -72,7 +69,7 @@ void Movement::GUI()
 	ImGui::End();
 }
 
-void Movement::OnInputProcess(const InputStruct& input)
+void FreeCamera::OnInputProcess(const InputStruct& input)
 {
 	m_InputDirection = Vector3{ 0.f, 0.f, 0.f };
 
@@ -118,9 +115,5 @@ void Movement::OnInputProcess(const InputStruct& input)
 
 		m_LastMousePosition.x = static_cast<float>(input.mouseState.x);
 		m_LastMousePosition.y = static_cast<float>(input.mouseState.y);
-	}
-	else
-	{
-		m_LastMousePosition = Vector2{ 0.f, 0.f };
 	}
 }
