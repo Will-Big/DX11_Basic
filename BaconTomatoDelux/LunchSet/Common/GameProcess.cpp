@@ -1,18 +1,20 @@
 #include "pch.h"
 #include "GameProcess.h"
 
+constexpr float FIXED_TIME = 1.f / 60.f;
+
 // Graphics
 #include "../Graphics/ImGui_Initializer.h"
 #include "../Graphics/Graphics.h"
 #include "../Graphics/Renderer.h"
 
 // Common
-#include "GameProcess.h"
-
 #include "GameObject.h"
 #include "InputManager.h"
 #include "ResourceManager.h"
 #include "TimeManager.h"
+
+#include <psapi.h>
 
 uint32_t GameProcess::Width = 0;
 uint32_t GameProcess::Height = 0;
@@ -116,28 +118,33 @@ void GameProcess::Update()
 {
 	// system or manager update
 	m_Time->Update();
-	const float deltaTime = m_Time->GetDeltaTime();
+	m_Delta = m_Time->GetDeltaTime();
+	m_Accumulated += m_Delta;
 
-	InputManager::instance->Update(deltaTime);
+	InputManager::instance->Update(m_Delta);
 
 	// temp(Scene)
 	{
 		// Update
 		for (auto& go : m_GameObjects)
 		{
-			go->Update(deltaTime);
+			go->Update(m_Delta);
 		}
 
 		// FixedUpdate
-		for(auto& go : m_GameObjects)
+		while (m_Accumulated > FIXED_TIME)
 		{
-			go->FixedUpdate(deltaTime);
+			for (auto& go : m_GameObjects)
+			{
+				go->FixedUpdate(FIXED_TIME);
+			}
+			m_Accumulated -= FIXED_TIME;
 		}
 
 		// LateUpdate
 		for (auto& go : m_GameObjects)
 		{
-			go->LateUpdate(deltaTime);
+			go->LateUpdate(m_Delta);
 		}
 	}
 }
@@ -169,10 +176,50 @@ void GameProcess::ImGuiRender()
 
 	ImGui_Initializer::RenderBegin();
 
+	RenderProcessInfo();
+
+	// temp Scene
 	for (auto& go : m_GameObjects)
 		go->GUI();
 
 	ImGui_Initializer::RenderEnd();
+}
+
+void GameProcess::RenderProcessInfo()
+{
+	ImGui::Begin("Process Info");
+
+	RenderFrameInfo();
+	RenderMemoryInfo();
+
+	ImGui::End();
+}
+
+void GameProcess::RenderFrameInfo()
+{
+	ImGui::Text("FPS: %f", 1.0f / m_Delta);
+}
+
+void GameProcess::RenderMemoryInfo()
+{
+	PROCESS_MEMORY_COUNTERS_EX pmc;
+
+	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
+	{
+		ImGui::Text("Physical Memory Used: %llu MB", pmc.WorkingSetSize / (1024 * 1024)); // 현재 프로세스에 의해 사용되는 실제 메모리 (Working Set)
+		ImGui::Text("Virtual Memory Used: %llu MB", pmc.PrivateUsage / (1024 * 1024));   // 현재 프로세스에 의해 사용되는 가상 메모리
+	}
+	else
+	{
+		ImGui::Text("Memory info not available");
+	}
+
+	auto info = m_Graphics->GetQueryVideoMemoryInfo();
+
+	// 비디오 메모리 정보 출력
+	ImGui::Text("Current Video Memory Usage: %llu MB", info.CurrentUsage / (1024 * 1024));
+	ImGui::Text("Total Video Memory: %llu MB", info.Budget / (1024 * 1024));
+	ImGui::Text("");
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

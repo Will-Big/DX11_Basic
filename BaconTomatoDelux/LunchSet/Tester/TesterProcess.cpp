@@ -125,17 +125,19 @@ void TesterProcess::Render(Renderer* renderer)
 
 void TesterProcess::ImGuiRender()
 {
-	if (!m_bImGuiRender)
-		return;
+	GameProcess::ImGuiRender();
 
-	ImGui_Initializer::RenderBegin();
+	//if (!m_bImGuiRender)
+	//	return;
 
-	for (auto& go : m_GameObjects)
-		go->GUI();
+	//ImGui_Initializer::RenderBegin();
 
-	ImGuiRenderHW2();
+	//for (auto& go : m_GameObjects)
+	//	go->GUI();
 
-	ImGui_Initializer::RenderEnd();
+	//ImGuiRenderHW2();
+
+	//ImGui_Initializer::RenderEnd();
 }
 
 // 무작위 숫자 생성을 위한 엔진과 분포 설정
@@ -268,25 +270,6 @@ void TesterProcess::UpdateHW2_Skinned(const InputStruct& input)
 
 void TesterProcess::ImGuiRenderHW2()
 {
-	//PROCESS_MEMORY_COUNTERS_EX pmc;
-
-	//if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
-	//{
-	//	ImGui::Text("Physical Memory Used: %llu MB", pmc.WorkingSetSize / (1024 * 1024)); // 현재 프로세스에 의해 사용되는 실제 메모리 (Working Set)
-	//	ImGui::Text("Virtual Memory Used: %llu MB", pmc.PrivateUsage / (1024 * 1024));   // 현재 프로세스에 의해 사용되는 가상 메모리
-	//}
-	//else
-	//{
-	//	ImGui::Text("Memory info not available");
-	//}
-
-	//auto info = m_Graphics->GetQueryVideoMemoryInfo();
-
-	//// 비디오 메모리 정보 출력
-	//ImGui::Text("Current Video Memory Usage: %llu MB", info.CurrentUsage / (1024 * 1024));
-	//ImGui::Text("Total Video Memory: %llu MB", info.Budget / (1024 * 1024));
-	//ImGui::Text("");
-
 	//ImGui::Text("Up Arrow button   : Increase the object \nDown Arrow button : Decrease the object");
 	//ImGui::Text("");
 

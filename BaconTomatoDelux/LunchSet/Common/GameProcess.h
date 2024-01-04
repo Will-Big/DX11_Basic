@@ -18,6 +18,12 @@ protected:
 	virtual void Render(Renderer* renderer);
 	virtual void ImGuiRender();
 
+	void RenderProcessInfo();
+
+private:
+	void RenderFrameInfo();
+	void RenderMemoryInfo();
+
 protected:
 	const std::wstring m_Title;
 	HWND m_hWnd = nullptr;
@@ -34,4 +40,8 @@ public:
 
 	// temp (Scene 으로 이동)
 	static std::vector<std::shared_ptr<GameObject>> m_GameObjects;
+
+private:
+	float m_Delta = 0.f;
+	float m_Accumulated = 0.f;
 };
