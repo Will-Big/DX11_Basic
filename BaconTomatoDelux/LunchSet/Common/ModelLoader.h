@@ -44,7 +44,8 @@ private:
 	template <typename T>
 	void ProcessNode(aiNode* node, const aiScene* scene, ModelData& model);
 	template <typename T>
-	void ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh, std::weak_ptr<Material>& btdMaterial);
+	void ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh, std::weak_ptr<Material>& btdMaterial, aiString
+	                            nodeName, uint32_t index);
 
 	void LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene, std::weak_ptr<Material>& material);
 	ID3D11ShaderResourceView* LoadEmbeddedTexture(const aiTexture* embeddedTexture);
@@ -84,12 +85,10 @@ void ModelLoader::Load(std::filesystem::path path)
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);    // $assimp_fbx$ 노드 생성안함
 
 	const aiScene* scene = importer.ReadFile(fbxPath.string(),
-		aiProcess_Triangulate |
-		aiProcess_GenUVCoords |
-		aiProcess_GenNormals |
-		aiProcess_CalcTangentSpace |
+		aiProcessPreset_TargetRealtime_Fast |
 		aiProcess_ConvertToLeftHanded
 	);
+
 		//aiProcessPreset_TargetRealtime_MaxQuality |
 		//aiProcess_ConvertToLeftHanded
 
@@ -136,7 +135,7 @@ void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, ModelData& mod
 	for (uint32_t i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		ProcessMeshAndMaterial<T>(mesh, scene, model.meshes[i], model.materials[i]);
+		ProcessMeshAndMaterial<T>(mesh, scene, model.meshes[i], model.materials[i], node->mName, i);
 	}
 
 	// 계층 구조 생성
@@ -149,7 +148,7 @@ void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, ModelData& mod
 }
 
 template <typename T>
-void ModelLoader::ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh, std::weak_ptr<Material>& btdMaterial)
+void ModelLoader::ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Mesh>& btdMesh, std::weak_ptr<Material>& btdMaterial, aiString nodeName, uint32_t index)
 {
 	if (btdMesh)
 	{
@@ -157,7 +156,10 @@ void ModelLoader::ProcessMeshAndMaterial(aiMesh* mesh, const aiScene* scene, std
 		return;
 	}
 
-	btdMesh = std::make_shared<Mesh>(m_Device);
+	//m_AABBmin = Math::Vector3(FLT_MAX, FLT_MAX, FLT_MAX);
+	//m_AABBmax = Math::Vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	btdMesh = std::make_shared<Mesh>(m_Device, aiString2wstring(nodeName) + L"#" + std::to_wstring(index));
 	std::vector<T> vertices;
 	std::vector<uint32_t> indices;
 

@@ -92,36 +92,6 @@ void ModelLoader::ProcessAnimation(const aiScene* scene)
 	}
 }
 
-btdTextureType ModelLoader::aiType2btdType(aiTextureType type)
-{
-	switch (type)
-	{
-	case aiTextureType_DIFFUSE:
-		return btdTextureType_DIFFUSE;
-	case aiTextureType_NORMALS:
-		return btdTextureType_NORMALS;
-	case aiTextureType_SPECULAR:
-		return btdTextureType_SPECULAR;
-	case aiTextureType_OPACITY:
-		return btdTextureType_OPACITY;
-	case aiTextureType_EMISSIVE:
-		return btdTextureType_EMISSIVE;
-	case aiTextureType_METALNESS:
-		return btdTextureType_METALNESS;
-	case aiTextureType_SHININESS:
-		return btdTextureType_ROUGHNESS;
-	default:
-		LOG_ERROR(L"Invalid Texture Type");
-		return btdTextureType_END;
-	}
-}
-
-std::wstring ModelLoader::aiString2wstring(const aiString& string)
-{
-	auto str = std::string(string.C_Str());
-	return std::wstring(str.begin(), str.end());
-}
-
 void ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const aiScene* scene,
                                        std::weak_ptr<Material>& material)
 {
@@ -230,4 +200,34 @@ ID3D11ShaderResourceView* ModelLoader::LoadEmbeddedTexture(const aiTexture* embe
 		LOG_ERROR(L"Texture couldn't be created from memory!");
 
 	return texture;
+}
+
+btdTextureType ModelLoader::aiType2btdType(aiTextureType type)
+{
+	switch (type)
+	{
+	case aiTextureType_DIFFUSE:
+		return btdTextureType_DIFFUSE;
+	case aiTextureType_NORMALS:
+		return btdTextureType_NORMALS;
+	case aiTextureType_SPECULAR:
+		return btdTextureType_SPECULAR;
+	case aiTextureType_OPACITY:
+		return btdTextureType_OPACITY;
+	case aiTextureType_EMISSIVE:
+		return btdTextureType_EMISSIVE;
+	case aiTextureType_METALNESS:
+		return btdTextureType_METALNESS;
+	case aiTextureType_SHININESS:
+		return btdTextureType_ROUGHNESS;
+	default:
+		LOG_ERROR(L"Invalid Texture Type");
+		return btdTextureType_END;
+	}
+}
+
+std::wstring ModelLoader::aiString2wstring(const aiString& string)
+{
+	auto str = std::string(string.C_Str());
+	return std::wstring(str.begin(), str.end());
 }
