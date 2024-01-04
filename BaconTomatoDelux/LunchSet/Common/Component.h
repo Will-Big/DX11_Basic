@@ -19,7 +19,7 @@ public:
 	void SetRenderGUI(bool bGUI) { m_bGUI = bGUI; }
 	bool IsRenderGUI() { return m_bGUI; }
 
-	std::weak_ptr<GameObject> GetOwner() { return m_Owner; }
+	std::shared_ptr<GameObject> GetOwner() { return m_Owner.lock(); }
 
 private:
 	void SetComponentName();

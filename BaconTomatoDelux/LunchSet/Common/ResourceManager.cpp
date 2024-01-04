@@ -77,11 +77,12 @@ void ResourceManager::LinkModelData(std::wstring_view fileName, ModelData& data,
 		childTransform->SetLocalScale(subModel.scale);
 		childTransform->SetLocalRotation(subModel.rotation);
 		childTransform->SetLocalPosition(subModel.position);
+		gameObject.lock()->m_Children.push_back(child);
 
 		LinkModelData(fileName, subModel, child);
 
-		// temp(Scene)
-		GameProcess::m_GameObjects.push_back(child);
+		//// temp(Scene)
+		//GameProcess::m_GameObjects.push_back(child);
 	}
 }
 

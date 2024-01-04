@@ -86,7 +86,16 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	};
 	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", staticShaders, staticInput);
 
-	auto go = ResourceManager::instance->GetModel(L"Primrose_Egypt", L"Test GO1");
+	auto skinnedInput = ResourceManager::instance->Get<InputLayout>(L"SKIN_VS_INPUT");
+	std::array<std::shared_ptr<Shader>, btdShaderScope_END> boneShaders
+	{
+		ResourceManager::instance->Get<VertexShader>(L"SKIN_VS"),
+		ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
+	};
+	ResourceManager::instance->LoadModel<BoneVertex>(L"SkinningTest", L"SkinningTest", boneShaders, skinnedInput);
+
+	auto go = ResourceManager::instance->GetModel(L"SkinningTest", L"Test GO1");
+	go->AddComponent<Animator>().lock()->SetController(L"../Resource/Model/SkinningTest");
 
 	if (go == nullptr)
 		return;

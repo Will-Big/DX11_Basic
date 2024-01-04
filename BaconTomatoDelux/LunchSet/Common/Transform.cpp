@@ -96,7 +96,26 @@ void Transform::SetParent(std::weak_ptr<GameObject> parent)
 	}
 
 	m_Root = root;
-	m_Parent.lock()->m_Children.push_back(m_Owner.lock()->GetComponent<Transform>());
+	m_Parent.lock()->m_Children.push_back(m_Owner.lock()->GetComponent<Transform>().lock());
+}
+
+void Transform::SetParent(std::weak_ptr<Transform> parent)
+{
+	m_Parent = parent;
+
+	std::weak_ptr<Transform> root;
+	root = m_Parent;
+
+	while (!root.expired())
+	{
+		if (!root.lock()->GetParent().expired())
+			root = root.lock()->GetParent();
+		else
+			break;
+	}
+
+	m_Root = root;
+	m_Parent.lock()->m_Children.push_back(m_Owner.lock()->GetComponent<Transform>().lock());
 }
 
 void Transform::UpdateTransform()
@@ -129,16 +148,18 @@ void Transform::UpdateTransform()
 	// Decompose 가 생각보다 오버헤드가 큼
 	m_Matrix.Decompose(m_Scale, m_Rotation, m_Position);
 
-	for (auto& child : m_Children)
-	{
-		if (auto sharedChild = child.lock())
-		{
-			sharedChild->m_bDirty = true;
-			sharedChild->UpdateTransform();
-		}
-		else
-			LOG_ERROR(L"nullptr : child Transform");
-	}
+	//for (auto& child : m_Children)
+	//{
+	//	if(child)
+	//	{
+	//		child->m_bDirty = true;
+	//		child->UpdateTransform();
+	//	}
+	//	else
+	//	{
+	//		LOG_ERROR(L"nullptr : child Transform");
+	//	}
+	//}
 }
 
 void Transform::GUI()

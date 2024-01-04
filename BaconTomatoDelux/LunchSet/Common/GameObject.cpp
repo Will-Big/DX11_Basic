@@ -13,6 +13,7 @@
 
 #include "imgui.h"
 
+constexpr float indent = 10.f;
 
 GameObject::GameObject(std::wstring_view name)
 	: Object(name)
@@ -28,6 +29,11 @@ void GameObject::InitializeComponents()
 
 		cp->Initialize();
 	}
+
+	for (auto& child : transform->GetChildren())
+	{
+		child->GetOwner()->InitializeComponents();
+	}
 }
 
 void GameObject::Start()
@@ -38,6 +44,11 @@ void GameObject::Start()
 			continue;
 
 		cp->Start();
+	}
+
+	for (auto& child : transform->GetChildren())
+	{
+		child->GetOwner()->Start();
 	}
 }
 
@@ -52,6 +63,11 @@ void GameObject::Update(float deltaTime)
 
 		su->Update(deltaTime);
 	}
+
+	for (auto& child : transform->GetChildren())
+	{
+		child->GetOwner()->Update(deltaTime);
+	}
 }
 
 void GameObject::LateUpdate(float deltaTime)
@@ -64,6 +80,11 @@ void GameObject::LateUpdate(float deltaTime)
 			continue;
 
 		slu->LateUpdate(deltaTime);
+	}
+
+	for (auto& child : transform->GetChildren())
+	{
+		child->GetOwner()->LateUpdate(deltaTime);
 	}
 }
 
@@ -78,6 +99,11 @@ void GameObject::FixedUpdate(float deltaTime)
 
 		sfu->FixedUpdate(deltaTime);
 	}
+
+	for (auto& child : transform->GetChildren())
+	{
+		child->GetOwner()->FixedUpdate(deltaTime);
+	}
 }
 
 void GameObject::Render(Renderer* renderer)
@@ -91,15 +117,30 @@ void GameObject::Render(Renderer* renderer)
 
 		sr->Render(renderer);
 	}
+
+	for (auto& child : transform->GetChildren())
+	{
+		child->GetOwner()->Render(renderer);
+	}
 }
 
 void GameObject::GUI()
 {
-	ImGui::Text(std::string(m_Name.begin(), m_Name.end()).c_str());
+	if (ImGui::CollapsingHeader(std::string(m_Name.begin(), m_Name.end()).c_str()))
+	{
+		ImGui::Indent(indent);
+
+		for (auto& child : transform->GetChildren())
+		{
+			child->GetOwner()->GUI();
+		}
+
+		ImGui::Unindent(indent);
+	}
 
 	for (auto& cp : m_Components)
 	{
-		if(cp->IsRenderGUI())
+		if (cp->IsRenderGUI())
 			cp->GUI();
 	}
 }
@@ -115,6 +156,11 @@ void GameObject::PreRender(Renderer* renderer)
 
 		spr->PreRender(renderer);
 	}
+
+	for (auto& child : transform->GetChildren())
+	{
+		child->GetOwner()->PreRender(renderer);
+	}
 }
 
 std::shared_ptr<GameObject> GameObject::Create(std::wstring_view name)
@@ -125,15 +171,28 @@ std::shared_ptr<GameObject> GameObject::Create(std::wstring_view name)
 		AccessibleGameObject(std::wstring_view name) : GameObject(name) {}
 		~AccessibleGameObject() override = default;
 	};
-	
-	auto gameObject = std::make_shared<AccessibleGameObject>(name);
 
-	// GameObject 의 생성자가 아니라 Create 함수에서 AddComponent 를 해주는 이유
-	//		생성자에서 AddComponent 를 하면, GameObject 의 생성이 완료되지 않은 시점에
-	//		AddComponent 함수가 수행되면서 컴포넌트를 생성하기 위한 인자 중 GameObject 의 weak_ptr 이
-	//		생성되지 않은 상황에서 AddComponent 가 이루어지기 때문에 nullptr 로 들어가게 됨
+	auto gameObject = std::make_shared<AccessibleGameObject>(name);
 	auto transform = gameObject->AddComponent<Transform>();
+	gameObject->transform = transform.lock();
 	transform.lock()->SetRoot(transform);
+
+	return gameObject;
+}
+
+std::shared_ptr<GameObject> GameObject::Create(std::wstring_view name, std::weak_ptr<Transform> parent)
+{
+	// GameObject 생성자를 숨기는 용도의 타입
+	struct AccessibleGameObject : GameObject
+	{
+		AccessibleGameObject(std::wstring_view name) : GameObject(name) {}
+		~AccessibleGameObject() override = default;
+	};
+
+	auto gameObject = std::make_shared<AccessibleGameObject>(name);
+	auto transform = gameObject->AddComponent<Transform>();
+	gameObject->transform = transform.lock();
+	transform.lock()->SetParent(parent);
 
 	return gameObject;
 }

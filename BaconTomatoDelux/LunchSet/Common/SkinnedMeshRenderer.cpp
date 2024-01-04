@@ -26,7 +26,7 @@ void SkinnedMeshRenderer::Initialize()
 	Component::Initialize();
 	m_MeshFilter = m_Owner.lock()->GetComponent<MeshFilter>();
 
-	auto childrenTransform = m_Transform.lock()->GetRoot().lock()->GetOwner().lock()->GetComponentsInChildren<Transform>();
+	auto childrenTransform = m_Transform.lock()->GetRoot().lock()->GetOwner()->GetComponentsInChildren<Transform>();
 
 	// todo : mesh 를 하나로 합치기 + 중위순회 (feat. Mr.Hong)
 	for(auto& mesh : m_MeshFilter.lock()->meshes)
@@ -35,7 +35,7 @@ void SkinnedMeshRenderer::Initialize()
 		{
 			for(auto& child : childrenTransform)
 			{
-				auto ownerName = child.lock()->GetOwner().lock()->GetName();
+				auto ownerName = child.lock()->GetOwner()->GetName();
 				std::string strName{ ownerName.begin(), ownerName.end() };
 
 				if(bone.name == strName)

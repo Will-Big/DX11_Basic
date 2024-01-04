@@ -13,6 +13,7 @@ class IRender;
 class IPreRender;
 
 class Component;
+class Transform;
 class Renderer;
 
 class GameObject : public Object, public std::enable_shared_from_this<GameObject>
@@ -55,10 +56,15 @@ public:
 
 	// GameObject 생성 전역 함수(Add Transform Component)
 	static std::shared_ptr<GameObject> Create(std::wstring_view name);
+	static std::shared_ptr<GameObject> Create(std::wstring_view name, std::weak_ptr<Transform> parent);
 
 	// deleted constructor , = operator
 	GameObject(const GameObject&) = delete;
 	GameObject& operator=(const GameObject&) = delete;
+
+public:
+	std::shared_ptr<Transform> transform;
+	std::vector<std::shared_ptr<GameObject>> m_Children;
 
 private:
 	std::vector<std::shared_ptr<Component>> m_Components;
@@ -140,7 +146,7 @@ std::weak_ptr<T> GameObject::GetComponentInChildren()
 	std::vector<std::shared_ptr<GameObject>> childrenObject;
 	std::for_each(childrenTransform.begin(), childrenTransform.end(), [&childrenObject](auto& transform)
 		{
-			childrenObject.push_back(transform.lock()->GetOwner().lock());
+			childrenObject.push_back(transform.lock()->GetOwner());
 		});
 
 	// 자식 오브젝트들을 순회하면서 컴포넌트 검색
@@ -170,7 +176,7 @@ std::weak_ptr<T> GameObject::GetComponentInParent()
 	std::vector<std::shared_ptr<GameObject>> childrenObject;
 
 	while (parent) {
-		auto component = parent->GetOwner().lock()->GetComponent<T>();
+		auto component = parent->GetOwner()->GetComponent<T>();
 		if (!component.expired()) {
 			return component;
 		}
@@ -192,7 +198,7 @@ std::vector<std::weak_ptr<T>> GameObject::GetComponentsInParent()
 	std::vector<std::weak_ptr<T>> components;
 
 	while (parent) {
-		auto parentComponents = parent->GetOwner().lock()->GetComponents<T>();
+		auto parentComponents = parent->GetOwner()->GetComponents<T>();
 		components.insert(components.end(), parentComponents.begin(), parentComponents.end());
 
 		parent = parent->GetParent().lock();
@@ -212,7 +218,7 @@ std::vector<std::weak_ptr<T>> GameObject::GetComponentsInChildren()
 	std::vector<std::shared_ptr<GameObject>> childrenObject;
 	std::for_each(childrenTransform.begin(), childrenTransform.end(), [&childrenObject](auto& transform)
 		{
-			childrenObject.push_back(transform.lock()->GetOwner().lock());
+			childrenObject.push_back(transform->GetOwner());
 		});
 
 	for (auto& child : childrenObject) {

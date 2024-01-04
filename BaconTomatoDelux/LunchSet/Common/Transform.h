@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include <cassert>
-
 #include "Component.h"
 #include "IUpdate.h"
 
@@ -37,6 +35,7 @@ public:
 	// Hierarchy
 	void SetRoot(std::weak_ptr<Transform> root) { m_Root = root; }
 	void SetParent(std::weak_ptr<GameObject> parent);
+	void SetParent(std::weak_ptr<Transform> parent);
 
 	// Local
 	const Vector3& GetLocalScale() { return m_LocalScale; }
@@ -57,7 +56,7 @@ public:
 
 	std::weak_ptr<Transform> GetRoot() { return m_Root; }
 	std::weak_ptr<Transform> GetParent() { return m_Parent; }
-	std::vector<std::weak_ptr<Transform>>& GetChildren() { return m_Children; }
+	std::vector<std::shared_ptr<Transform>>& GetChildren() { return m_Children; }
 
 	bool IsChanged() { return m_bDirtyFrame; }
 
@@ -83,7 +82,7 @@ private:
 	// Hierarchy
 	std::weak_ptr<Transform> m_Root;
 	std::weak_ptr<Transform> m_Parent;
-	std::vector<std::weak_ptr<Transform>> m_Children;
+	std::vector<std::shared_ptr<Transform>> m_Children;
 
 	// Changed Flags
 	bool m_bDirty = true;			// for Transform Component

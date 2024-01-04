@@ -24,8 +24,8 @@ void Animator::Initialize()
 		{
 			for(auto& child : obj->GetChildren())
 			{
-				children.emplace_back(child.lock());
-				getChildren(child.lock());
+				children.emplace_back(child);
+				getChildren(child);
 			}
 		};
 	getChildren(m_Transform.lock());
@@ -123,7 +123,7 @@ void Animator::KeyFrameMapping(const std::vector<std::shared_ptr<Transform>>& ch
 		{
 			for(auto& child : children)
 			{
-				if(child->GetOwner().lock()->GetName() == keyFrame.name)
+				if(child->GetOwner()->GetName() == keyFrame.name)
 				{
 					mapped.emplace_back(child, &keyFrame);
 					break;
