@@ -178,8 +178,6 @@ void GameProcess::ImGuiRender()
 
 	RenderProcessInfo();
 
-
-
 	// temp Scene
 	{
 		ImGui::Begin("Hierarchy");
@@ -205,7 +203,7 @@ void GameProcess::RenderProcessInfo()
 
 void GameProcess::RenderFrameInfo()
 {
-	ImGui::Text("FPS: %f", 1.0f / m_Delta);
+	ImGui::Text("FPS: %d", m_Time->GetFPS());
 }
 
 void GameProcess::RenderMemoryInfo()

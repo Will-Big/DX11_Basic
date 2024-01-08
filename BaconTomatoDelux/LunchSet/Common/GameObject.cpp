@@ -126,22 +126,39 @@ void GameObject::Render(Renderer* renderer)
 
 void GameObject::GUI()
 {
-	if (ImGui::CollapsingHeader(std::string(m_Name.begin(), m_Name.end()).c_str()))
-	{
-		ImGui::Indent(indent);
+	// ImGui::TreeNodeEx 함수를 사용하여 트리 노드를 열고 선택 여부를 확인
+	bool isNodeOpen = ImGui::TreeNodeEx(std::string(m_Name.begin(), m_Name.end()).c_str());
 
+	// 노드가 클릭 됐을 경우
+	if (isNodeOpen && ImGui::IsItemClicked())
+	{
+		m_bInspector = !m_bInspector;
+	}
+
+	// 추가적인 동작 창을 열거나 닫을 수 있는 창을 렌더링
+	if (m_bInspector)
+	{
+		ImGui::Begin(std::string(m_Name.begin(), m_Name.end()).c_str(), &m_bInspector, ImGuiWindowFlags_AlwaysAutoResize);
+
+		for (auto& cp : m_Components)
+		{
+			cp->GUI();
+		}
+
+		ImGui::End();
+	}
+
+	if (isNodeOpen)
+	{
+		// 게임 오브젝트의 자식들에 대한 루프
 		for (auto& child : transform->GetChildren())
 		{
+			// 자식 게임 오브젝트의 GUI 함수 호출
 			child->GetOwner()->GUI();
 		}
 
-		ImGui::Unindent(indent);
-	}
-
-	for (auto& cp : m_Components)
-	{
-		if (cp->IsRenderGUI())
-			cp->GUI();
+		// 트리 노드 닫기
+		ImGui::TreePop();
 	}
 }
 

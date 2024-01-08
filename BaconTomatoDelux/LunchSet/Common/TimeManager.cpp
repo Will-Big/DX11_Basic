@@ -3,10 +3,6 @@
 #include "imgui.h"
 
 TimeManager::TimeManager()
-	: m_CurCount{}
-	, m_PrevCount{}
-	, m_Frequency{}
-	, m_DeltaTime(0.0)
 {
 }
 
@@ -25,10 +21,15 @@ void TimeManager::Update()
 	m_DeltaTime = static_cast<double>(m_CurCount.QuadPart - m_PrevCount.QuadPart) / static_cast<double>(m_Frequency.QuadPart);
 	m_PrevCount = m_CurCount;
 
-#ifdef _DEBUG
-	//if (m_DeltaTime > 1.0 / 60.0)
-	//	m_DeltaTime = 1.0 / 60.0;
-#endif
+	m_ElapsedTime += m_DeltaTime;
+	m_FPS++;
+
+	if(m_ElapsedTime > 1.0)
+	{
+		m_ElapsedTime -= 1.0;
+		m_LastFPS = m_FPS;
+		m_FPS = 0;
+	}
 }
 void TimeManager::Finalize()
 {

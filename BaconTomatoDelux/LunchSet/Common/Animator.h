@@ -19,6 +19,7 @@ public:
 
 	void Initialize() override;
 	void Update(float deltaTime) override;
+	void GUI() override;
 
 	void SetController(std::wstring_view controllerName);
 

@@ -53,7 +53,7 @@
 static std::shared_ptr<GameObject> testGO;
 
 TesterProcess::TesterProcess(const HINSTANCE& hInst)
-	: GameProcess(hInst, L"Tester Process", 1024, 768, true)
+	: GameProcess(hInst, L"Tester Process", 1920, 1080, true)
 {
 	// Shader Load
 	// Static
@@ -78,13 +78,13 @@ TesterProcess::TesterProcess(const HINSTANCE& hInst)
 	// Dummy_walker zeldaPosed001 BoxHuman SkinningTest
 	// PBR : cerberus Primrose_Egypt
 
-	auto staticInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
-	std::array<std::shared_ptr<Shader>, btdShaderScope_END> staticShaders
-	{
-		ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
-		ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
-	};
-	ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", staticShaders, staticInput);
+	//auto staticInput = ResourceManager::instance->Get<InputLayout>(L"PBR_VS_INPUT");
+	//std::array<std::shared_ptr<Shader>, btdShaderScope_END> staticShaders
+	//{
+	//	ResourceManager::instance->Get<VertexShader>(L"PBR_VS"),
+	//	ResourceManager::instance->Get<PixelShader>(L"PBR_PS"),
+	//};
+	//ResourceManager::instance->LoadModel<StaticVertex>(L"Primrose_Egypt", L"Primrose_Egypt", staticShaders, staticInput);
 
 	auto skinnedInput = ResourceManager::instance->Get<InputLayout>(L"SKIN_VS_INPUT");
 	std::array<std::shared_ptr<Shader>, btdShaderScope_END> boneShaders
@@ -135,18 +135,6 @@ void TesterProcess::Render(Renderer* renderer)
 void TesterProcess::ImGuiRender()
 {
 	GameProcess::ImGuiRender();
-
-	//if (!m_bImGuiRender)
-	//	return;
-
-	//ImGui_Initializer::RenderBegin();
-
-	//for (auto& go : m_GameObjects)
-	//	go->GUI();
-
-	//ImGuiRenderHW2();
-
-	//ImGui_Initializer::RenderEnd();
 }
 
 // 무작위 숫자 생성을 위한 엔진과 분포 설정

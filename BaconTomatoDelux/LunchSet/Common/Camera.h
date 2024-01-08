@@ -19,15 +19,14 @@ public:
 
 	void LateUpdate(float deltaTime) override;
 	void PreRender(Renderer* renderer) override;
-	void GUI() override;
 
 private:
 	void UpdateMatrix();
 
 private:
 	bool m_bInit = true;
-	Matrix m_MatView = Matrix::Identity;
 	Matrix m_MatProjection = Matrix::Identity;
+	Matrix m_MatView = Matrix::Identity;
 
 	Vector3 m_Velocity;
 };

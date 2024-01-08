@@ -76,6 +76,7 @@ private:
 
 	// temp
 	std::vector<std::weak_ptr<IPreRender>> m_PreRenders;
+	bool m_bInspector = false;
 };
 
 template <typename T, typename... Args>

@@ -33,6 +33,9 @@ void Light::PreRender(Renderer* renderer)
 
 void Light::GUI()
 {
-	ImGui::DragFloat3("Light Direction", reinterpret_cast<float*>(&direction), 0.01f);
-	direction.Normalize();
+	if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::DragFloat3("Light Direction", reinterpret_cast<float*>(&direction), 0.01f);
+		direction.Normalize();
+	}
 }

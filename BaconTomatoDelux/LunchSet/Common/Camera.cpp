@@ -97,12 +97,3 @@ void Camera::PreRender(Renderer* renderer)
 		renderer->SetPerFrame(frameSet);
 	}
 }
-
-void Camera::GUI()
-{
-	auto camPos = m_Transform.lock()->GetPosition();
-
-	// 카메라 위치 조정 UI
-	if (ImGui::DragFloat3("Camera Position", reinterpret_cast<float*>(&camPos), 0.5f))
-		m_Transform.lock()->SetPosition(camPos);
-}

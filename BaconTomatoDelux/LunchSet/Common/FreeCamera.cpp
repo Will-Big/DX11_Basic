@@ -53,22 +53,6 @@ void FreeCamera::Update(float deltaTime)
 	m_YawPitch = Vector2{ 0.f, 0.f };
 }
 
-void FreeCamera::GUI()
-{
-	auto transform = m_Transform.lock();
-
-	if (ImGui::Begin("FreeCamera Control"))
-	{
-		// 현재 입력 방향 표시
-		ImGui::Text("Input Direction: X: %.2f, Y: %.2f, Z: %.2f", m_InputDirection.x, m_InputDirection.y, m_InputDirection.z);
-
-		// transform의 현재 위치 표시
-		Vector3 currentPosition = transform->GetLocalPosition();
-		ImGui::Text("Current Position: X: %.2f, Y: %.2f, Z: %.2f", currentPosition.x, currentPosition.y, currentPosition.z);
-	}
-	ImGui::End();
-}
-
 void FreeCamera::OnInputProcess(const InputStruct& input)
 {
 	m_InputDirection = Vector3{ 0.f, 0.f, 0.f };

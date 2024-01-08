@@ -73,6 +73,14 @@ void Animator::Update(float deltaTime)
 	}
 }
 
+void Animator::GUI()
+{
+	if(ImGui::CollapsingHeader("Animator", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		
+	}
+}
+
 void Animator::SetController(std::wstring_view controllerName)
 {
 	m_Controller = ResourceManager::instance->animatorControllers[controllerName.data()];

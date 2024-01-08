@@ -124,7 +124,6 @@ void Transform::UpdateTransform()
 	if (!m_bDirty)
 	{
 		m_bDirtyFrame = false;
-		return;
 	}
 
 	// 현 프레임에 변화 있음
@@ -147,19 +146,6 @@ void Transform::UpdateTransform()
 
 	// Decompose 가 생각보다 오버헤드가 큼
 	m_Matrix.Decompose(m_Scale, m_Rotation, m_Position);
-
-	//for (auto& child : m_Children)
-	//{
-	//	if(child)
-	//	{
-	//		child->m_bDirty = true;
-	//		child->UpdateTransform();
-	//	}
-	//	else
-	//	{
-	//		LOG_ERROR(L"nullptr : child Transform");
-	//	}
-	//}
 }
 
 void Transform::GUI()

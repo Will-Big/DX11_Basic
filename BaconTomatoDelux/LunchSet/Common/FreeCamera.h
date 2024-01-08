@@ -17,8 +17,6 @@ public:
 	void Initialize() override;
 	void Start() override;
 	void Update(float deltaTime) override;
-
-	void GUI() override;
 	void OnInputProcess(const InputStruct& input) override;
 
 private:
