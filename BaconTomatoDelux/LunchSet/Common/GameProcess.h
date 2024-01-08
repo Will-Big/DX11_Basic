@@ -5,6 +5,8 @@ class Graphics;
 class TimeManager;
 class GameObject;
 
+constexpr bool EDITOR_MODE = true;
+
 class GameProcess
 {
 public:

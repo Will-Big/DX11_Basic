@@ -18,9 +18,6 @@
     <Filter Include="소스 파일\Base\GameObject">
       <UniqueIdentifier>{176278ea-21d9-4b58-9d33-69daa824a112}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Base\Component">
-      <UniqueIdentifier>{4ff756a7-d2c2-4ab0-8126-7aec78aaa6a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Base\Scene">
       <UniqueIdentifier>{c67e8784-d44a-48ee-8083-ca448dd43d09}</UniqueIdentifier>
     </Filter>
@@ -120,9 +117,6 @@
     <Filter Include="소스 파일\Components\Collider">
       <UniqueIdentifier>{cf78f863-45bf-44b7-8b65-ea4c035abe9d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Components\Collider\CharacterController">
-      <UniqueIdentifier>{8e9164e2-ecc8-45cc-b98e-498dff0b2e8c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Interface\Input">
       <UniqueIdentifier>{d66b46ea-08f6-4a37-a699-58c13cab49b0}</UniqueIdentifier>
     </Filter>
@@ -135,13 +129,25 @@
     <Filter Include="소스 파일\Components\Collider\Bounds">
       <UniqueIdentifier>{473a6822-931e-41c6-aa4b-17c2349e2d8b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Components\Collider\SphereCollider">
+      <UniqueIdentifier>{6fa22208-1bf4-425c-af8a-94c33813201f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Components\Collider\CapsuleCollider">
+      <UniqueIdentifier>{1f596ff2-e882-43b6-911f-ff87c269efcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Components\Collider\BoxCollider">
+      <UniqueIdentifier>{0e1f50a1-1fc4-4a65-b72f-3c85c65271e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Base\GameObject\Component">
+      <UniqueIdentifier>{4ff756a7-d2c2-4ab0-8126-7aec78aaa6a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>헤더 파일\Default</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>소스 파일\Base\Component</Filter>
+      <Filter>소스 파일\Base\GameObject\Component</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>소스 파일\Base\GameObject</Filter>
@@ -221,14 +227,11 @@
     <ClCompile Include="Collider.cpp">
       <Filter>소스 파일\Components\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterController.cpp">
-      <Filter>소스 파일\Components\Collider\CharacterController</Filter>
-    </ClCompile>
     <ClCompile Include="FreeCamera.cpp">
       <Filter>소스 파일\Components\Rendering\Camera\Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Bounds.cpp">
-      <Filter>소스 파일\Components\Collider\Bounds</Filter>
+    <ClCompile Include="BoxCollider.cpp">
+      <Filter>소스 파일\Components\Collider\BoxCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,7 +239,7 @@
       <Filter>헤더 파일\Default</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
-      <Filter>소스 파일\Base\Component</Filter>
+      <Filter>소스 파일\Base\GameObject\Component</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>소스 파일\Base\GameObject</Filter>
@@ -340,9 +343,6 @@
     <ClInclude Include="Collider.h">
       <Filter>소스 파일\Components\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterController.h">
-      <Filter>소스 파일\Components\Collider\CharacterController</Filter>
-    </ClInclude>
     <ClInclude Include="FreeCamera.h">
       <Filter>소스 파일\Components\Rendering\Camera\Editor</Filter>
     </ClInclude>
@@ -354,6 +354,9 @@
     </ClInclude>
     <ClInclude Include="Bounds.h">
       <Filter>소스 파일\Components\Collider\Bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxCollider.h">
+      <Filter>소스 파일\Components\Collider\BoxCollider</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

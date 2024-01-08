@@ -154,9 +154,9 @@
     <ClInclude Include="AnimatorTransition.h" />
     <ClInclude Include="AnimatorTransitionBase.h" />
     <ClInclude Include="Bounds.h" />
+    <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="AnimatorState.h" />
-    <ClInclude Include="CharacterController.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="GameObject.h" />
@@ -194,10 +194,9 @@
     <ClCompile Include="AnimatorStateTransition.cpp" />
     <ClCompile Include="AnimatorTransition.cpp" />
     <ClCompile Include="AnimatorTransitionBase.cpp" />
-    <ClCompile Include="Bounds.cpp" />
+    <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="AnimatorState.cpp" />
-    <ClCompile Include="CharacterController.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="GameObject.cpp" />

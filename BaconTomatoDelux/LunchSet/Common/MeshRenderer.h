@@ -19,6 +19,7 @@ public:
 	void Initialize() override;
 	void Start() override;
 	void Render(Renderer* renderer) override;
+	void GUI() override;
 
 public:
 	std::weak_ptr<MeshFilter> m_MeshFilter;

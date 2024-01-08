@@ -35,6 +35,8 @@ void MeshRenderer::Start()
 
 void MeshRenderer::Render(Renderer* renderer)
 {
+	CHECK_ENABLED;
+
 	auto meshfilter = m_MeshFilter.lock();
 	auto transform = m_Transform.lock();
 
@@ -66,5 +68,13 @@ void MeshRenderer::Render(Renderer* renderer)
 		//};
 
 		renderer->AddRenderQueue(settings);
+	}
+}
+
+void MeshRenderer::GUI()
+{
+	if (ImGui::CollapsingHeader("Mesh Renderer", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ENABLE_CHECKBOX;
 	}
 }

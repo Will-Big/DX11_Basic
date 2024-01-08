@@ -81,6 +81,7 @@ void Renderer::DrawAllQueue()
 {
 	SortRenderQueue();
 
+	// todo : GPU Instancing
 	DrawStaticQueue();
 	DrawSkinnedQueue();
 }

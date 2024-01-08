@@ -41,6 +41,8 @@ void Animator::Initialize()
 
 void Animator::Update(float deltaTime)
 {
+	CHECK_ENABLED;
+
 	m_ProgressTime += deltaTime;
 	double totalFrames = m_CurrentClip->first->duration;
 	double framePerSecond = m_CurrentClip->first->framePerSecond;
@@ -77,7 +79,7 @@ void Animator::GUI()
 {
 	if(ImGui::CollapsingHeader("Animator", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		
+		ENABLE_CHECKBOX;
 	}
 }
 

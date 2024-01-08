@@ -46,4 +46,13 @@ using namespace DirectX::SimpleMath;
 // USER
 #include "../Graphics/Helper.h"
 
+inline constexpr bool editor_mode = true;
+
+#define CHECK_ENABLED \
+	if constexpr (editor_mode) \
+		if(!m_bEnabled) \
+			return
+
+#define ENABLE_CHECKBOX ImGui::Checkbox("Enabled", &m_bEnabled)
+
 #endif //PCH_H
